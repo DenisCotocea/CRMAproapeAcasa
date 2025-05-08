@@ -3,12 +3,19 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Image extends Model
 {
-    protected $fillable = ['path'];
+    use HasFactory;
 
-    public function imageable()
+    protected $fillable = [
+        'entity_id',
+        'entity_type',
+        'path',
+    ];
+
+    public function entity()
     {
         return $this->morphTo();
     }

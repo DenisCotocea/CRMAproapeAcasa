@@ -1,0 +1,137 @@
+.nav-link {
+    font-size: 1rem;
+    color: white;
+    transition: color 0.3s ease;
+    border: none;
+
+    &:hover {
+        color: #00BDAF;
+    }
+
+    &.active {
+        color: #00BDAF;
+        border-bottom: 2px solid #00BDAF;
+    }
+}
+
+.tab-content {
+    margin-top: 20px;
+}
+
+.property-description-container {
+    margin-top: 20px;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+
+    h5{
+        color: #00BDAF;
+        font-size: 20px;
+        margin-bottom: 10px;
+    }
+
+    .property-description{
+        margin-bottom: 20px;
+
+        p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: white;
+        }
+    }
+}
+
+.property-details-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+
+    .property-detail {
+        display: flex;
+        align-items: center;
+        font-size: 1.1rem;
+        padding: 12px;
+        margin-bottom: 15px;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s ease;
+
+        &:hover {
+            background-color: #00BDAF;
+
+            i {
+                color: white;
+            }
+        }
+
+        i {
+            margin-right: 12px;
+            font-size: 1.4rem;
+            color: #00BDAF;
+        }
+
+        strong {
+            font-weight: 600;
+            color: white;
+            padding-right: 10px;
+        }
+
+        .badge {
+            font-size: 1.3rem;
+            padding: 0.5em;
+            margin-left: 12px;
+        }
+    }
+}
+
+.logs-container{
+    .log-entry {
+        display: flex;
+        flex-direction: column;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 15px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s ease;
+
+        &:hover {
+            background-color: #5bc0de;
+
+            .new-value{
+                color: #333333;
+            }
+        }
+    }
+
+    .log-header {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 15px;
+
+    }
+
+    h5 {
+        margin-top: 10px;
+        font-size: 1.2rem;
+        font-weight: 600;
+    }
+
+
+    .change-item {
+        font-size: 1rem;
+        margin: 5px 0;
+        line-height: 1.5;
+
+        strong {
+            font-weight: bold;
+        }
+
+        .old-value {
+            text-decoration: line-through;
+            color: #d9534f;
+        }
+
+        .new-value {
+            color: #5bc0de;
+        }
+    }
+}

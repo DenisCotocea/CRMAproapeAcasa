@@ -19,11 +19,46 @@
                     <x-nav-link :href="route('properties.index')" :active="request()->routeIs('properties.index')">
                         {{ __('Properties') }}
                     </x-nav-link>
+
+                    <x-nav-link :href="route('leads.index')" :active="request()->routeIs('leads.index')">
+                        {{ __('Leads') }}
+                    </x-nav-link>
+
+                    <x-nav-link :href="route('tickets.index')" :active="request()->routeIs('tickets.index')">
+                        {{ __('Tickets') }}
+                    </x-nav-link>
+
+                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                        {{ __('Scraper') }}
+                    </x-nav-link>
+
+                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                        {{ __('Delisted') }}
+                    </x-nav-link>
+
+                    <x-nav-link :href="route('profile.index')" :active="request()->routeIs('profile.index')">
+                        {{ __('Users') }}
+                    </x-nav-link>
+
+                    <x-nav-link :href="route('exporters.index')" :active="request()->routeIs('exporters.index')">
+                        {{ __('Exporters') }}
+                    </x-nav-link>
+
+                    <x-nav-link :href="route('settings.index')" :active="request()->routeIs('settings.index')">
+                        {{ __('Settings') }}
+                    </x-nav-link>
                 </div>
             </div>
 
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
+                <div class="me-4">
+                    <form action="{{ route('search.index') }}" method="GET">
+                        <x-text-input id="query" name="query" type="text" placeholder="Search"/>
+                        <x-input-error for="name" />
+                    </form>
+                </div>
+
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400  dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">

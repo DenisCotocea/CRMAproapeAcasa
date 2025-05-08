@@ -1,0 +1,118 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Models\Lead;
+use App\Models\User;
+use App\Models\Property;
+use Illuminate\Support\Facades\Storage;
+
+class LeadController extends Controller
+{
+    public function index()
+    {
+        $leads = Lead::with(['user', 'properties'])->paginate(10);
+        return view('leads.index', compact('leads'));
+    }
+
+    public function create()
+    {
+        $users = User::all();
+        $properties = Property::all();
+        return view('leads.create', compact('users'), compact('properties'));
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'properties.*' => 'exists:properties,id',
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'required|string|max:20',
+            'has_company' => 'boolean',
+            'company_name' => 'nullable|string|max:255',
+            'company_email' => 'nullable|email|max:255',
+            'cui' => 'nullable|string|max:50',
+            'company_address' => 'nullable|string|max:255',
+            'cnp' => 'nullable|string|max:20',
+            'date_of_birth' => 'nullable|date',
+            'county' => 'required|string|max:255',
+            'city' => 'required|string|max:255',
+            'source' => 'nullable|string|max:255',
+            'priority' => 'required|in:High,Medium,Low',
+            'status' => 'required|in:New,In Progress,Closed,Lost',
+            'last_contact' => 'nullable|date',
+            'notes' => 'nullable|string',
+            'doc_attachment' => 'nullable|file|max:2048'
+        ]);
+
+        if ($request->hasFile('doc_attachment')) {
+            $validated['doc_attachment'] = $request->file('doc_attachment')->store('docs');
+        }
+
+        $lead = Lead::create($validated);
+
+        $lead->properties()->sync($request->properties);
+
+        return redirect()->route('leads.index')->with('success', 'Lead created successfully.');
+    }
+
+    public function show(Lead $lead)
+    {
+        $activities = $lead->activities()->latest()->get();
+        return view('leads.show', compact('lead'), compact('activities'));
+    }
+
+    public function edit(Lead $lead)
+    {
+        $users = User::all();
+        $properties = Property::all();
+        return view('leads.edit', compact('lead', 'users', 'properties'));
+    }
+
+    public function update(Request $request, Lead $lead)
+    {
+        $validated = $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'required|string|max:20',
+            'has_company' => 'boolean',
+            'company_name' => 'nullable|string|max:255',
+            'company_email' => 'nullable|email|max:255',
+            'cui' => 'nullable|string|max:50',
+            'company_address' => 'nullable|string|max:255',
+            'cnp' => 'nullable|string|max:20',
+            'date_of_birth' => 'nullable|date',
+            'county' => 'required|string|max:255',
+            'city' => 'required|string|max:255',
+            'source' => 'nullable|string|max:255',
+            'priority' => 'required|in:High,Medium,Low',
+            'status' => 'required|in:New,In Progress,Closed,Lost',
+            'last_contact' => 'nullable|date',
+            'notes' => 'nullable|string',
+            'doc_attachment' => 'nullable|file|max:2048'
+        ]);
+
+        if ($request->hasFile('doc_attachment')) {
+            $validated['doc_attachment'] = $request->file('doc_attachment')->store('docs');
+        }
+
+        $lead->update($validated);
+
+        return redirect()->route('leads.index')->with('success', 'Lead updated successfully.');
+    }
+
+    public function destroy(Lead $lead)
+    {
+        if ($lead->doc_attachment) {
+            Storage::delete($lead->doc_attachment);
+        }
+
+        $lead->delete();
+
+        return redirect()->route('leads.index')->with('success', 'Lead deleted successfully.');
+    }
+}

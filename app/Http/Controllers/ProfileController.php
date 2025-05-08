@@ -8,9 +8,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use App\Models\User;
 
 class ProfileController extends Controller
 {
+    public function index()
+    {
+        $users = User::all();
+        return view('profile.index', compact('users'));
+    }
+
     /**
      * Display the user's profile form.
      */
@@ -56,5 +63,16 @@ class ProfileController extends Controller
         $request->session()->regenerateToken();
 
         return Redirect::to('/');
+    }
+
+    public function updateRole(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'role' => 'required|in:Admin,Agent,Lead',
+        ]);
+
+        $user = User::findOrFail($id);
+        $user->syncRoles($validated['role']);
+        return redirect()->route('profile.index')->with('success', 'User role updated successfully!');
     }
 }

@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('images', function (Blueprint $table) {
+        Schema::create('lead_property', function (Blueprint $table) {
             $table->id();
-            $table->string('path');
-            $table->morphs('imageable');
+            $table->foreignId('lead_id')->constrained()->onDelete('cascade');
+            $table->foreignId('property_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -24,8 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('images', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('lead_property');
     }
 };

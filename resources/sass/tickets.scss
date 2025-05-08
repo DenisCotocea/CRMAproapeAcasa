@@ -1,0 +1,39 @@
+.ticket-info {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+
+    .ticket-detail {
+        display: flex;
+        align-items: center;
+        font-size: 1.1rem;
+        padding: 12px;
+        margin-bottom: 15px;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s ease;
+
+        &:hover {
+            background-color: #00BDAF;
+
+            i {
+                color: white;
+            }
+        }
+
+        i {
+            margin-right: 12px;
+            font-size: 1.4rem;
+            color: #00BDAF;
+        }
+
+        strong {
+            font-weight: 600;
+            color: white;
+            padding-right: 10px;
+        }
+
+        span {
+            font-size: 1.3rem;
+        }
+    }
+}

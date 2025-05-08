@@ -9,7 +9,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="overflow-hidden shadow-xl sm:rounded-lg">
-                    <form class="p-4" method="POST" action="{{ route('properties.update', $property->id) }}">
+                    <form class="p-4" method="POST" action="{{ route('properties.update', $property->id) }}" enctype="multipart/form-data">
                         @csrf
                         @method('PUT') <!-- Method to send PUT request for update -->
 
@@ -207,10 +207,14 @@
                             <div class="col-md-2">
                                 <x-checkbox name="parking" label="Parking" :checked="old('parking', $property->parking)" />
                             </div>
-                        </div>
 
-                        <div class="mt-6">
-                            <x-primary-button>Update Property</x-primary-button>
+                            <div class="col-md-4">
+                                <x-image-uploader :entityId="$property->id" :entityType="App\Models\Property::class" />
+                            </div>
+
+                            <div class="mt-4 text-end">
+                                <x-primary-button>Update Property</x-primary-button>
+                            </div>
                         </div>
                     </form>
                 </div>

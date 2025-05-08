@@ -1,5 +1,7 @@
 // Imports
 @import "bootstrap/scss/bootstrap";
+@import 'bootstrap-icons/font/bootstrap-icons.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -10,3 +12,6 @@
 // Variables
 @import 'variables';
 @import 'dashboard';
+@import 'property';
+@import 'leads';
+@import 'tickets';

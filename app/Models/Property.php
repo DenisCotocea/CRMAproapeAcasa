@@ -2,13 +2,19 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Property extends Model
 {
+    use HasFactory;
+    use LogsActivity;
     protected $fillable = [
         'user_id',
+        'lead_id',
         'name',
         'promoted',
         'type',
@@ -68,6 +74,26 @@ class Property extends Model
 
     public function images()
     {
-        return $this->morphMany(Image::class, 'imageable');
+        return $this->morphMany(Image::class, 'entity');
+    }
+
+    public function leads()
+    {
+        return $this->belongsToMany(Lead::class);
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+             ->logOnly(['*'])
+             ->setDescriptionForEvent(fn(string $eventName) => "{$eventName} property")
+             ->logOnlyDirty()
+             ->dontSubmitEmptyLogs()
+             ->useLogName('property');
+    }
+
+    public function comments()
+    {
+        return $this->morphMany(Comment::class, 'commentable');
     }
 }

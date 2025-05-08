@@ -9,7 +9,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="overflow-hidden shadow-xl sm:rounded-lg">
-                    <form class="p-4" method="POST" action="{{ route('properties.store') }}">
+                    <form class="p-4" method="POST" action="{{ route('properties.store') }}" enctype="multipart/form-data">
                         @csrf
                         <div class="row">
                             <div class="col-md-6">
@@ -171,14 +171,15 @@
                             <div class="col-md-2">
                                 <x-checkbox name="parking" label="Parking" />
                             </div>
-
-                            <div class="col-md-12 mb-4">
-                                <h3 class="text-lg font-semibold text-white">Add Images</h3>
-                                <x-image-upload name="images[]" multiple accept="image/*" />
+                            <div class="col-md-4">
+                                <div class="mb-4">
+                                    <label class="block text-sm font-medium text-gray-700">Upload Images</label>
+                                    <input type="file" name="images[]" multiple class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
+                                </div>
                             </div>
                         </div>
-                        <div class="mt-6">
-                            <x-primary-button>Save Property</x-primary-button>
+                        <div class="mt-6 text-end">
+                            <x-primary-button>Create Property</x-primary-button>
                         </div>
                     </form>
                 </div>
