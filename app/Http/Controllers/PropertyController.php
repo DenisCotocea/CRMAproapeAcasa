@@ -2,19 +2,72 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Lead;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Property;
 use App\Models\Image;
-use function Illuminate\Events\queueable;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class PropertyController extends Controller
 {
     public function index(Request $request)
     {
-        $properties = $this->filterProperties($request);
+        $users = User::all();
+        $properties = QueryBuilder::for(Property::class)
+            ->with(['user'])
+            ->allowedFilters([
+                'name',
+                'type',
+                'category',
+                'tranzaction',
+                'room_numbers',
+                'level',
+                'floor',
+                'total_floors',
+                'usable_area',
+                'land_area',
+                'yard_area',
+                'balcony_area',
+                'construction_year',
+                'county',
+                'city',
+                'address',
+                'partitioning',
+                'comfort',
+                'heating',
+                'availability_status',
+                'available_from',
+                AllowedFilter::callback('price_min', function ($query, $value) {
+                    $query->where('price', '>=', $value);
+                }),
+                AllowedFilter::callback('price_max', function ($query, $value) {
+                    $query->where('price', '<=', $value);
+                }),
+                AllowedFilter::callback('surface_min', function ($query, $value) {
+                    $query->where('surface', '>=', $value);
+                }),
+                AllowedFilter::callback('surface_max', function ($query, $value) {
+                    $query->where('surface', '<=', $value);
+                }),
+                AllowedFilter::callback('usable_area_min', function ($query, $value) {
+                    $query->where('usable_area', '>=', $value);
+                }),
+                AllowedFilter::callback('usable_area_max', function ($query, $value) {
+                    $query->where('usable_area', '<=', $value);
+                }),
+                AllowedFilter::exact('promoted'),
+                AllowedFilter::exact('furnished'),
+                AllowedFilter::exact('balcony'),
+                AllowedFilter::exact('garage'),
+                AllowedFilter::exact('elevator'),
+                AllowedFilter::exact('parking'),
+                AllowedFilter::exact('user_id'),
+            ])
+            ->paginate(10);
 
-        return view('properties.index', compact('properties'));
+        return view('properties.index', compact('properties', 'users'));
     }
 
     public function create()
@@ -29,7 +82,7 @@ class PropertyController extends Controller
             'name' => 'required|string|max:255',
             'user_id' => 'required|exists:users,id',
             'promoted' => 'boolean',
-            'type' => 'nullable|string',
+            'type' => 'required|string',
             'category' => 'nullable|string',
             'tranzaction' => 'nullable|string',
             'room_numbers' => 'nullable|integer',
@@ -42,10 +95,10 @@ class PropertyController extends Controller
             'yard_area' => 'nullable|numeric',
             'balcony_area' => 'nullable|numeric',
             'construction_year' => 'nullable|integer',
-            'county' => 'nullable|string',
-            'city' => 'nullable|string',
-            'address' => 'nullable|string',
-            'price' => 'nullable|numeric',
+            'county' => 'required|string',
+            'city' => 'required|string',
+            'address' => 'required|string',
+            'price' => 'required|numeric',
             'description' => 'nullable|string',
             'details' => 'nullable|string',
             'partitioning' => 'nullable|string',
@@ -109,7 +162,7 @@ class PropertyController extends Controller
             'name' => 'required|string|max:255',
             'user_id' => 'required|exists:users,id',
             'promoted' => 'boolean',
-            'type' => 'nullable|string',
+            'type' => 'required|string',
             'category' => 'nullable|string',
             'tranzaction' => 'nullable|string',
             'room_numbers' => 'nullable|integer',
@@ -122,10 +175,10 @@ class PropertyController extends Controller
             'yard_area' => 'nullable|numeric',
             'balcony_area' => 'nullable|numeric',
             'construction_year' => 'nullable|integer',
-            'county' => 'nullable|string',
-            'city' => 'nullable|string',
-            'address' => 'nullable|string',
-            'price' => 'nullable|numeric',
+            'county' => 'required|string',
+            'city' => 'required|string',
+            'address' => 'required|string',
+            'price' => 'required|numeric',
             'description' => 'nullable|string',
             'details' => 'nullable|string',
             'partitioning' => 'nullable|string',
@@ -144,6 +197,18 @@ class PropertyController extends Controller
         ]);
 
         $property->update($data);
+
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
+                $path = $image->store('images', 'public');
+
+                Image::create([
+                    'entity_id' => $property->id,
+                    'entity_type' => Property::class,
+                    'path' => $path,
+                ]);
+            }
+        }
 
         return redirect()->route('properties.index')->with('success', 'Property updated successfully.');
     }
@@ -167,108 +232,5 @@ class PropertyController extends Controller
         }
 
         return response()->noContent();
-    }
-
-    public function filterProperties(Request $request)
-    {
-        $query = Property::query();
-
-        if ($request->filled('name')) {
-            $query->where('name', 'like', '%' . $request->name . '%');
-        }
-
-        if ($request->filled('type')) {
-            $query->where('type', $request->type);
-        }
-
-        if ($request->filled('category')) {
-            $query->where('category', $request->category);
-        }
-
-        if ($request->filled('tranzaction')) {
-            $query->where('tranzaction', $request->tranzaction);
-        }
-
-        if ($request->filled('rooms')) {
-            $query->where('room_numbers', $request->rooms);
-        }
-
-        if ($request->filled('level')) {
-            $query->where('level', $request->level);
-        }
-
-        if ($request->filled('usable_min') && $request->filled('usable_max')) {
-            $query->whereBetween('usable_area', [$request->usable_min, $request->usable_max]);
-        }
-
-        if ($request->filled('construction_year_min') && $request->filled('construction_year_max')) {
-            $query->whereBetween('construction_year', [$request->construction_year_min, $request->construction_year_max]);
-        }
-
-        if ($request->filled('city')) {
-            $query->where('city', 'like', '%' . $request->city . '%');
-        }
-
-        if ($request->filled('county')) {
-            $query->where('county', 'like', '%' . $request->county . '%');
-        }
-
-        if ($request->filled('price_min') && $request->filled('price_max')) {
-            $query->whereBetween('price', [$request->price_min, $request->price_max]);
-        }
-
-        if ($request->filled('promoted')) {
-            $query->where('promoted', $request->promoted);
-        }
-
-        if ($request->filled('availability_status')) {
-            $query->where('availability_status', $request->availability_status);
-        }
-
-        if ($request->filled('furnished')) {
-            $query->where('furnished', $request->furnished);
-        }
-
-        if ($request->filled('heating')) {
-            $query->where('heating', $request->heating);
-        }
-
-        if ($request->filled('comfort')) {
-            $query->where('comfort', $request->comfort);
-        }
-
-        if ($request->filled('balcony')) {
-            $query->where('balcony', true);
-        }
-
-        if ($request->filled('garage')) {
-            $query->where('garage', true);
-        }
-
-        if ($request->filled('elevator')) {
-            $query->where('elevator', true);
-        }
-
-        if ($request->filled('parking')) {
-            $query->where('parking', true);
-        }
-
-        if ($request->filled('floor_min') && $request->filled('floor_max')) {
-            $query->whereBetween('floor', [$request->floor_min, $request->floor_max]);
-        }
-
-        if ($request->filled('partitioning')) {
-            $query->where('partitioning', $request->partitioning);
-        }
-
-        if ($request->filled('interior_condition')) {
-            $query->where('interior_condition', $request->interior_condition);
-        }
-
-        if ($request->filled('available_from')) {
-            $query->where('available_from', '>=', $request->available_from);
-        }
-
-        return $query->paginate(10);
     }
 }

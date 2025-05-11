@@ -36,7 +36,7 @@
                                         @if ($property->images->isNotEmpty())
                                             <img src="{{ asset('storage/' . $property->images->first()->path) }}" alt="Property Image" class="w-16 h-16 object-cover rounded">
                                         @else
-                                            <span class="text-gray-500">No image</span>
+                                            <img src="{{ asset('images/home.png') }}"  alt="Property Image" class="w-16 h-16 object-cover rounded">
                                         @endif
                                     </td>
                                     <td class="px-6 py-4 font-medium">{{ $property->name }}</td>
@@ -64,7 +64,7 @@
                                         </x-badge>
                                     </td>
                                     <td class="px-6 py-4">
-                                        <div class="d-flex justify-between mb-2">
+                                        <div class="d-flex justify-between mb-2 gap-2">
                                             <x-link-primary-button href="{{ route('properties.show', $property->id) }}">
                                                 {{ __('Show') }}
                                             </x-link-primary-button>
@@ -72,13 +72,15 @@
                                                 {{ __('Edit') }}
                                             </x-link-primary-button>
                                         </div>
-                                        <div class="text-center">
-                                            <form action="{{ route('properties.destroy', $property->id) }}" method="POST" class="inline">
-                                                @csrf
-                                                @method('DELETE')
-                                                <x-danger-button type="submit">{{ __('Delete') }}</x-danger-button>
-                                            </form>
-                                        </div>
+                                        @role('Admin')
+                                            <div class="text-center">
+                                                <form action="{{ route('properties.destroy', $property->id) }}" method="POST" class="inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <x-danger-button type="submit">{{ __('Delete') }}</x-danger-button>
+                                                </form>
+                                            </div>
+                                        @endrole
                                     </td>
                                 </tr>
                             @endforeach

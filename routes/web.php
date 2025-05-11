@@ -10,16 +10,16 @@ use App\Http\Controllers\TicketController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\HomeController;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
 Route::middleware(['auth'])->group(function () {
+    // Dashborad
+    Route::get('/dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
+
     // User Routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

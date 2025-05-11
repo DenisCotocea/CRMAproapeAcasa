@@ -30,19 +30,19 @@
 
                             <div class="col-md-4">
                                 <x-input-label for="properties" value="Property" />
-                                <x-select id="properties" name="properties" :options="$properties->pluck('name', 'id')" required />
+                                <x-select id="properties" name="properties" :options="$properties->pluck('name', 'id')"/>
                                 <x-input-error for="properties" />
                             </div>
 
                             <div class="col-md-4">
                                 <x-input-label for="email" value="Email" />
-                                <x-text-input id="email" name="email" value="{{ old('email') }}" />
+                                <x-text-input id="email" name="email" value="{{ old('email') }}" required />
                                 <x-input-error for="email" />
                             </div>
 
                             <div class="col-md-4">
                                 <x-input-label for="phone" value="Phone" />
-                                <x-text-input id="phone" name="phone" value="{{ old('phone') }}" />
+                                <x-text-input id="phone" name="phone" value="{{ old('phone') }}" required/>
                                 <x-input-error for="phone" />
                             </div>
 
@@ -94,13 +94,13 @@
 
                             <div class="col-md-4">
                                 <x-input-label for="county" value="County" />
-                                <x-text-input id="county" name="county" value="{{ old('county') }}" />
+                                <x-text-input id="county" name="county" value="{{ old('county') }}" required/>
                                 <x-input-error for="county" />
                             </div>
 
                             <div class="col-md-4">
                                 <x-input-label for="city" value="City" />
-                                <x-text-input id="city" name="city" value="{{ old('city') }}" />
+                                <x-text-input id="city" name="city" value="{{ old('city') }}" required/>
                                 <x-input-error for="city" />
                             </div>
 

@@ -144,7 +144,7 @@
                                             @csrf
                                             <x-textarea label="Leave a comment" name="comment" required>{{ old('comment') }}</x-textarea>
                                             <x-input-error for="comment" />
-                                            <x-primary-button>Submit Comment</x-primary-button>
+                                            <x-primary-button class="mt-2">Submit Comment</x-primary-button>
                                         </form>
                                     </div>
                                 </div>
@@ -173,7 +173,7 @@
                                                         @if ($property->images->isNotEmpty())
                                                             <img src="{{ asset('storage/' . $property->images->first()->path) }}" alt="Property Image" class="w-16 h-16 object-cover rounded">
                                                         @else
-                                                            <span class="text-gray-500">No image</span>
+                                                            <img src="{{ asset('images/home.png') }}"  alt="Property Image" class="w-16 h-16 object-cover rounded">
                                                         @endif
                                                     </td>
                                                     <td class="px-6 py-4 font-medium">{{ $property->name }}</td>
@@ -202,13 +202,15 @@
                                                                 {{ __('Edit') }}
                                                             </x-link-primary-button>
                                                         </div>
-                                                        <div class="text-center">
-                                                            <form action="{{ route('properties.destroy', $property->id) }}" method="POST" class="inline">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                                <x-danger-button type="submit">{{ __('Delete') }}</x-danger-button>
-                                                            </form>
-                                                        </div>
+                                                        @role('Admin')
+                                                            <div class="text-center">
+                                                                <form action="{{ route('properties.destroy', $property->id) }}" method="POST" class="inline">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <x-danger-button type="submit">{{ __('Delete') }}</x-danger-button>
+                                                                </form>
+                                                            </div>
+                                                        @endrole
                                                     </td>
                                                 </tr>
                                             @endforeach

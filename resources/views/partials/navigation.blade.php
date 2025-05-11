@@ -6,7 +6,7 @@
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}">
-                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200" />
+                        <img src="{{ asset('images/logo.png') }}" style="filter: invert(1) brightness(20);" alt="Logo" class="block h-9 w-auto">
                     </a>
                 </div>
 
@@ -36,17 +36,21 @@
                         {{ __('Delisted') }}
                     </x-nav-link>
 
-                    <x-nav-link :href="route('profile.index')" :active="request()->routeIs('profile.index')">
-                        {{ __('Users') }}
-                    </x-nav-link>
+                    @role('Admin')
 
-                    <x-nav-link :href="route('exporters.index')" :active="request()->routeIs('exporters.index')">
-                        {{ __('Exporters') }}
-                    </x-nav-link>
+                        <x-nav-link :href="route('profile.index')" :active="request()->routeIs('profile.index')">
+                            {{ __('Users') }}
+                        </x-nav-link>
 
-                    <x-nav-link :href="route('settings.index')" :active="request()->routeIs('settings.index')">
-                        {{ __('Settings') }}
-                    </x-nav-link>
+                        <x-nav-link :href="route('exporters.index')" :active="request()->routeIs('exporters.index')">
+                            {{ __('Exporters') }}
+                        </x-nav-link>
+
+                        <x-nav-link :href="route('settings.index')" :active="request()->routeIs('settings.index')">
+                            {{ __('Settings') }}
+                        </x-nav-link>
+
+                    @endrole
                 </div>
             </div>
 
@@ -109,6 +113,41 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('properties.index')" :active="request()->routeIs('properties.index')">
+                {{ __('Properties') }}
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('leads.index')" :active="request()->routeIs('leads.index')">
+                {{ __('Leads') }}
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('tickets.index')" :active="request()->routeIs('tickets.index')">
+                {{ __('Tickets') }}
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                {{ __('Scraper') }}
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                {{ __('Delisted') }}
+            </x-responsive-nav-link>
+
+            @role('Admin')
+                <x-responsive-nav-link :href="route('profile.index')" :active="request()->routeIs('profile.index')">
+                    {{ __('Users') }}
+                </x-responsive-nav-link>
+
+                <x-responsive-nav-link :href="route('exporters.index')" :active="request()->routeIs('exporters.index')">
+                    {{ __('Exporters') }}
+                </x-responsive-nav-link>
+
+                <x-responsive-nav-link :href="route('settings.index')" :active="request()->routeIs('settings.index')">
+                    {{ __('Settings') }}
+                </x-responsive-nav-link>
+            @endrole
+
         </div>
 
         <!-- Responsive Settings Options -->

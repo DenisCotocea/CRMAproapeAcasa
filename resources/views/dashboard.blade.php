@@ -22,12 +22,12 @@
                 <div class="col-md-4 mb-4">
                     <div class="dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                         <div class="p-6 text-gray-900 dark:text-gray-100 flex items-center flex-column text-center">
-                            <div class="mr-4">
+                            <div>
                                 <i class="bi bi-bullseye text-4xl" style="color: #00BDAF; font-size: 38px"></i>
                             </div>
                             <div>
                                 <h3 class="font-semibold text-xl">Leads</h3>
-                                <p class="text-2xl">3</p>
+                                <p class="text-2xl">{{ $leads }}</p>
                             </div>
                         </div>
                     </div>
@@ -37,13 +37,13 @@
                 <div class="col-md-4 mb-4">
                     <div class="dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                         <div class="p-6 text-gray-900 dark:text-gray-100 flex items-center flex-column text-center">
-                            <div class="mr-4">
+                            <div>
                                 <!-- Bootstrap Icon for Properties -->
                                 <i class="bi bi-house-door text-4xl" style="color: #00BDAF; font-size: 38px"></i>
                             </div>
                             <div>
                                 <h3 class="font-semibold text-xl">Properties</h3>
-                                <p class="text-2xl">2</p>
+                                <p class="text-2xl">{{ $properties }}</p>
                             </div>
                         </div>
                     </div>
@@ -53,13 +53,13 @@
                 <div class="col-md-4 mb-4">
                     <div class="dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                         <div class="p-6 text-gray-900 dark:text-gray-100 flex items-center flex-column text-center">
-                            <div class="mr-4">
+                            <div>
                                 <!-- Bootstrap Icon for Users -->
                                 <i class="bi bi-person-circle text-4xl" style="color: #00BDAF; font-size: 38px"></i>
                             </div>
                             <div>
                                 <h3 class="font-semibold text-xl">Users</h3>
-                                <p class="text-2xl">1</p>
+                                <p class="text-2xl">{{ $leads }}</p>
                             </div>
                         </div>
                     </div>

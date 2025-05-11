@@ -30,19 +30,19 @@
 
                             <div class="col-md-4">
                                 <x-input-label for="properties" value="Property" />
-                                <x-select id="properties" name="properties" :options="$properties->pluck('name', 'id')" :selected="old('property_id', $lead->property_id)"  required />
+                                <x-select id="properties" name="properties" :options="$properties->pluck('name', 'id')" :selected="old('property_id', $lead->property_id)"/>
                                 <x-input-error for="properties" />
                             </div>
 
                             <div class="col-md-4">
                                 <x-input-label for="email" value="Email" />
-                                <x-text-input id="email" name="email" value="{{ old('email', $lead->email) }}" />
+                                <x-text-input id="email" name="email" value="{{ old('email', $lead->email) }}" required/>
                                 <x-input-error for="email" />
                             </div>
 
                             <div class="col-md-4">
                                 <x-input-label for="phone" value="Phone" />
-                                <x-text-input id="phone" name="phone" value="{{ old('phone', $lead->phone) }}" />
+                                <x-text-input id="phone" name="phone" value="{{ old('phone', $lead->phone) }}" required/>
                                 <x-input-error for="phone" />
                             </div>
 
@@ -94,13 +94,13 @@
 
                             <div class="col-md-4">
                                 <x-input-label for="county" value="County" />
-                                <x-text-input id="county" name="county" value="{{ old('county', $lead->county) }}" />
+                                <x-text-input id="county" name="county" value="{{ old('county', $lead->county) }}" required/>
                                 <x-input-error for="county" />
                             </div>
 
                             <div class="col-md-4">
                                 <x-input-label for="city" value="City" />
-                                <x-text-input id="city" name="city" value="{{ old('city', $lead->city) }}" />
+                                <x-text-input id="city" name="city" value="{{ old('city', $lead->city) }}" required/>
                                 <x-input-error for="city" />
                             </div>
 

@@ -31,10 +31,10 @@
                             @csrf
                             @method('PUT')
                             <div class="row">
-                                <div class="col-md-10"></div>
-                                <div class="col-md-2">
-                                    <x-select name="status" label="Status" :options="['open' => 'Open', 'in_progress' => 'In Progress', 'closed' => 'Closed']" />
-                                    <x-primary-button>Change Status</x-primary-button>
+                                <div class="col-md-8"></div>
+                                <div class="col-md-4">
+                                        <x-select class="mb-2 " name="status" label="Status" :options="['open' => 'Open', 'in_progress' => 'In Progress', 'closed' => 'Closed']" />
+                                        <x-primary-button>Change Status</x-primary-button>
                                 </div>
                             </div>
                         </form>
@@ -58,7 +58,7 @@
                                         @csrf
                                         <x-textarea label="Leave a comment" name="comment" required>{{ old('comment') }}</x-textarea>
                                         <x-input-error for="comment" />
-                                        <x-primary-button>Submit Comment</x-primary-button>
+                                        <x-primary-button class="mt-2">Submit Comment</x-primary-button>
                                   </form>
                                  <div class="text-end">
                                      <form action="{{ route('tickets.destroy', $ticket) }}" method="POST">

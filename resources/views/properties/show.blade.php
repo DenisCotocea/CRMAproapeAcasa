@@ -10,14 +10,20 @@
             <div class="dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6 text-white">
                 <div class="row">
                     <div class="col-md-4">
-                        <div class="relative w-full h-[400px] mb-6">
-                            <div class="swiper swiper-initialized">
+                        <div class="relative w-full mb-6" style="height: 400px">
+                            <div class="swiper swiper-initialized h-100">
                                 <div class="swiper-wrapper">
-                                    @foreach ($property->images as $image)
+                                    @if ($property->images->isNotEmpty())
+                                        @foreach ($property->images as $image)
+                                            <div class="swiper-slide">
+                                                <img data-fancybox="gallery" src="{{ asset('storage/' . $image->path) }}" class="w-full h-full object-cover rounded-md" alt="Property Image">
+                                            </div>
+                                        @endforeach
+                                    @else
                                         <div class="swiper-slide">
-                                            <img src="{{ asset('storage/' . $image->path) }}" class="w-full h-full object-cover rounded-md" alt="Property Image">
+                                            <img src="{{ asset('images/home.png') }}"  alt="Property Image" class="w-full h-full object-cover rounded-md">
                                         </div>
-                                    @endforeach
+                                    @endif
                                 </div>
                                 <div class="swiper-pagination"></div>
                                 <div class="swiper-button-next"></div>
@@ -204,7 +210,7 @@
                                             @csrf
                                             <x-textarea label="Leave a comment" name="comment" required>{{ old('comment') }}</x-textarea>
                                             <x-input-error for="comment" />
-                                            <x-primary-button>Submit Comment</x-primary-button>
+                                            <x-primary-button class="mt-2">Submit Comment</x-primary-button>
                                         </form>
                                     </div>
                                 </div>

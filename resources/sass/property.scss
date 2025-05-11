@@ -135,3 +135,9 @@
         }
     }
 }
+
+@media (max-width: 768px) {
+    .property-details-container {
+        grid-template-columns: 1fr; /* 1 column layout */
+    }
+}

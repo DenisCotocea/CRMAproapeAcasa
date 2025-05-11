@@ -36,7 +36,7 @@
                             <!-- Price -->
                             <div class="col-md-4">
                                 <x-input-label for="price" value="Price" />
-                                <x-text-input id="price" name="price" type="number" step="0.01" value="{{ old('price', $property->price) }}" />
+                                <x-text-input id="price" name="price" type="number" step="0.01" value="{{ old('price', $property->price) }}" required/>
                                 <x-input-error for="price" />
                             </div>
 
@@ -106,27 +106,27 @@
                             <!-- County -->
                             <div class="col-md-4">
                                 <x-input-label for="county" value="County" />
-                                <x-text-input id="county" name="county" value="{{ old('county', $property->county) }}" />
+                                <x-text-input id="county" name="county" value="{{ old('county', $property->county) }}" required/>
                                 <x-input-error for="county" />
                             </div>
 
                             <!-- City -->
                             <div class="col-md-4">
                                 <x-input-label for="city" value="City" />
-                                <x-text-input id="city" name="city" value="{{ old('city', $property->city) }}" />
+                                <x-text-input id="city" name="city" value="{{ old('city', $property->city) }}" required/>
                                 <x-input-error for="city" />
                             </div>
 
                             <!-- Address -->
                             <div class="col-md-12">
                                 <x-input-label for="address" value="Address" />
-                                <x-text-input id="address" name="address" value="{{ old('address', $property->address) }}" />
+                                <x-text-input id="address" name="address" value="{{ old('address', $property->address) }}" required/>
                                 <x-input-error for="address" />
                             </div>
 
                             <!-- Type -->
                             <div class="col-md-4">
-                                <x-select name="type" label="Type" :options="['apartment' => 'Apartment', 'house' => 'House', 'land' => 'Land']" :selected="old('type', $property->type)" />
+                                <x-select name="type" label="Type" :options="['apartment' => 'Apartment', 'house' => 'House', 'land' => 'Land']" :selected="old('type', $property->type)" required/>
                             </div>
 
                             <!-- Category -->

@@ -7,13 +7,28 @@ use App\Models\Lead;
 use App\Models\User;
 use App\Models\Property;
 use Illuminate\Support\Facades\Storage;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
+
 
 class LeadController extends Controller
 {
     public function index()
     {
-        $leads = Lead::with(['user', 'properties'])->paginate(10);
-        return view('leads.index', compact('leads'));
+        $users = User::all();
+        $leads = QueryBuilder::for(Lead::with(['user', 'properties']))
+            ->allowedFilters([
+                'name', 'email', 'phone', 'status', 'priority', 'county', 'city',
+                'source', 'company_name', 'company_email', 'cui',
+                'company_address', 'cnp', 'date_of_birth',
+                'last_contact', 'notes',
+                AllowedFilter::exact('user_id'),
+                AllowedFilter::exact('has_company'),
+            ])
+            ->allowedSorts(['name', 'email', 'created_at', 'priority'])
+            ->paginate(10);
+
+        return view('leads.index', compact('leads', 'users'));
     }
 
     public function create()
@@ -27,7 +42,7 @@ class LeadController extends Controller
     {
         $validated = $request->validate([
             'user_id' => 'required|exists:users,id',
-            'properties.*' => 'exists:properties,id',
+            'properties.*' => 'nullable|exists:properties,id',
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'phone' => 'required|string|max:20',
@@ -76,6 +91,7 @@ class LeadController extends Controller
     {
         $validated = $request->validate([
             'user_id' => 'required|exists:users,id',
+            'properties.*' => 'nullable|exists:properties,id',
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'phone' => 'required|string|max:20',

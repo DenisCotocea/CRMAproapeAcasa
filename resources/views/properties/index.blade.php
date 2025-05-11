@@ -8,25 +8,175 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class=" dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <form method="GET" action="{{ route('properties.index') }}">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <x-input-label for="name" value="Name" />
-                            <x-text-input id="name" name="name" type="text" value="{{ old('name') }}" required />
-                            <x-input-error for="name" />
-                        </div>
-                    </div>
-                    <div class="mb-4">
-                        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                            Apply Filters
-                        </button>
-                    </div>
-                </form>
                 <div class="mb-2 mt-2 me-2 text-end">
                     <x-link-primary-button href="{{ route('properties.create') }}">
                         {{ __('Add Property') }}
                     </x-link-primary-button>
                 </div>
+
+                <form method="GET" action="{{ route('properties.index') }}">
+                    <div class="filter-container p-2">
+                        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight mb-2">
+                            {{ __('Filter Options') }}
+                        </h2>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <x-input-label for="name" value="Name" />
+                                <x-text-input id="name" name="filter[name]" value="{{ request('filter.name') }}" />
+                            </div>
+
+                            <div class="col-md-3">
+                                <x-input-label for="user_id" value="User" />
+                                <x-select id="user_id" name="filter[user_id]" :options="$users->pluck('name', 'id')" />
+                            </div>
+
+                            <div class="col-md-3">
+                                <x-input-label for="price_min" value="Min price" />
+                                <x-text-input id="price_min" name="filter[price_min]" value="{{ request('filter.price_min') }}" />
+                            </div>
+
+                            <div class="col-md-3">
+                                <x-input-label for="price_max" value="Max price" />
+                                <x-text-input id="price_max" name="filter[price_max]" value="{{ request('filter.price_max') }}" />
+                            </div>
+
+                            <div class="col-md-3">
+                                <x-input-label for="room_numbers" value="Room number" />
+                                <x-text-input id="room_numbers" name="filter[room_numbers]" value="{{ request('filter.room_numbers') }}" />
+                            </div>
+
+                            <div class="col-md-3">
+                                <x-input-label for="level" value="Level" />
+                                <x-text-input id="level" name="filter[level]" value="{{ request('filter.level') }}" />
+                            </div>
+
+                            <div class="col-md-3">
+                                <x-input-label for="floor" value="Floor" />
+                                <x-text-input id="floor" name="filter[floor]" value="{{ request('filter.floor') }}" />
+                            </div>
+
+                            <div class="col-md-3">
+                                <x-input-label for="total_floors" value="Total Floors" />
+                                <x-text-input id="total_floors" name="filter[total_floors]" value="{{ request('filter.total_floors') }}" />
+                            </div>
+
+                            <div class="col-md-3">
+                                <x-input-label for="surface_min" value="Min surface (m²)" />
+                                <x-text-input id="surface_min" name="filter[surface_min]" value="{{ request('filter.surface_min') }}" />
+                            </div>
+
+                            <div class="col-md-3">
+                                <x-input-label for="surface_max" value="Max surface (m²)" />
+                                <x-text-input id="surface_max" name="filter[surface_max]" value="{{ request('filter.surface_max') }}" />
+                            </div>
+
+                            <div class="col-md-3">
+                                <x-input-label for="usable_area_min" value="Min usable area (m²)" />
+                                <x-text-input id="usable_area_min" name="filter[usable_area_min]" value="{{ request('filter.usable_area_min') }}" />
+                            </div>
+
+                            <div class="col-md-3">
+                                <x-input-label for="usable_area_max" value="Max usable area (m²)" />
+                                <x-text-input id="usable_area_max" name="filter[usable_area_max]" value="{{ request('filter.usable_area_max') }}" />
+                            </div>
+
+                            <div class="col-md-3">
+                                <x-input-label for="land_area" value="Land area (m²)" />
+                                <x-text-input id="land_area" name="filter[land_area]" value="{{ request('filter.land_area') }}" />
+                            </div>
+
+                            <div class="col-md-3">
+                                <x-input-label for="balcony_area" value="Balcony area (m²)" />
+                                <x-text-input id="balcony_area" name="filter[balcony_area]" value="{{ request('filter.balcony_area') }}" />
+                            </div>
+
+                            <div class="col-md-3">
+                                <x-input-label for="construction_year" value="Construction Year" />
+                                <x-text-input id="construction_year" name="filter[construction_year]" value="{{ request('filter.construction_year') }}" />
+                            </div>
+
+                            <div class="col-md-3">
+                                <x-input-label for="county" value="County" />
+                                <x-text-input id="county" name="filter[county]" value="{{ request('filter.county') }}" />
+                            </div>
+
+                            <div class="col-md-3">
+                                <x-input-label for="address" value="Address" />
+                                <x-text-input id="address" name="filter[address]" value="{{ request('filter.address') }}" />
+                            </div>
+
+                            <div class="col-md-3">
+                                <x-select name="filter[type]" label="Type" :options="['apartment' => 'Apartment', 'house' => 'House', 'land' => 'Land']" />
+                            </div>
+
+                            <div class="col-md-3">
+                                <x-select name="filter[category]" label="Category" :options="['residential' => 'Residential', 'commercial' => 'Commercial']" />
+                            </div>
+
+                            <div class="col-md-3">
+                                <x-select name="filter[tranzaction]" label="Tranzaction" :options="['sale' => 'Sale', 'rent' => 'Rent']" />
+                            </div>
+
+                            <div class="col-md-3">
+                                <x-select name="filter[partitioning]" label="Partitioning" :options="['detached' => 'Detached', 'semi-detached' => 'Semi-Detached', 'open-space' => 'Open Space']" />
+                            </div>
+
+                            <div class="col-md-3">
+                                <x-select name="filter[comfort]" label="Comfort" :options="['1' => '1', '2' => '2', 'luxury' => 'Luxury']" />
+                            </div>
+
+                            <div class="col-md-3">
+                                <x-select name="filter[heating]" label="Heating" :options="['central' => 'Central', 'individual' => 'Individual', 'none' => 'None']" />
+                            </div>
+
+                            <div class="col-md-3">
+                                <x-select name="filter[availability_status]" label="Availability Status" :options="['available' => 'Available', 'reserved' => 'Reserved', 'sold' => 'Sold']" />
+                            </div>
+
+                            <div class="col-md-3">
+                                <x-select name="filter[interior_condition]" label="Interior Condition" :options="['new' => 'New', 'renovated' => 'Renovated', 'needs-renovation' => 'Needs Renovation']" />
+                            </div>
+
+                            <div class="col-md-3">
+                                <x-input-label for="available_from" value="Available From" />
+                                <x-text-input id="available_from" name="filter[available_from]" type="date" value="{{ request('filter.available_from') }}" />
+                            </div>
+
+                            <div class="col-md-2">
+                                <x-checkbox name="filter[promoted]" label="Promoted ?" id="promoted" />
+                            </div>
+
+                            <div class="col-md-2">
+                                <x-checkbox name="filter[furnished]" label="Furnished ?" id="furnished" />
+                            </div>
+
+                            <div class="col-md-2">
+                                <x-checkbox name="filter[balcony]" label="Balcony ?" id="balcony" />
+                            </div>
+
+                            <div class="col-md-2">
+                                <x-checkbox name="filter[garage]" label="Garage ?" id="garage" />
+                            </div>
+
+                            <div class="col-md-2">
+                                <x-checkbox name="filter[elevator]" label="Elevator ?" id="elevator" />
+                            </div>
+
+                            <div class="col-md-2">
+                                <x-checkbox name="filter[parking]" label="Parking ?" id="parking" />
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="text-end p-2">
+                        <x-link-primary-button href="{{ route('properties.index') }}">
+                            {{ __('Reset filters') }}
+                        </x-link-primary-button>
+                        <x-danger-button type="submit">{{ __('Filter') }}</x-danger-button>
+                    </div>
+                </form>
+
                 <div class="overflow-hidden shadow-xl sm:rounded-lg">
                     @if ($properties->isEmpty())
                         <div class="text-center text-gray-600 dark:text-gray-300 py-10">
@@ -52,7 +202,7 @@
                                         @if ($property->images->isNotEmpty())
                                             <img src="{{ asset('storage/' . $property->images->first()->path) }}" alt="Property Image" class="w-16 h-16 object-cover rounded">
                                         @else
-                                            <span class="text-gray-500">No image</span>
+                                            <img src="{{ asset('images/home.png') }}"  alt="Property Image" class="w-16 h-16 object-cover rounded">
                                         @endif
                                     </td>
                                     <td class="px-6 py-4 font-medium">{{ $property->name }}</td>
@@ -80,7 +230,7 @@
                                         </x-badge>
                                     </td>
                                     <td class="px-6 py-4">
-                                        <div class="d-flex justify-between mb-2">
+                                        <div class="d-flex justify-between mb-2 gap-2">
                                             <x-link-primary-button href="{{ route('properties.show', $property->id) }}">
                                                 {{ __('Show') }}
                                             </x-link-primary-button>
@@ -88,13 +238,15 @@
                                                 {{ __('Edit') }}
                                             </x-link-primary-button>
                                         </div>
-                                        <div class="text-center">
-                                            <form action="{{ route('properties.destroy', $property->id) }}" method="POST" class="inline">
-                                                @csrf
-                                                @method('DELETE')
-                                                <x-danger-button type="submit">{{ __('Delete') }}</x-danger-button>
-                                            </form>
-                                        </div>
+                                        @role('Admin')
+                                            <div class="text-center">
+                                                <form action="{{ route('properties.destroy', $property->id) }}" method="POST" class="inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <x-danger-button type="submit">{{ __('Delete') }}</x-danger-button>
+                                                </form>
+                                            </div>
+                                        @endrole
                                     </td>
                                 </tr>
                             @endforeach

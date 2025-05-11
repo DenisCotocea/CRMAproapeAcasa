@@ -12,7 +12,7 @@
                 <div class="col-md-4 mb-4">
                     <div class="dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                         <div class="p-6 text-gray-900 dark:text-gray-100 flex items-center flex-column text-center">
-                            <div class="mr-4">
+                            <div>
                                 <i class="bi bi-arrow-clockwise" style="color: #00BDAF; font-size: 38px"></i>
                             </div>
                             <div>

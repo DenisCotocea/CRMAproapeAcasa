@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Image;
+use App\Models\Property;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -16,17 +17,19 @@ class ImagesController extends Controller
 
         $uploadedImages = [];
 
-        foreach ($request->file('images') as $image) {
-            $path = $image->store('images', 'public');
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
+                $path = $image->store('images', 'public');
 
-            $uploadedImages[] = Image::create([
-                'entity_id' => $request->entity_id,
-                'entity_type' => $request->entity_type,
-                'path' => $path,
-            ]);
+                Image::create([
+                    'entity_id' => $request->entity_id,
+                    'entity_type' => $request->entity_type,
+                    'path' => $path,
+                ]);
+            }
         }
 
-        return response()->json($uploadedImages);
+        return back();
     }
 
     public function destroy(Image $image)
@@ -34,6 +37,6 @@ class ImagesController extends Controller
         Storage::disk('public')->delete($image->path);
         $image->delete();
 
-        return response()->json(['message' => 'Image deleted successfully']);
+        return back();
     }
 }

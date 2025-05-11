@@ -13,6 +13,83 @@
                         {{ __('Add Lead') }}
                     </x-link-primary-button>
                 </div>
+                <form method="GET" action="{{ route('leads.index') }}">
+                    <div class="filter-container p-2">
+                        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight mb-2">
+                            {{ __('Filter Options') }}
+                        </h2>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <x-input-label for="name" value="Name" />
+                                <x-text-input id="name" name="filter[name]" value="{{ request('filter.name') }}" />
+                            </div>
+                            <div class="col-md-4">
+                                <x-input-label for="email" value="Email" />
+                                <x-text-input id="email" name="filter[email]" value="{{ request('filter.email') }}" />
+                            </div>
+                            <div class="col-md-4">
+                                <x-input-label for="phone" value="Phone" />
+                                <x-text-input id="phone" name="filter[phone]" value="{{ request('filter.phone') }}" />
+                            </div>
+
+                            <div class="col-md-4">
+                                <x-input-label for="user_id" value="User" />
+                                <x-select id="user_id" name="filter[user_id]" :options="$users->pluck('name', 'id')" />
+                            </div>
+
+
+                            <div class="col-md-4">
+                                <x-input-label for="city" value="City" />
+                                <x-text-input id="city" name="filter[city]" value="{{ request('filter.city') }}" />
+                            </div>
+
+                            <div class="col-md-4">
+                                <x-input-label for="county" value="County" />
+                                <x-text-input id="county" name="filter[county]" value="{{ request('filter.county') }}" />
+                            </div>
+
+                            <div class="col-md-4">
+                                <x-input-label for="cnp" value="CNP" />
+                                <x-text-input id="cnp" name="filter[cnp]" value="{{ request('filter.cnp') }}" />
+                            </div>
+
+                            <div class="col-md-4">
+                                <x-input-label for="cnp" value="CNP" />
+                                <x-text-input id="cnp" name="filter[cnp]" value="{{ request('filter.cnp') }}" />
+                            </div>
+
+                            <div class="col-md-4">
+                                <x-input-label for="date_of_birth" value="Date of Birth" />
+                                <x-text-input id="date_of_birth" name="filter[date_of_birth]" type="date" value="{{ request('filter.date_of_birth') }}" />
+                            </div>
+
+                            <div class="col-md-4">
+                                <x-input-label for="last_contact" value="Last Contact" />
+                                <x-text-input id="last_contact" name="filter[last_contact]" type="date" value="{{ request('filter.last_contact') }}" />
+                            </div>
+
+                            <div class="col-md-4">
+                                <x-select name="filter[status]" label="Status" :options="['' => 'All', 'New' => 'New', 'In Progress' => 'In Progress', 'Closed' => 'Closed', 'Lost' => 'Lost']" />
+                            </div>
+
+                            <div class="col-md-4">
+                                <x-select name="filter[priority]" label="Priority" :options="['' => 'All', 'High' => 'High', 'Medium' => 'Medium', 'Low' => 'Low']" />
+                            </div>
+
+                            <div class="col-md-2">
+                                <x-checkbox name="filter[has_company]" label="Has Company?" id="has_company" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-end p-2">
+                        <x-link-primary-button href="{{ route('leads.index') }}">
+                            {{ __('Reset filters') }}
+                        </x-link-primary-button>
+                        <x-danger-button type="submit">{{ __('Filter') }}</x-danger-button>
+                    </div>
+                </form>
+
                 <div class="overflow-hidden shadow-xl sm:rounded-lg">
                     @if ($leads->isEmpty())
                         <div class="text-center text-gray-600 dark:text-gray-300 py-10">
