@@ -16,17 +16,33 @@ class LeadController extends Controller
     public function index()
     {
         $users = User::all();
-        $leads = QueryBuilder::for(Lead::with(['user', 'properties']))
-            ->allowedFilters([
-                'name', 'email', 'phone', 'status', 'priority', 'county', 'city',
-                'source', 'company_name', 'company_email', 'cui',
-                'company_address', 'cnp', 'date_of_birth',
-                'last_contact', 'notes',
-                AllowedFilter::exact('user_id'),
-                AllowedFilter::exact('has_company'),
-            ])
-            ->allowedSorts(['name', 'email', 'created_at', 'priority'])
-            ->paginate(10);
+
+        if (auth()->user()->hasRole('Admin')) {
+            $leads = QueryBuilder::for(Lead::with(['user', 'properties']))
+                ->allowedFilters([
+                    'name', 'email', 'phone', 'status', 'priority', 'county', 'city',
+                    'source', 'company_name', 'company_email', 'cui',
+                    'company_address', 'cnp', 'date_of_birth',
+                    'last_contact', 'notes',
+                    AllowedFilter::exact('user_id'),
+                    AllowedFilter::exact('has_company'),
+                ])
+                ->allowedSorts(['name', 'email', 'created_at', 'priority'])
+                ->paginate(10);
+        } else {
+            $leads = QueryBuilder::for(Lead::with(['user', 'properties']))
+                ->allowedFilters([
+                    'name', 'email', 'phone', 'status', 'priority', 'county', 'city',
+                    'source', 'company_name', 'company_email', 'cui',
+                    'company_address', 'cnp', 'date_of_birth',
+                    'last_contact', 'notes',
+                    AllowedFilter::exact('user_id'),
+                    AllowedFilter::exact('has_company'),
+                ])
+                ->allowedSorts(['name', 'email', 'created_at', 'priority'])
+                ->where('user_id', auth()->user()->id)
+                ->paginate(10);
+        }
 
         return view('leads.index', compact('leads', 'users'));
     }
@@ -42,7 +58,6 @@ class LeadController extends Controller
     {
         $validated = $request->validate([
             'user_id' => 'required|exists:users,id',
-            'properties.*' => 'nullable|exists:properties,id',
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'phone' => 'required|string|max:20',
