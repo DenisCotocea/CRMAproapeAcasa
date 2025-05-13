@@ -197,7 +197,7 @@
                                         @if ($property->images->isNotEmpty())
                                             <img src="{{ asset('storage/' . $property->images->first()->path) }}" alt="Property Image" class="w-16 h-16 object-cover rounded">
                                         @else
-                                            <img src="{{ asset('images/home.png') }}"  alt="Property Image" class="w-16 h-16 object-cover rounded">
+                                            <img src="{{ asset('storage/images/home.png') }}"  alt="Property Image" class="w-16 h-16 object-cover rounded">
                                         @endif
                                     </td>
                                     <td class="px-6 py-4 font-medium">{{ $property->name }}</td>
