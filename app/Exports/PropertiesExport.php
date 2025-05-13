@@ -25,7 +25,6 @@ class PropertiesExport implements FromCollection
             'Category',
             'Tranzaction',
             'Room_numbers',
-            'Level',
             'Floor',
             'Total Floors',
             'Surface',

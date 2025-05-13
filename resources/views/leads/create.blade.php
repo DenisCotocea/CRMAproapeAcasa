@@ -22,11 +22,13 @@
                                 <x-checkbox name="has_company" label="Has Company?" id="has_company" />
                             </div>
 
-                            <div class="col-md-4">
-                                <x-input-label for="user_id" value="User" />
-                                <x-select id="user_id" name="user_id" :options="$users->pluck('name', 'id')" required />
-                                <x-input-error for="user_id" />
-                            </div>
+                            @role('Admin')
+                                <div class="col-md-4">
+                                    <x-input-label for="user_id" value="User" />
+                                    <x-select id="user_id" name="user_id" :options="$users->pluck('name', 'id')" required />
+                                    <x-input-error for="user_id" />
+                                </div>
+                            @endrole
 
                             <div class="col-md-4">
                                 <x-input-label for="properties" value="Property" />
@@ -58,12 +60,6 @@
                                         <x-input-label for="company_email" value="Company Email" />
                                         <x-text-input id="company_email" name="company_email" value="{{ old('company_email') }}" />
                                         <x-input-error for="company_email" />
-                                    </div>
-
-                                    <div class="col-md-4">
-                                        <x-input-label for="company_phone" value="Company phone" />
-                                        <x-text-input id="company_phone" name="company_phone" value="{{ old('company_phone') }}" />
-                                        <x-input-error for="company_phone" />
                                     </div>
 
                                     <div class="col-md-4">
@@ -129,9 +125,9 @@
                                     <label class="block text-sm font-medium text-gray-700">Upload Documents</label>
                                     <input type="file" name="doc_attachment"
                                            class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4
-                                                  file:rounded file:border-0 file:text-sm file:bg-blue-50
-                                                  file:text-blue-700 hover:file:bg-blue-100"
-                                           accept=".pdf,.doc,.docx,.xlsx,.csv" />
+                                              file:rounded file:border-0 file:text-sm file:bg-blue-50
+                                              file:text-blue-700 hover:file:bg-blue-100"
+                                           accept=".pdf,.doc,.docx,.xls,.xlsx" />
                                 </div>
                             </div>
                         </div>

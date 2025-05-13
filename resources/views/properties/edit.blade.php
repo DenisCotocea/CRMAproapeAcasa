@@ -25,13 +25,20 @@
                             <div class="col-md-2">
                                 <x-checkbox name="promoted" label="Promoted" :checked="old('promoted', $property->promoted)" />
                             </div>
-
+                            @role('Admin')
                             <!-- User -->
-                            <div class="col-md-4">
-                                <x-input-label for="user_id" value="User" />
-                                <x-select id="user_id" name="user_id" :options="$users->pluck('name', 'id')" :selected="old('user_id', $property->user_id)" required />
-                                <x-input-error for="user_id" />
-                            </div>
+                                <div class="col-md-4">
+                                    <x-input-label for="user_id" value="User" />
+                                    <x-select
+                                        id="user_id"
+                                        name="user_id"
+                                        :options="$users->pluck('name', 'id')"
+                                        :selected="old('user_id', $property->user_id)"
+                                        required
+                                    />
+                                    <x-input-error for="user_id" />
+                                </div>
+                            @endrole
 
                             <!-- Price -->
                             <div class="col-md-4">
@@ -45,13 +52,6 @@
                                 <x-input-label for="room_numbers" value="Room Numbers" />
                                 <x-text-input id="room_numbers" name="room_numbers" type="number" value="{{ old('room_numbers', $property->room_numbers) }}" />
                                 <x-input-error for="room_numbers" />
-                            </div>
-
-                            <!-- Level -->
-                            <div class="col-md-4">
-                                <x-input-label for="level" value="Level" />
-                                <x-text-input id="level" name="level" type="number" value="{{ old('level', $property->level) }}" />
-                                <x-input-error for="level" />
                             </div>
 
                             <!-- Floor -->
@@ -138,7 +138,6 @@
                             <div class="col-md-4">
                                 <x-select name="tranzaction" label="Tranzaction" :options="['sale' => 'Sale', 'rent' => 'Rent']" :selected="old('tranzaction', $property->tranzaction)" />
                             </div>
-
                             <!-- Description -->
                             <div class="col-md-6">
                                 <x-textarea label="Description" name="description">{{ old('description', $property->description) }}</x-textarea>
@@ -179,7 +178,7 @@
                             <!-- Available From -->
                             <div class="col-md-4">
                                 <x-input-label for="available_from" value="Available From" />
-                                <x-text-input id="available_from" name="available_from" type="date" value="{{ old('available_from', $property->available_from) }}" />
+                                <x-text-input id="available_from" name="available_from" type="date" value="{{ old('available_from', $property->available_from ? $property->available_from->format('Y-m-d') : '') }}" />
                                 <x-input-error for="available_from" />
                             </div>
 

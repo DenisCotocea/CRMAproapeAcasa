@@ -21,7 +21,6 @@ class Property extends Model
         'category',
         'tranzaction',
         'room_numbers',
-        'level',
         'floor',
         'total_floors',
         'surface',

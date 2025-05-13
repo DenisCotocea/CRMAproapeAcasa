@@ -21,6 +21,10 @@
                         <div class="tab-content">
                             <div class="tab-pane fade show active" id="details">
                                 <div class="lead-details-container">
+                                    @role('Admin')
+                                        <p class="lead-detail"><i class="bi bi-person"></i> <strong>Assigned To:</strong> {{ optional($lead->user)->name ?? 'None' }}</p>
+                                    @endrole
+
                                     @if($lead->name)
                                         <p class="lead-detail"><i class="bi bi-person"></i> <strong>Name:</strong> {{ $lead->name }}</p>
                                     @endif
@@ -79,7 +83,9 @@
 
                                     <p class="lead-detail"><i class="bi bi-clock"></i> <strong>Updated At:</strong> {{ $lead->updated_at }}</p>
 
-                                    {{--  <p><i class="bi bi-paperclip"></i> <strong>Document:</strong> {{ $lead->doc_attachment }}</p> --}}
+                                    @if($lead->doc_attachment)
+                                        <a href="{{ asset('storage/' . $lead->doc_attachment) }}" target="_blank" class="lead-detail"><i class="bi bi-paperclip"></i> <strong>Document:</strong> YES (See document)</a>
+                                    @endif
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="description">
@@ -198,9 +204,11 @@
                                                             <x-link-primary-button href="{{ route('properties.show', $property->id) }}">
                                                                 {{ __('Show') }}
                                                             </x-link-primary-button>
-                                                            <x-link-primary-button href="{{ route('properties.edit', $property->id) }}">
-                                                                {{ __('Edit') }}
-                                                            </x-link-primary-button>
+                                                            @if(auth()->user()->hasRole('Admin') || $property->user_id === auth()->id())
+                                                                <x-link-primary-button href="{{ route('properties.edit', $property->id) }}">
+                                                                    {{ __('Edit') }}
+                                                                </x-link-primary-button>
+                                                            @endif
                                                         </div>
                                                         @role('Admin')
                                                             <div class="text-center">

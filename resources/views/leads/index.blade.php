@@ -54,11 +54,6 @@
                             </div>
 
                             <div class="col-md-4">
-                                <x-input-label for="cnp" value="CNP" />
-                                <x-text-input id="cnp" name="filter[cnp]" value="{{ request('filter.cnp') }}" />
-                            </div>
-
-                            <div class="col-md-4">
                                 <x-input-label for="date_of_birth" value="Date of Birth" />
                                 <x-text-input id="date_of_birth" name="filter[date_of_birth]" type="date" value="{{ request('filter.date_of_birth') }}" />
                             </div>

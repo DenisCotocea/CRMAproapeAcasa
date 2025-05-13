@@ -12,7 +12,6 @@
                     <!-- Ticket Information -->
                     <div class="ticket-info mb-6">
                         <p class="ticket-detail"><strong><i class="bi bi-card-text"></i> Title:</strong><span>{{ $ticket->title }}</span></p>
-                        <p class="ticket-detail"><strong><i class="bi bi-file-earmark-text"></i> Description:</strong><span>{{ $ticket->description }}</span></p>
                         <p class="ticket-detail"><strong><i class="bi bi-check-circle"></i> Status:</strong>
                             @if($ticket->status == 'open')
                                 <span class="text-green-400">Open</span>
@@ -24,6 +23,7 @@
                         </p>
                         <p class="ticket-detail"><strong><i class="bi bi-person"></i> Created By:</strong> <span>{{ $ticket->user->name }}</span></p>
                         <p class="ticket-detail"><strong><i class="bi bi-calendar-event"></i> Created At:</strong> <span>{{ $ticket->created_at->format('Y-m-d H:i:s') }}</span></p>
+                        <p class="ticket-detail"><strong><i class="bi bi-file-earmark-text"></i> Description:</strong><span>{{ $ticket->description }}</span></p>
                     </div>
 
                     <div class="text-end mb-2">

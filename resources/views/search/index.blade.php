@@ -68,9 +68,11 @@
                                             <x-link-primary-button href="{{ route('properties.show', $property->id) }}">
                                                 {{ __('Show') }}
                                             </x-link-primary-button>
-                                            <x-link-primary-button href="{{ route('properties.edit', $property->id) }}">
-                                                {{ __('Edit') }}
-                                            </x-link-primary-button>
+                                            @if(auth()->user()->hasRole('Admin') || $property->user_id === auth()->id())
+                                                <x-link-primary-button href="{{ route('properties.edit', $property->id) }}">
+                                                    {{ __('Edit') }}
+                                                </x-link-primary-button>
+                                            @endif
                                         </div>
                                         @role('Admin')
                                             <div class="text-center">

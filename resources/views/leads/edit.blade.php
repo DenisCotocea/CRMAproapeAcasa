@@ -19,14 +19,16 @@
                             </div>
 
                             <div class="col-md-2">
-                                <x-checkbox name="has_company" label="Has Company?" :checked="old('has_company', $lead->has_company)" id="has_company"/>
+                                <x-checkbox name="has_company" label="Has Company?" :checked="old('has_company', (bool) $lead->has_company)" id="has_company"/>
                             </div>
 
-                            <div class="col-md-4">
-                                <x-input-label for="user_id" value="User" />
-                                <x-select id="user_id" name="user_id" :options="$users->pluck('name', 'id')" :selected="old('user_id', $lead->user_id)" required />
-                                <x-input-error for="user_id" />
-                            </div>
+                            @role('Admin')
+                                <div class="col-md-4">
+                                    <x-input-label for="user_id" value="User" />
+                                    <x-select id="user_id" name="user_id" :options="$users->pluck('name', 'id')" :selected="old('user_id', $lead->user_id)" required />
+                                    <x-input-error for="user_id" />
+                                </div>
+                            @endrole
 
                             <div class="col-md-4">
                                 <x-input-label for="properties" value="Property" />
@@ -50,31 +52,25 @@
                                 <div class="row">
                                     <div class="col-md-4">
                                         <x-input-label for="company_name" value="Company Name" />
-                                        <x-text-input id="company_name" name="company_name" value="{{ old('company_name') }}" />
+                                        <x-text-input id="company_name" name="company_name" value="{{ old('company_name', $lead->company_name) }}" />
                                         <x-input-error for="company_name" />
                                     </div>
 
                                     <div class="col-md-4">
                                         <x-input-label for="company_email" value="Company Email" />
-                                        <x-text-input id="company_email" name="company_email" value="{{ old('company_email') }}" />
+                                        <x-text-input id="company_email" name="company_email" value="{{ old('company_email', $lead->company_email) }}" />
                                         <x-input-error for="company_email" />
                                     </div>
 
                                     <div class="col-md-4">
-                                        <x-input-label for="company_phone" value="Company phone" />
-                                        <x-text-input id="company_phone" name="company_phone" value="{{ old('company_phone') }}" />
-                                        <x-input-error for="company_phone" />
-                                    </div>
-
-                                    <div class="col-md-4">
                                         <x-input-label for="cui" value="Cui" />
-                                        <x-text-input id="cui" name="cui" value="{{ old('cui') }}" />
+                                        <x-text-input id="cui" name="cui" value="{{ old('cui', $lead->cui) }}" />
                                         <x-input-error for="cui" />
                                     </div>
 
                                     <div class="col-md-4">
                                         <x-input-label for="company_address" value="Company address" />
-                                        <x-text-input id="company_address" name="company_address" value="{{ old('company_address') }}" />
+                                        <x-text-input id="company_address" name="company_address" value="{{ old('company_address', $lead->company_address) }}" />
                                         <x-input-error for="company_address" />
                                     </div>
                                 </div>

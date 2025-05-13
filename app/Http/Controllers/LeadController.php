@@ -57,9 +57,9 @@ class LeadController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'user_id' => 'required|exists:users,id',
+            'user_id' => 'required_if:role,admin|exists:users,id',
             'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
+            'email' => 'nullable|string|max:255',
             'phone' => 'required|string|max:20',
             'has_company' => 'boolean',
             'company_name' => 'nullable|string|max:255',
@@ -75,11 +75,19 @@ class LeadController extends Controller
             'status' => 'required|in:New,In Progress,Closed,Lost',
             'last_contact' => 'nullable|date',
             'notes' => 'nullable|string',
-            'doc_attachment' => 'nullable|file|max:2048'
+            'doc_attachment' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx|max:2048'
         ]);
 
+        $user = auth()->user();
+
+        if (!$user->hasRole('Admin')) {
+            $validated['user_id'] = $user->id;
+        }
+
         if ($request->hasFile('doc_attachment')) {
-            $validated['doc_attachment'] = $request->file('doc_attachment')->store('docs');
+            $file = $request->file('doc_attachment');
+            $path = $file->store('docs', 'public');
+            $validated['doc_attachment'] = $path;
         }
 
         $lead = Lead::create($validated);
@@ -105,10 +113,10 @@ class LeadController extends Controller
     public function update(Request $request, Lead $lead)
     {
         $validated = $request->validate([
-            'user_id' => 'required|exists:users,id',
+            'user_id' => 'required_if:role,admin|exists:users,id',
             'properties.*' => 'nullable|exists:properties,id',
             'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
+            'email' => 'nullable|string|max:255',
             'phone' => 'required|string|max:20',
             'has_company' => 'boolean',
             'company_name' => 'nullable|string|max:255',
@@ -124,11 +132,13 @@ class LeadController extends Controller
             'status' => 'required|in:New,In Progress,Closed,Lost',
             'last_contact' => 'nullable|date',
             'notes' => 'nullable|string',
-            'doc_attachment' => 'nullable|file|max:2048'
+            'doc_attachment' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx|max:2048'
         ]);
 
         if ($request->hasFile('doc_attachment')) {
-            $validated['doc_attachment'] = $request->file('doc_attachment')->store('docs');
+            $file = $request->file('doc_attachment');
+            $path = $file->store('docs', 'public');
+            $validated['doc_attachment'] = $path;
         }
 
         $lead->update($validated);

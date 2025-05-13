@@ -22,11 +22,13 @@
                                 <x-checkbox name="promoted" label="Promoted" />
                             </div>
 
-                            <div class="col-md-4">
-                                <x-input-label for="user_id" value="User" />
-                                <x-select id="user_id" name="user_id" :options="$users->pluck('name', 'id')" required />
-                                <x-input-error for="user_id" />
-                            </div>
+                            @role('Admin')
+                                <div class="col-md-4">
+                                    <x-input-label for="user_id" value="User" />
+                                    <x-select id="user_id" name="user_id" :options="$users->pluck('name', 'id')" required />
+                                    <x-input-error for="user_id" />
+                                </div>
+                            @endrole
 
                             <div class="col-md-4">
                                 <x-input-label for="price" value="Price" />
@@ -38,12 +40,6 @@
                                 <x-input-label for="room_numbers" value="Room Numbers" />
                                 <x-text-input id="room_numbers" name="room_numbers" type="number" value="{{ old('room_numbers') }}" />
                                 <x-input-error for="room_numbers" />
-                            </div>
-
-                            <div class="col-md-4">
-                                <x-input-label for="level" value="Level" />
-                                <x-text-input id="level" name="level" type="number" value="{{ old('level') }}" />
-                                <x-input-error for="level" />
                             </div>
 
                             <div class="col-md-4">

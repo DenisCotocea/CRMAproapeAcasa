@@ -18,7 +18,7 @@ class Lead extends Model
     protected $fillable = [
         'name', 'user_id', 'email', 'phone', 'has_company', 'company_name', 'company_email', 'cui',
         'company_address', 'cnp', 'date_of_birth', 'county', 'city', 'source',
-        'priority', 'status', 'assigned_agent_id', 'last_contact', 'notes'
+        'priority', 'status', 'assigned_agent_id', 'last_contact', 'notes', 'doc_attachment',
     ];
 
     public function properties()
@@ -26,7 +26,8 @@ class Lead extends Model
         return $this->belongsToMany(Property::class);
     }
 
-    public function user(){
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
 

@@ -46,11 +46,6 @@
                             </div>
 
                             <div class="col-md-3">
-                                <x-input-label for="level" value="Level" />
-                                <x-text-input id="level" name="filter[level]" value="{{ request('filter.level') }}" />
-                            </div>
-
-                            <div class="col-md-3">
                                 <x-input-label for="floor" value="Floor" />
                                 <x-text-input id="floor" name="filter[floor]" value="{{ request('filter.floor') }}" />
                             </div>
@@ -234,9 +229,11 @@
                                             <x-link-primary-button href="{{ route('properties.show', $property->id) }}">
                                                 {{ __('Show') }}
                                             </x-link-primary-button>
-                                            <x-link-primary-button href="{{ route('properties.edit', $property->id) }}">
-                                                {{ __('Edit') }}
-                                            </x-link-primary-button>
+                                            @if(auth()->user()->hasRole('Admin') || $property->user_id === auth()->id())
+                                                <x-link-primary-button href="{{ route('properties.edit', $property->id) }}">
+                                                    {{ __('Edit') }}
+                                                </x-link-primary-button>
+                                            @endif
                                         </div>
                                         @role('Admin')
                                             <div class="text-center">

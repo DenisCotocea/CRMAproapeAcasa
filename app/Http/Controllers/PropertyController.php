@@ -23,7 +23,6 @@ class PropertyController extends Controller
                 'category',
                 'tranzaction',
                 'room_numbers',
-                'level',
                 'floor',
                 'total_floors',
                 'usable_area',
@@ -80,13 +79,12 @@ class PropertyController extends Controller
     {
         $data = $request->validate([
             'name' => 'required|string|max:255',
-            'user_id' => 'required|exists:users,id',
+            'user_id' => 'required_if:role,admin|exists:users,id',
             'promoted' => 'boolean',
             'type' => 'required|string',
             'category' => 'nullable|string',
             'tranzaction' => 'nullable|string',
             'room_numbers' => 'nullable|integer',
-            'level' => 'nullable|integer',
             'floor' => 'nullable|integer',
             'total_floors' => 'nullable|integer',
             'surface' => 'nullable|numeric',
@@ -115,6 +113,12 @@ class PropertyController extends Controller
             'locked_at' => 'nullable|date',
             'interior_condition' => 'nullable|string',
         ]);
+
+        $user = auth()->user();
+
+        if (!$user->hasRole('Admin')) {
+            $data['user_id'] = $user->id;
+        }
 
         $property = Property::create($data);
 
@@ -160,13 +164,12 @@ class PropertyController extends Controller
     {
         $data = $request->validate([
             'name' => 'required|string|max:255',
-            'user_id' => 'required|exists:users,id',
+            'user_id' => 'required_if:role,admin|exists:users,id',
             'promoted' => 'boolean',
             'type' => 'required|string',
             'category' => 'nullable|string',
             'tranzaction' => 'nullable|string',
             'room_numbers' => 'nullable|integer',
-            'level' => 'nullable|integer',
             'floor' => 'nullable|integer',
             'total_floors' => 'nullable|integer',
             'surface' => 'nullable|numeric',

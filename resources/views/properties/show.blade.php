@@ -43,6 +43,10 @@
                         <div class="tab-content">
                             <div class="tab-pane fade show active" id="details">
                                 <div class="property-details-container">
+                                    @role('Admin')
+                                    <p class="property-detail"><i class="bi bi-person"></i> <strong>Assigned To:</strong> {{ optional($property->user)->name ?? 'None' }}</p>
+                                    @endrole
+
                                     @if($property->name)
                                         <p class="property-detail"><i class="bi bi-house"></i> <strong>Title:</strong> {{ $property->name }}</p>
                                     @endif
@@ -111,10 +115,6 @@
                                         <p class="property-detail"><i class="bi bi-building"></i> <strong>Total Floors:</strong> {{ $property->total_floors }}</p>
                                     @endif
 
-                                    @if($property->level)
-                                        <p class="property-detail"><i class="bi bi-layers"></i> <strong>Level:</strong> {{ $property->level }}</p>
-                                    @endif
-
                                     @if($property->surface)
                                         <p class="property-detail"><i class="bi bi-arrows-fullscreen"></i> <strong>Surface:</strong> {{ $property->surface }} sqm</p>
                                     @endif
@@ -160,7 +160,6 @@
                                     @endif
                                 </div>
                             </div>
-
                             <div class="tab-pane fade" id="logs">
                                 <div class="logs-container">
                                     @if($activities->isEmpty())
@@ -249,6 +248,7 @@
                                                 <th class="px-6 py-3">Assigned To</th>
                                                 <th class="px-6 py-3">Priority</th>
                                                 <th class="px-6 py-3">Status</th>
+                                                <th class="px-6 py-3">Document</th>
                                             </x-slot>
 
                                             @foreach ($property->leads as $lead)
@@ -264,6 +264,11 @@
                                                             {{ ucfirst($lead->status) }}
                                                         </x-badge>
                                                     </td>
+                                                    @if($lead->doc_attachment)
+                                                        <td class="px-6 py4">
+                                                            <x-link-primary-button href="{{ asset('storage/' . $lead->doc_attachment) }}" target="_blank">See document</x-link-primary-button>
+                                                        </td>
+                                                    @endif
                                                 </tr>
                                             @endforeach
                                         </x-table>
