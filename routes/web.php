@@ -30,6 +30,7 @@ Route::middleware(['auth'])->group(function () {
     // Properties Routes
     Route::resource('properties', PropertyController::class);
     Route::get('/scraper', [PropertyController::class, 'scraperView'])->name('properties.scraperView');
+
     Route::post('/properties/{id}/unlock', [PropertyController::class, 'unlock'])->name('properties.unlock');
 
     // Lead Routes
