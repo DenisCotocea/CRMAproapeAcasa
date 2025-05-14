@@ -28,7 +28,7 @@
                         {{ __('Tickets') }}
                     </x-nav-link>
 
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                    <x-nav-link :href="route('properties.scraperView')" :active="request()->routeIs('properties.scraperView')">
                         {{ __('Scraper') }}
                     </x-nav-link>
 
@@ -126,7 +126,7 @@
                 {{ __('Tickets') }}
             </x-responsive-nav-link>
 
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+            <x-responsive-nav-link :href="route('properties.scraperView')" :active="request()->routeIs('properties.scraperView')">
                 {{ __('Scraper') }}
             </x-responsive-nav-link>
 

@@ -48,6 +48,8 @@ class Property extends Model
         'locked_by_user_id',
         'locked_at',
         'interior_condition',
+        'from_scraper',
+        'scraper_link',
     ];
 
     protected $casts = [

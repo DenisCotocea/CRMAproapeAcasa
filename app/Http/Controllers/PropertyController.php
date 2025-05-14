@@ -34,6 +34,7 @@ class PropertyController extends Controller
                 'city',
                 'address',
                 'partitioning',
+                'interior_condition',
                 'comfort',
                 'heating',
                 'availability_status',
@@ -64,9 +65,60 @@ class PropertyController extends Controller
                 AllowedFilter::exact('parking'),
                 AllowedFilter::exact('user_id'),
             ])
+            ->where('from_scraper', '')
             ->paginate(10);
 
         return view('properties.index', compact('properties', 'users'));
+    }
+
+    public function scraperView(Request $request)
+    {
+        $properties = QueryBuilder::for(Property::class)
+            ->allowedFilters([
+                'name',
+                'type',
+                'category',
+                'tranzaction',
+                'room_numbers',
+                'floor',
+                'total_floors',
+                'usable_area',
+                'land_area',
+                'yard_area',
+                'balcony_area',
+                'construction_year',
+                'county',
+                'city',
+                'address',
+                'partitioning',
+                'interior_condition',
+                'comfort',
+                'heating',
+                'availability_status',
+                'available_from',
+                AllowedFilter::callback('price_min', function ($query, $value) {
+                    $query->where('price', '>=', $value);
+                }),
+                AllowedFilter::callback('price_max', function ($query, $value) {
+                    $query->where('price', '<=', $value);
+                }),
+                AllowedFilter::callback('surface_min', function ($query, $value) {
+                    $query->where('surface', '>=', $value);
+                }),
+                AllowedFilter::callback('surface_max', function ($query, $value) {
+                    $query->where('surface', '<=', $value);
+                }),
+                AllowedFilter::callback('usable_area_min', function ($query, $value) {
+                    $query->where('usable_area', '>=', $value);
+                }),
+                AllowedFilter::callback('usable_area_max', function ($query, $value) {
+                    $query->where('usable_area', '<=', $value);
+                }),
+            ])
+            ->where('from_scraper', 'OLX')
+            ->paginate(10);
+
+        return view('properties.scraper', compact('properties'));
     }
 
     public function create()
