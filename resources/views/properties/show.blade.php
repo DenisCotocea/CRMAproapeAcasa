@@ -160,8 +160,9 @@
                                     @endif
 
                                     @if($property->scraper_link)
-                                        <p class="property-detail"><i class="bi bi-webcam"></i> <strong>Link:</strong> <a href="{{$property->scraper_link}}"> {{$property->scraper_link}} </a></p>
+                                        <p class="property-detail"><i class="bi bi-webcam"></i> <strong>Link:</strong> <a target="_blank" href="{{$property->scraper_link}}"> {{$property->scraper_link}} </a></p>
                                     @endif
+
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="logs">

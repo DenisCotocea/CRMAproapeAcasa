@@ -154,13 +154,16 @@
                                             </x-link-primary-button>
                                         </div>
                                         @role('Admin')
-                                        <div class="text-center">
-                                            <form action="{{ route('properties.destroy', $property->id) }}" method="POST" class="inline">
-                                                @csrf
-                                                @method('DELETE')
-                                                <x-danger-button type="submit">{{ __('Delete') }}</x-danger-button>
-                                            </form>
-                                        </div>
+                                            <div class="d-flex justify-between mb-2 gap-2">
+                                                <x-link-primary-button href="{{ route('properties.assign', $property->id) }}">
+                                                    {{ __('Assign') }}
+                                                </x-link-primary-button>
+                                                <form action="{{ route('properties.destroy', $property->id) }}" method="POST" class="inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <x-danger-button type="submit">{{ __('Delete') }}</x-danger-button>
+                                                </form>
+                                            </div>
                                         @endrole
                                     </td>
                                 </tr>

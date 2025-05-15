@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Property;
 use App\Models\Image;
+use Illuminate\Support\Facades\Auth;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -15,57 +16,10 @@ class PropertyController extends Controller
     public function index(Request $request)
     {
         $users = User::all();
-        $properties = QueryBuilder::for(Property::class)
-            ->with(['user'])
-            ->allowedFilters([
-                'name',
-                'type',
-                'category',
-                'tranzaction',
-                'room_numbers',
-                'floor',
-                'total_floors',
-                'usable_area',
-                'land_area',
-                'yard_area',
-                'balcony_area',
-                'construction_year',
-                'county',
-                'city',
-                'address',
-                'partitioning',
-                'interior_condition',
-                'comfort',
-                'heating',
-                'availability_status',
-                'available_from',
-                AllowedFilter::callback('price_min', function ($query, $value) {
-                    $query->where('price', '>=', $value);
-                }),
-                AllowedFilter::callback('price_max', function ($query, $value) {
-                    $query->where('price', '<=', $value);
-                }),
-                AllowedFilter::callback('surface_min', function ($query, $value) {
-                    $query->where('surface', '>=', $value);
-                }),
-                AllowedFilter::callback('surface_max', function ($query, $value) {
-                    $query->where('surface', '<=', $value);
-                }),
-                AllowedFilter::callback('usable_area_min', function ($query, $value) {
-                    $query->where('usable_area', '>=', $value);
-                }),
-                AllowedFilter::callback('usable_area_max', function ($query, $value) {
-                    $query->where('usable_area', '<=', $value);
-                }),
-                AllowedFilter::exact('promoted'),
-                AllowedFilter::exact('furnished'),
-                AllowedFilter::exact('balcony'),
-                AllowedFilter::exact('garage'),
-                AllowedFilter::exact('elevator'),
-                AllowedFilter::exact('parking'),
-                AllowedFilter::exact('user_id'),
-            ])
-            ->where('from_scraper', '')
+
+        $properties = $this->basePropertyQuery()
+            ->with('user')
+            ->whereNotNull('user_id')
             ->paginate(10);
 
         return view('properties.index', compact('properties', 'users'));
@@ -73,49 +27,9 @@ class PropertyController extends Controller
 
     public function scraperView(Request $request)
     {
-        $properties = QueryBuilder::for(Property::class)
-            ->allowedFilters([
-                'name',
-                'type',
-                'category',
-                'tranzaction',
-                'room_numbers',
-                'floor',
-                'total_floors',
-                'usable_area',
-                'land_area',
-                'yard_area',
-                'balcony_area',
-                'construction_year',
-                'county',
-                'city',
-                'address',
-                'partitioning',
-                'interior_condition',
-                'comfort',
-                'heating',
-                'availability_status',
-                'available_from',
-                AllowedFilter::callback('price_min', function ($query, $value) {
-                    $query->where('price', '>=', $value);
-                }),
-                AllowedFilter::callback('price_max', function ($query, $value) {
-                    $query->where('price', '<=', $value);
-                }),
-                AllowedFilter::callback('surface_min', function ($query, $value) {
-                    $query->where('surface', '>=', $value);
-                }),
-                AllowedFilter::callback('surface_max', function ($query, $value) {
-                    $query->where('surface', '<=', $value);
-                }),
-                AllowedFilter::callback('usable_area_min', function ($query, $value) {
-                    $query->where('usable_area', '>=', $value);
-                }),
-                AllowedFilter::callback('usable_area_max', function ($query, $value) {
-                    $query->where('usable_area', '<=', $value);
-                }),
-            ])
+        $properties = $this->basePropertyQuery()
             ->where('from_scraper', 'OLX')
+            ->whereNull('user_id')
             ->paginate(10);
 
         return view('properties.scraper', compact('properties'));
@@ -187,6 +101,14 @@ class PropertyController extends Controller
         }
 
         return redirect()->route('properties.index')->with('success', 'Property created successfully.');
+    }
+
+    public function assignToUser(Property $property)
+    {
+        $property->user_id = Auth::user()->id;
+        $property->save();
+
+        return redirect()->back()->with('success', 'Property assigned successfully!');
     }
 
     public function show(Property $property)
@@ -287,5 +209,46 @@ class PropertyController extends Controller
         }
 
         return response()->noContent();
+    }
+
+    private function basePropertyQuery()
+    {
+        return QueryBuilder::for(Property::class)
+            ->allowedFilters([
+                'name',
+                'type',
+                'category',
+                'tranzaction',
+                'room_numbers',
+                'floor',
+                'total_floors',
+                'usable_area',
+                'land_area',
+                'yard_area',
+                'balcony_area',
+                'construction_year',
+                'county',
+                'city',
+                'address',
+                'partitioning',
+                'interior_condition',
+                'comfort',
+                'heating',
+                'availability_status',
+                'available_from',
+                AllowedFilter::callback('price_min', fn($query, $value) => $query->where('price', '>=', $value)),
+                AllowedFilter::callback('price_max', fn($query, $value) => $query->where('price', '<=', $value)),
+                AllowedFilter::callback('surface_min', fn($query, $value) => $query->where('surface', '>=', $value)),
+                AllowedFilter::callback('surface_max', fn($query, $value) => $query->where('surface', '<=', $value)),
+                AllowedFilter::callback('usable_area_min', fn($query, $value) => $query->where('usable_area', '>=', $value)),
+                AllowedFilter::callback('usable_area_max', fn($query, $value) => $query->where('usable_area', '<=', $value)),
+                AllowedFilter::exact('promoted'),
+                AllowedFilter::exact('furnished'),
+                AllowedFilter::exact('balcony'),
+                AllowedFilter::exact('garage'),
+                AllowedFilter::exact('elevator'),
+                AllowedFilter::exact('parking'),
+                AllowedFilter::exact('user_id'),
+            ]);
     }
 }
