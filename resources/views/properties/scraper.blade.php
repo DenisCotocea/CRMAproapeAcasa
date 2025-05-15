@@ -88,6 +88,14 @@
                                 <x-input-label for="address" value="Address" />
                                 <x-text-input id="address" name="filter[address]" value="{{ request('filter.address') }}" />
                             </div>
+
+                            <div class="col-md-3">
+                                <x-select name="filter[tranzaction]" label="Tranzaction" :options="['sale' => 'Sale', 'rent' => 'Rent']" />
+                            </div>
+
+                            <div class="col-md-3">
+                                <x-select name="filter[type]" label="Type" :options="['Apartament/Garsoniera' => 'Apartament/Garsoniera', 'House' => 'House', 'Land' => 'Land']" />
+                            </div>
                             <div>
                         </div>
                     </div>
