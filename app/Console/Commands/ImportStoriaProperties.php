@@ -49,7 +49,7 @@ class ImportStoriaProperties extends Command {
                     'from_scraper' => 'Storia',
                     'scraper_link' => $scraped->storia_url,
                     'room_numbers' => $attributes['roomsNumbers'] ?? null,
-                    'floor' => $attributes['floor'] ?? null,
+//                    'floor' => $attributes['floor'] ?? null,
                     'total_floors' => $attributes['totalFloors'] ?? null,
                     'construction_year' => $attributes['year'] ?? null,
                     'usable_area' => $attributes['surfaceArea'] ?? null,
