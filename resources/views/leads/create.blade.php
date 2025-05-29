@@ -6,7 +6,7 @@
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
             <div class="dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="overflow-hidden shadow-xl sm:rounded-lg">
                     <form class="p-4" method="POST" action="{{ route('leads.store') }}" enctype="multipart/form-data">
@@ -32,13 +32,13 @@
 
                             <div class="col-md-4">
                                 <x-input-label for="properties" value="Property" />
-                                <x-select id="properties" name="properties" :options="$properties->pluck('name', 'id')"/>
+                                <x-search-select id="properties" name="properties" :options="$properties->pluck('name', 'id')"/>
                                 <x-input-error for="properties" />
                             </div>
 
                             <div class="col-md-4">
                                 <x-input-label for="email" value="Email" />
-                                <x-text-input id="email" name="email" value="{{ old('email') }}" required />
+                                <x-text-input id="email" name="email" value="{{ old('email') }}"/>
                                 <x-input-error for="email" />
                             </div>
 
@@ -114,9 +114,9 @@
                                 <x-select name="priority" label="Priority" :options="['High' => 'High', 'Medium' => 'Medium', 'Low' => 'Low']" />
                             </div>
 
-                            <div class="col-md-4">
+                            <div class="col-md-12">
                                 <x-input-label for="notes" value="Notes" />
-                                <x-text-input id="notes" name="notes" value="{{ old('notes') }}" />
+                                <x-textarea id="notes" name="notes" value="{{ old('notes') }}" />
                                 <x-input-error for="notes" />
                             </div>
 

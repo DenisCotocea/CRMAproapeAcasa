@@ -30,12 +30,15 @@ Route::middleware(['auth'])->group(function () {
     // Properties Routes
     Route::resource('properties', PropertyController::class);
     Route::get('/scraper', [PropertyController::class, 'scraperView'])->name('properties.scraperView');
+    Route::get('/delisted', [PropertyController::class, 'delistedView'])->name('properties.delistedView');
+    Route::get('/portfolio', [PropertyController::class, 'portfolioView'])->name('properties.portfolioView');
     Route::get('/properties/{property}/assign', [PropertyController::class, 'assignToUser'])
         ->name('properties.assign');
     Route::post('/properties/{id}/unlock', [PropertyController::class, 'unlock'])->name('properties.unlock');
 
     // Lead Routes
     Route::resource('leads', LeadController::class);
+    Route::get('/lead-portfolio', [LeadController::class, 'portfolioView'])->name('leads.portfolioView');
 
     // Tickets Routes
     Route::resource('tickets', TicketController::class);
@@ -57,10 +60,10 @@ Route::middleware(['auth'])->group(function () {
     // Settings Routes
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
     Route::get('/clear-cache', [SettingsController::class, 'clearCache'])->name('clear.cache');
+    Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index'])->name('logs.index');
 
     //Search Routes
     Route::get('/search', [SearchController::class, 'index'])->name('search.index');
-
 });
 
 require __DIR__.'/auth.php';

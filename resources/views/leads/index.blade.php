@@ -6,14 +6,14 @@
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
             <div class=" dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="mb-2 mt-2 me-2 text-end">
-                    <x-link-primary-button href="{{ route('leads.create') }}">
+                    <x-link-primary-button href="{{ route('leads.create') }}" >
                         {{ __('Add Lead') }}
                     </x-link-primary-button>
                 </div>
-                <form method="GET" action="{{ route('leads.index') }}">
+                <form method="GET" action="{{ route('leads.index') }}" id="filterForm">
                     <div class="filter-container p-2">
                         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight mb-2">
                             {{ __('Filter Options') }}
@@ -64,11 +64,11 @@
                             </div>
 
                             <div class="col-md-4">
-                                <x-select name="filter[status]" label="Status" :options="['' => 'All', 'New' => 'New', 'In Progress' => 'In Progress', 'Closed' => 'Closed', 'Lost' => 'Lost']" />
+                                <x-select name="filter[status]" label="Status" :options="['New' => 'New', 'In Progress' => 'In Progress', 'Closed' => 'Closed', 'Lost' => 'Lost']" />
                             </div>
 
                             <div class="col-md-4">
-                                <x-select name="filter[priority]" label="Priority" :options="['' => 'All', 'High' => 'High', 'Medium' => 'Medium', 'Low' => 'Low']" />
+                                <x-select name="filter[priority]" label="Priority" :options="['High' => 'High', 'Medium' => 'Medium', 'Low' => 'Low']" />
                             </div>
 
                             <div class="col-md-2">
@@ -98,7 +98,9 @@
                                 <th class="px-6 py-3">Phone</th>
                                 <th class="px-6 py-3">Company</th>
                                 <th class="px-6 py-3">Priority</th>
+                                <th class="px-6 py-3">Address</th>
                                 <th class="px-6 py-3">Status</th>
+                                <th class="px-6 py-3">Last contact</th>
                                 <th class="px-6 py-3">Actions</th>
                             </x-slot>
 
@@ -114,25 +116,32 @@
                                         </x-badge>
                                     </td>
                                     <td class="px-6 py-4">
+                                       {{ $lead->county . " " . $lead->city}}
+                                    </td>
+                                    <td class="px-6 py-4">
                                         <x-badge :color="$lead->status === 'New' ? 'green' : ($lead->status === 'In Progress' ? 'yellow' : ($lead->status === 'Closed' ? 'blue' : 'red'))">
                                             {{ ucfirst($lead->status) }}
                                         </x-badge>
                                     </td>
                                     <td class="px-6 py-4">
-                                        <div class="d-flex justify-between mb-2">
+                                        {{ $lead->last_contact ?? 'Not Contacted' }}
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="d-flex mb-2 gap-2">
                                             <x-link-primary-button href="{{ route('leads.show', $lead->id) }}">
                                                 {{ __('Show') }}
                                             </x-link-primary-button>
                                             <x-link-primary-button href="{{ route('leads.edit', $lead->id) }}">
                                                 {{ __('Edit') }}
                                             </x-link-primary-button>
-                                        </div>
-                                        <div class="text-center">
-                                            <form action="{{ route('leads.destroy', $lead->id) }}" method="POST" class="inline">
-                                                @csrf
-                                                @method('DELETE')
-                                                <x-danger-button type="submit">{{ __('Delete') }}</x-danger-button>
-                                            </form>
+
+                                            @if(auth()->user()->hasRole('Admin') || $lead->user_id === auth()->id())
+                                                <form action="{{ route('leads.destroy', $lead->id) }}" method="POST" class="inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <x-danger-button type="submit">{{ __('Delete') }}</x-danger-button>
+                                                </form>
+                                            @endif
                                         </div>
                                     </td>
                                 </tr>

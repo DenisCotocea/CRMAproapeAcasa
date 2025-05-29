@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Schema;
 
 class Property extends Model
 {
@@ -58,6 +60,7 @@ class Property extends Model
         'garage' => 'boolean',
         'elevator' => 'boolean',
         'parking' => 'boolean',
+        'furnished' => 'boolean',
         'price' => 'decimal:2',
         'surface' => 'float',
         'usable_area' => 'decimal:2',
@@ -85,12 +88,20 @@ class Property extends Model
 
     public function getActivitylogOptions(): LogOptions
     {
+        $columns = Schema::getColumnListing($this->getTable());
+
+        $filtered = Arr::except(array_flip($columns), [
+            'locked_by_user_id',
+            'locked_at',
+            'updated_at',
+        ]);
+
         return LogOptions::defaults()
-             ->logOnly(['*'])
-             ->setDescriptionForEvent(fn(string $eventName) => "{$eventName} property")
-             ->logOnlyDirty()
-             ->dontSubmitEmptyLogs()
-             ->useLogName('property');
+            ->logOnly(array_keys($filtered))
+            ->setDescriptionForEvent(fn(string $eventName) => "{$eventName} property")
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs()
+            ->useLogName('property');
     }
 
     public function comments()

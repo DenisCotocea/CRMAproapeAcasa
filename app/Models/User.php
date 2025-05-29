@@ -51,4 +51,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(Comment::class);
     }
+
+    public function leads()
+    {
+        return $this->hasMany(Lead::class);
+    }
+
+    public function properties()
+    {
+        return $this->hasMany(Property::class);
+    }
 }

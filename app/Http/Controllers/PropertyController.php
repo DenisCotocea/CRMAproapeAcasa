@@ -19,20 +19,45 @@ class PropertyController extends Controller
 
         $properties = $this->basePropertyQuery()
             ->with('user')
-            ->whereNotNull('user_id')
-            ->paginate(10);
+            ->paginate(10)
+            ->appends($request->query());
 
         return view('properties.index', compact('properties', 'users'));
     }
 
+    public function portfolioView(Request $request)
+    {
+        $properties = $this->basePropertyQuery()
+            ->where('user_id', Auth::id())
+            ->paginate(10)
+            ->appends($request->query());
+
+        return view('properties.index', compact('properties'));
+    }
+
+
     public function scraperView(Request $request)
     {
         $properties = $this->basePropertyQuery()
-            ->where('from_scraper', 'OLX')
+            ->whereNotNull('from_scraper')
             ->whereNull('user_id')
-            ->paginate(10);
+            ->where('active', 1)
+            ->paginate(10)
+            ->appends($request->query());
 
-        return view('properties.scraper', compact('properties'));
+
+        return view('properties.index', compact('properties'));
+    }
+
+    public function delistedView(Request $request)
+    {
+        $properties = $this->basePropertyQuery()
+            ->whereNotNull('from_scraper')
+            ->where('active', 0)
+            ->paginate(10)
+            ->appends($request->query());
+
+        return view('properties.index', compact('properties'));
     }
 
     public function create()
@@ -43,64 +68,69 @@ class PropertyController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'name' => 'required|string|max:255',
-            'user_id' => 'required_if:role,admin|exists:users,id',
-            'promoted' => 'boolean',
-            'type' => 'required|string',
-            'category' => 'nullable|string',
-            'tranzaction' => 'nullable|string',
-            'room_numbers' => 'nullable|integer',
-            'floor' => 'nullable|integer',
-            'total_floors' => 'nullable|integer',
-            'surface' => 'nullable|numeric',
-            'usable_area' => 'nullable|numeric',
-            'land_area' => 'nullable|numeric',
-            'yard_area' => 'nullable|numeric',
-            'balcony_area' => 'nullable|numeric',
-            'construction_year' => 'nullable|integer',
-            'county' => 'required|string',
-            'city' => 'required|string',
-            'address' => 'required|string',
-            'price' => 'required|numeric',
-            'description' => 'nullable|string',
-            'details' => 'nullable|string',
-            'partitioning' => 'nullable|string',
-            'comfort' => 'nullable|string',
-            'furnished' => 'boolean',
-            'heating' => 'nullable|string',
-            'balcony' => 'boolean',
-            'garage' => 'boolean',
-            'elevator' => 'boolean',
-            'parking' => 'boolean',
-            'availability_status' => 'nullable|string',
-            'available_from' => 'nullable|date',
-            'locked_by_user_id' => 'nullable|exists:users,id',
-            'locked_at' => 'nullable|date',
-            'interior_condition' => 'nullable|string',
-        ]);
+        try{
+            $data = $request->validate([
+                'name' => 'required|string|max:255',
+                'user_id' => 'required_if:role,admin|exists:users,id',
+                'promoted' => 'boolean',
+                'type' => 'required|string',
+                'category' => 'nullable|string',
+                'tranzaction' => 'nullable|string',
+                'room_numbers' => 'nullable|integer',
+                'floor' => 'nullable|integer',
+                'total_floors' => 'nullable|integer',
+                'surface' => 'nullable|numeric',
+                'usable_area' => 'nullable|numeric',
+                'land_area' => 'nullable|numeric',
+                'yard_area' => 'nullable|numeric',
+                'balcony_area' => 'nullable|numeric',
+                'construction_year' => 'nullable|integer',
+                'county' => 'required|string',
+                'city' => 'required|string',
+                'address' => 'required|string',
+                'price' => 'required|numeric',
+                'description' => 'nullable|string',
+                'details' => 'nullable|string',
+                'partitioning' => 'nullable|string',
+                'comfort' => 'nullable|string',
+                'furnished' => 'boolean',
+                'heating' => 'nullable|string',
+                'balcony' => 'boolean',
+                'garage' => 'boolean',
+                'elevator' => 'boolean',
+                'parking' => 'boolean',
+                'availability_status' => 'nullable|string',
+                'available_from' => 'nullable|date',
+                'locked_by_user_id' => 'nullable|exists:users,id',
+                'locked_at' => 'nullable|date',
+                'interior_condition' => 'nullable|string',
+            ]);
 
-        $user = auth()->user();
+            $user = auth()->user();
 
-        if (!$user->hasRole('Admin')) {
-            $data['user_id'] = $user->id;
-        }
-
-        $property = Property::create($data);
-
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $image) {
-                $path = $image->store('images', 'public');
-
-                Image::create([
-                    'entity_id' => $property->id,
-                    'entity_type' => Property::class,
-                    'path' => $path,
-                ]);
+            if (!$user->hasRole('Admin')) {
+                $data['user_id'] = $user->id;
             }
-        }
 
-        return redirect()->route('properties.index')->with('success', 'Property created successfully.');
+            $property = Property::create($data);
+
+            if ($request->hasFile('images')) {
+                foreach ($request->file('images') as $image) {
+                    $path = $image->store('images', 'public');
+
+                    Image::create([
+                        'entity_id' => $property->id,
+                        'entity_type' => Property::class,
+                        'path' => $path,
+                    ]);
+                }
+            }
+
+            return redirect()->route('properties.index')->with('success', 'Property created successfully.');
+        }catch (\Exception $e){
+            return back()->withInput()
+                ->with('error', 'Something went wrong. Please try again.');
+        }
     }
 
     public function assignToUser(Property $property)
@@ -230,6 +260,7 @@ class PropertyController extends Controller
                 'county',
                 'city',
                 'address',
+                'from_scraper',
                 'partitioning',
                 'interior_condition',
                 'comfort',
@@ -242,12 +273,6 @@ class PropertyController extends Controller
                 AllowedFilter::callback('surface_max', fn($query, $value) => $query->where('surface', '<=', $value)),
                 AllowedFilter::callback('usable_area_min', fn($query, $value) => $query->where('usable_area', '>=', $value)),
                 AllowedFilter::callback('usable_area_max', fn($query, $value) => $query->where('usable_area', '<=', $value)),
-                AllowedFilter::exact('promoted'),
-                AllowedFilter::exact('furnished'),
-                AllowedFilter::exact('balcony'),
-                AllowedFilter::exact('garage'),
-                AllowedFilter::exact('elevator'),
-                AllowedFilter::exact('parking'),
                 AllowedFilter::exact('user_id'),
             ]);
     }

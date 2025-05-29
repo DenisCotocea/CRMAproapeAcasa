@@ -14,7 +14,7 @@
                     </x-link-primary-button>
                 </div>
 
-                <form method="GET" action="{{ route('properties.index') }}">
+                <form method="GET" action="{{ route('properties.index') }}" id="filterForm">
                     <div class="filter-container p-2">
                         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight mb-2">
                             {{ __('Filter Options') }}
@@ -25,10 +25,12 @@
                                 <x-text-input id="name" name="filter[name]" value="{{ request('filter.name') }}" />
                             </div>
 
-                            <div class="col-md-3">
-                                <x-input-label for="user_id" value="User" />
-                                <x-select id="user_id" name="filter[user_id]" :options="$users->pluck('name', 'id')" />
-                            </div>
+                            @if(isset($users))
+                                <div class="col-md-3">
+                                    <x-input-label for="user_id" value="User" />
+                                    <x-select id="user_id" name="filter[user_id]" :options="$users->pluck('name', 'id')" />
+                                </div>
+                            @endif
 
                             <div class="col-md-3">
                                 <x-input-label for="price_min" value="Min price" />
@@ -101,7 +103,11 @@
                             </div>
 
                             <div class="col-md-3">
-                                <x-select name="filter[type]" label="Type" :options="['apartment' => 'Apartment', 'house' => 'House', 'land' => 'Land']" />
+                                <x-select name="filter[from_scraper]" label="Scraper" :options="['OLX' => 'OLX', 'Storia' => 'Storia', 'Publi24' => 'Publi24']" />
+                            </div>
+
+                            <div class="col-md-3">
+                                <x-select name="filter[type]" label="Type" :options="['Apartament/Garsoniera' => 'Apartament/Garsoniera' , 'Apartament' => 'Apartament' , 'Garsoniera' => 'Garsoniera' , 'House' => 'House', 'Land' => 'Land']" />
                             </div>
 
                             <div class="col-md-3">
@@ -136,31 +142,6 @@
                                 <x-input-label for="available_from" value="Available From" />
                                 <x-text-input id="available_from" name="filter[available_from]" type="date" value="{{ request('filter.available_from') }}" />
                             </div>
-
-                            <div class="col-md-2">
-                                <x-checkbox name="filter[promoted]" label="Promoted ?" id="promoted" />
-                            </div>
-
-                            <div class="col-md-2">
-                                <x-checkbox name="filter[furnished]" label="Furnished ?" id="furnished" />
-                            </div>
-
-                            <div class="col-md-2">
-                                <x-checkbox name="filter[balcony]" label="Balcony ?" id="balcony" />
-                            </div>
-
-                            <div class="col-md-2">
-                                <x-checkbox name="filter[garage]" label="Garage ?" id="garage" />
-                            </div>
-
-                            <div class="col-md-2">
-                                <x-checkbox name="filter[elevator]" label="Elevator ?" id="elevator" />
-                            </div>
-
-                            <div class="col-md-2">
-                                <x-checkbox name="filter[parking]" label="Parking ?" id="parking" />
-                            </div>
-
                         </div>
                     </div>
 
@@ -185,9 +166,9 @@
                                 <th class="px-6 py-3">Price</th>
                                 <th class="px-6 py-3">Type</th>
                                 <th class="px-6 py-3">Transaction</th>
-                                <th class="px-6 py-3">City</th>
-                                <th class="px-6 py-3">Promoted</th>
+                                <th class="px-6 py-3">Address</th>
                                 <th class="px-6 py-3">Status</th>
+                                <th class="px-6 py-3">From</th>
                                 <th class="px-6 py-3">Actions</th>
                             </x-slot>
 
@@ -211,21 +192,15 @@
                                     </td>
                                     <td class="px-6 py-4">{{ ucfirst($property->type) }}</td>
                                     <td class="px-6 py-4">{{ ucfirst($property->tranzaction) }}</td>
-                                    <td class="px-6 py-4">{{ $property->city }}</td>
-                                    <td class="px-6 py-4">
-                                        @if ($property->promoted)
-                                            <x-badge color="green">Yes</x-badge>
-                                        @else
-                                            <x-badge color="gray">No</x-badge>
-                                        @endif
-                                    </td>
+                                    <td class="px-6 py-4">{{ $property->address }}</td>
                                     <td class="px-6 py-4">
                                         <x-badge :color="$property->availability_status === 'available' ? 'green' : ($property->availability_status === 'reserved' ? 'yellow' : 'red')">
                                             {{ ucfirst($property->availability_status) }}
                                         </x-badge>
                                     </td>
+                                    <td class="px-6 py-4">{{ $property->from_scraper ?? 'CRM'}}</td>
                                     <td class="px-6 py-4">
-                                        <div class="d-flex justify-between mb-2 gap-2">
+                                        <div class="d-flex mb-2 gap-2">
                                             <x-link-primary-button href="{{ route('properties.show', $property->id) }}">
                                                 {{ __('Show') }}
                                             </x-link-primary-button>
@@ -234,22 +209,27 @@
                                                     {{ __('Edit') }}
                                                 </x-link-primary-button>
                                             @endif
+
+                                            @if(!$property->user_id)
+                                                <x-link-primary-button href="{{ route('properties.assign', $property->id) }}">
+                                                    {{ __('Assign') }}
+                                                </x-link-primary-button>
+                                            @endif
+
+                                            @role('Admin')
+                                                    <form action="{{ route('properties.destroy', $property->id) }}" method="POST" class="inline">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <x-danger-button type="submit">{{ __('Delete') }}</x-danger-button>
+                                                    </form>
+                                            @endrole
                                         </div>
-                                        @role('Admin')
-                                            <div class="text-center">
-                                                <form action="{{ route('properties.destroy', $property->id) }}" method="POST" class="inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <x-danger-button type="submit">{{ __('Delete') }}</x-danger-button>
-                                                </form>
-                                            </div>
-                                        @endrole
                                     </td>
                                 </tr>
                             @endforeach
                         </x-table>
 
-                        <div class="mt-4">
+                        <div class="p-2">
                             {{ $properties->links() }}
                         </div>
                     @endif

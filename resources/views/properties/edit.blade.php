@@ -6,7 +6,7 @@
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
             <div class="dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="overflow-hidden shadow-xl sm:rounded-lg">
                     <form class="p-4" method="POST" action="{{ route('properties.update', $property->id) }}" enctype="multipart/form-data">
@@ -35,6 +35,7 @@
                                         :options="$users->pluck('name', 'id')"
                                         :selected="old('user_id', $property->user_id)"
                                         required
+                                        :disabled="true"
                                     />
                                     <x-input-error for="user_id" />
                                 </div>
@@ -126,17 +127,17 @@
 
                             <!-- Type -->
                             <div class="col-md-4">
-                                <x-select name="type" label="Type" :options="['apartment' => 'Apartment', 'house' => 'House', 'land' => 'Land']" :selected="old('type', $property->type)" required/>
+                                <x-select name="type" label="Type" :options="['apartment' => 'Apartment', 'house' => 'House', 'land' => 'Land']" :selected="old('type', $property->type)" required :disabled="true"/>
                             </div>
 
                             <!-- Category -->
                             <div class="col-md-4">
-                                <x-select name="category" label="Category" :options="['residential' => 'Residential', 'commercial' => 'Commercial']" :selected="old('category', $property->category)" />
+                                <x-select name="category" label="Category" :options="['residential' => 'Residential', 'commercial' => 'Commercial']" :selected="old('category', $property->category)" :disabled="true" />
                             </div>
 
                             <!-- Tranzaction -->
                             <div class="col-md-4">
-                                <x-select name="tranzaction" label="Tranzaction" :options="['sale' => 'Sale', 'rent' => 'Rent']" :selected="old('tranzaction', $property->tranzaction)" />
+                                <x-select name="tranzaction" label="Tranzaction" :options="['sale' => 'Sale', 'rent' => 'Rent']" :selected="old('tranzaction', $property->tranzaction)" :disabled="true"/>
                             </div>
                             <!-- Description -->
                             <div class="col-md-6">
@@ -152,27 +153,27 @@
 
                             <!-- Partitioning -->
                             <div class="col-md-4">
-                                <x-select name="partitioning" label="Partitioning" :options="['detached' => 'Detached', 'semi-detached' => 'Semi-Detached', 'open-space' => 'Open Space']" :selected="old('partitioning', $property->partitioning)" />
+                                <x-select name="partitioning" label="Partitioning" :options="['detached' => 'Detached', 'semi-detached' => 'Semi-Detached', 'open-space' => 'Open Space']" :selected="old('partitioning', $property->partitioning)" :disabled="true" />
                             </div>
 
                             <!-- Comfort -->
                             <div class="col-md-4">
-                                <x-select name="comfort" label="Comfort" :options="['1' => '1', '2' => '2', 'luxury' => 'Luxury']" :selected="old('comfort', $property->comfort)" />
+                                <x-select name="comfort" label="Comfort" :options="['1' => '1', '2' => '2', 'luxury' => 'Luxury']" :selected="old('comfort', $property->comfort)" :disabled="true"/>
                             </div>
 
                             <!-- Heating -->
                             <div class="col-md-4">
-                                <x-select name="heating" label="Heating" :options="['central' => 'Central', 'individual' => 'Individual', 'none' => 'None']" :selected="old('heating', $property->heating)" />
+                                <x-select name="heating" label="Heating" :options="['central' => 'Central', 'individual' => 'Individual', 'none' => 'None']" :selected="old('heating', $property->heating)" :disabled="true"/>
                             </div>
 
                             <!-- Availability Status -->
                             <div class="col-md-4">
-                                <x-select name="availability_status" label="Availability Status" :options="['available' => 'Available', 'reserved' => 'Reserved', 'sold' => 'Sold']" :selected="old('availability_status', $property->availability_status)" />
+                                <x-select name="availability_status" label="Availability Status" :options="['available' => 'Available', 'reserved' => 'Reserved', 'sold' => 'Sold']" :selected="old('availability_status', $property->availability_status)" :disabled="true"/>
                             </div>
 
                             <!-- Interior Condition -->
                             <div class="col-md-4">
-                                <x-select name="interior_condition" label="Interior Condition" :options="['new' => 'New', 'renovated' => 'Renovated', 'needs-renovation' => 'Needs Renovation']" :selected="old('interior_condition', $property->interior_condition)" />
+                                <x-select name="interior_condition" label="Interior Condition" :options="['new' => 'New', 'renovated' => 'Renovated', 'needs-renovation' => 'Needs Renovation']" :selected="old('interior_condition', $property->interior_condition)" :disabled="true"/>
                             </div>
 
                             <!-- Available From -->
@@ -207,7 +208,7 @@
                                 <x-checkbox name="parking" label="Parking" :checked="old('parking', $property->parking)" />
                             </div>
 
-                            <div class="col-md-4">
+                            <div class="col-md-12">
                                 <x-image-uploader :entityId="$property->id" :entityType="App\Models\Property::class" />
                             </div>
 

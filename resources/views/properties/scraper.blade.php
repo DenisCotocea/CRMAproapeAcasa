@@ -8,7 +8,7 @@
     <div class="py-12">
         <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
             <div class=" dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <form method="GET" action="{{ route('properties.scraperView') }}">
+                <form method="GET" action="{{ route('properties.scraperView') }}" id="filterForm">
                     <div class="filter-container p-2">
                         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight mb-2">
                             {{ __('Filter Options') }}
@@ -94,7 +94,10 @@
                             </div>
 
                             <div class="col-md-3">
-                                <x-select name="filter[type]" label="Type" :options="['Apartament/Garsoniera' => 'Apartament/Garsoniera', 'House' => 'House', 'Land' => 'Land']" />
+                                <x-select name="filter[from_scraper]" label="Scraper" :options="['OLX' => 'OLX', 'Storia' => 'Storia', 'Publi24' => 'Publi24']" />
+                            </div>
+                            <div class="col-md-3">
+                                <x-select name="filter[type]" label="Type" :options="['Apartament/Garsoniera' => 'Apartament/Garsoniera' , 'Apartament' => 'Apartament' , 'Garsoniera' => 'Garsoniera' , 'House' => 'House', 'Land' => 'Land']" />
                             </div>
                             <div>
                         </div>
@@ -146,7 +149,7 @@
                                     </td>
                                     <td class="px-6 py-4">{{ ucfirst($property->type) }}</td>
                                     <td class="px-6 py-4">{{ $property->city }}</td>
-                                    <td class="px-6 py-4">OLX</td>
+                                    <td class="px-6 py-4">{{ $property->from_scraper}}</td>
                                     <td class="px-6 py-4">
                                         <x-badge :color="$property->availability_status === 'available' ? 'green' : ($property->availability_status === 'reserved' ? 'yellow' : 'red')">
                                             {{ ucfirst($property->availability_status) }}

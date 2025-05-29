@@ -6,7 +6,7 @@
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
             <div class="dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="overflow-hidden shadow-xl sm:rounded-lg">
                     <form class="p-4" method="POST" action="{{ route('tickets.store') }}" enctype="multipart/form-data">
@@ -23,8 +23,7 @@
                             </div>
 
                             <div class="col-md-12">
-                                <x-input-label for="description" value="Description" />
-                                <x-text-input id="description" name="description" value="{{ old('description') }}" />
+                                <x-textarea label="Description" name="description">{{ old('description') }}</x-textarea>
                                 <x-input-error for="description" />
                             </div>
                         </div>

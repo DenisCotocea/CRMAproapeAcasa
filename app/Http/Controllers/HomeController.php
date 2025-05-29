@@ -39,7 +39,10 @@ class HomeController extends Controller
         $users = User::count();
         $properties = Property::count();
         $leads = Lead::count();
+        $activeUsers = User::withCount(['properties', 'leads'])
+            ->orderByRaw('(properties_count + leads_count) DESC')
+            ->paginate(5);
 
-        return view('dashboard', compact('users', 'properties', 'leads'));
+        return view('dashboard', compact('users', 'properties', 'leads', 'activeUsers'));
     }
 }

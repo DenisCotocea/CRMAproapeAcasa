@@ -82,10 +82,13 @@ class OlxScraperService {
                     $description = $this->extractDescription($propertyPage);
                     $images = $this->extractImages($propertyPage);
                     $attributes = $this->extractAttributes($propertyPage);
+
+
                     if (isset($attributes['Firma'])) {
                         Log::channel('daily')->info("Skipped property (Firma): {$olxId}");
                         return;
                     }
+
                     $olxScrapedProperty = OlxScrapedProperty::create([
                         'olx_id' => $olxId,
                         'olx_url' => $propertyUrl,
@@ -117,7 +120,7 @@ class OlxScraperService {
     }
 
     // Helper methods for extraction
-    private function extractName($node) { return $node->filter('div[data-cy="ad_title"] h4')->text(); }
+    private function extractName($node) { return $node->filter('div[data-cy="offer_title"] h4')->text(); }
 
     private function extractPrice($node) {
         try {

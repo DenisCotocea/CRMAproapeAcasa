@@ -5,7 +5,7 @@
         </h2>
     </x-slot>
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
             <div class="dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="overflow-hidden shadow-xl sm:rounded-lg">
                     <form class="p-4" method="POST" action="{{ route('leads.update', $lead->id) }}" enctype="multipart/form-data">
@@ -25,20 +25,20 @@
                             @role('Admin')
                                 <div class="col-md-4">
                                     <x-input-label for="user_id" value="User" />
-                                    <x-select id="user_id" name="user_id" :options="$users->pluck('name', 'id')" :selected="old('user_id', $lead->user_id)" required />
+                                    <x-select id="user_id" name="user_id" :options="$users->pluck('name', 'id')" :selected="old('user_id', $lead->user_id)" required :disabled="true"/>
                                     <x-input-error for="user_id" />
                                 </div>
                             @endrole
 
                             <div class="col-md-4">
                                 <x-input-label for="properties" value="Property" />
-                                <x-select id="properties" name="properties" :options="$properties->pluck('name', 'id')" :selected="old('property_id', $lead->property_id)"/>
+                                <x-search-select id="properties" name="properties" :options="$properties->pluck('name', 'id')" :selected="old('property_id', $lead->property_id)" :disabled="true"/>
                                 <x-input-error for="properties" />
                             </div>
 
                             <div class="col-md-4">
                                 <x-input-label for="email" value="Email" />
-                                <x-text-input id="email" name="email" value="{{ old('email', $lead->email) }}" required/>
+                                <x-text-input id="email" name="email" value="{{ old('email', $lead->email) }}"/>
                                 <x-input-error for="email" />
                             </div>
 
@@ -107,16 +107,15 @@
                             </div>
 
                             <div class="col-md-4">
-                                <x-select name="status" label="Status" :options="['New' => 'New', 'In Progress' => 'In Progress', 'Closed' => 'Closed', 'Lost' => 'Lost']" :selected="old('status', $lead->status)" />
+                                <x-select name="status" label="Status" :options="['New' => 'New', 'In Progress' => 'In Progress', 'Closed' => 'Closed', 'Lost' => 'Lost']" :selected="old('status', $lead->status)" :disabled="true"/>
                             </div>
 
                             <div class="col-md-4">
-                                <x-select name="priority" label="Priority" :options="['High' => 'High', 'Medium' => 'Medium', 'Low' => 'Low']" :selected="old('priority', $lead->priority)"/>
+                                <x-select name="priority" label="Priority" :options="['High' => 'High', 'Medium' => 'Medium', 'Low' => 'Low']" :selected="old('priority', $lead->priority)" :disabled="true"/>
                             </div>
 
-                            <div class="col-md-4">
-                                <x-input-label for="notes" value="Notes" />
-                                <x-text-input id="notes" name="notes" value="{{ old('notes', $lead->notes) }}" />
+                            <div class="col-md-12">
+                                <x-textarea label="Notes" name="notes">{{ old('notes', $lead->notes) }}</x-textarea>
                                 <x-input-error for="notes" />
                             </div>
 

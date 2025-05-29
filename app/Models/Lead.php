@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Property;
 use App\Models\User;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Schema;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
@@ -33,8 +35,14 @@ class Lead extends Model
 
     public function getActivitylogOptions(): LogOptions
     {
+        $columns = Schema::getColumnListing($this->getTable());
+
+        $filtered = Arr::except(array_flip($columns), [
+            'updated_at',
+        ]);
+
         return LogOptions::defaults()
-            ->logOnly(['*'])
+            ->logOnly(array_keys($filtered))
             ->setDescriptionForEvent(fn(string $eventName) => "{$eventName} lead")
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs()

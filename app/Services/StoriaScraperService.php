@@ -2,19 +2,22 @@
 
 namespace App\Services;
 
-use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpClient\HttpClient;
-use App\Models\StoriaScrapedProperty;
+use Symfony\Component\DomCrawler\Crawler;
 use Illuminate\Support\Facades\Log;
+use App\Models\StoriaScrapedProperty;
 
-class StoriaScraperService {
+class StoriaScraperService
+{
     protected $client;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->client = HttpClient::create();
     }
 
-    public function scrapeProperties($url) {
+    public function scrapeProperties($url)
+    {
         try {
             Log::channel('daily')->info("Starting scraping from URL: {$url}");
             $currentPage = 1;
@@ -22,34 +25,13 @@ class StoriaScraperService {
 
             do {
                 $currentUrl = $currentPage === 1 ? $baseUrl : "$baseUrl/?page=$currentPage";
+
                 Log::channel('daily')->info("Scraping page: $currentUrl");
-
-                $transaction = '';
-                $type = '';
-
-                if (str_contains($baseUrl, 'casa')) {
-                    $type = 'House';
-                } elseif (str_contains($baseUrl, 'teren')) {
-                    $type = 'Land';
-                } else {
-                    $type = 'Apartament/Garsoniera';
-                }
-
-                if (str_contains($baseUrl, 'inchiriere')) {
-                    $transaction = 'Rent';
-                } elseif (
-                    str_contains($baseUrl, 'vanzare') ||
-                    str_contains($baseUrl, 'casa') ||
-                    str_contains($baseUrl, 'teren')
-                ) {
-                    $transaction = 'Sale';
-                }
 
                 $response = $this->client->request('GET', $currentUrl);
                 $htmlContent = $response->getContent();
 
                 $crawler = new Crawler($htmlContent);
-
                 $properties = $crawler->filter('article[data-cy="listing-item"]');
 
                 if ($properties->count() === 0) {
@@ -58,170 +40,129 @@ class StoriaScraperService {
                     continue;
                 }
 
-                $properties->each(function ($node) use ($transaction, $type) {
-                    $propertyUrl = $node->filter('a[data-cy="listing-item-link"]')->attr('href');
-                    $propertyUrl = 'https://www.storia.ro' . $propertyUrl;
+                $properties->each(function ($node) {
+                    try {
+                        $propertyUrl = $node->filter('a[data-cy="listing-item-link"]')->attr('href');
+                        $propertyUrl = 'https://www.storia.ro' . $propertyUrl;
 
-                    $response = $this->client->request('GET', $propertyUrl);
-                    $propertyPage = new Crawler($response->getContent());
+                        $response = $this->client->request('GET', $propertyUrl);
+                        $propertyPage = new Crawler($response->getContent());
+                        $data = $this->extractData($propertyPage);
 
-                    $storiaIdText = $propertyPage->filter('div[data-sentry-element="DetailsContainer"] p[data-sentry-element="DetailsProperty"]')->text();
-                    preg_match('/ID\s*:\s*(\d+)/', $storiaIdText, $matches);
-                    $storiaId = isset($matches[1]) ? $matches[1] : null;
+                        $ad = $data['props']['pageProps']['ad'] ?? null;
+                        if (!$ad) {
+                            Log::channel('daily')->warning("Ad data missing, skipping.");
+                            return;
+                        }
 
-                    if (StoriaScrapedProperty::where('storia_id', $storiaId)->exists()) {
-                        Log::channel('daily')->info("Skipped duplicate property with hash: {$storiaId}");
-                        return;
+                        if (!empty($ad['agency'])) {
+                            Log::channel('daily')->info("Skipped agency-listed property with ID: " . ($ad['id'] ?? 'unknown'));
+                            return;
+                        }
+
+                        $storiaId = $ad['id'] ?? null;
+                        $name = $title = $ad['title'] ?? 'No Title';
+                        $description = $ad['description'] ?? '';
+                        $description = trim(preg_replace('/\s+/', ' ', preg_replace('/<[^>]+>/', ' ', $description)));
+                        $characteristics = $ad['characteristics'] ?? [];
+
+                        $price = $ad['target']['Price'] ?? null;
+                        $surfaceArea = $ad['target']['Area'] ?? null;
+                        $totalfloors = $ad['target']['Building_floors_num'] ?? null;
+                        $constractionYear = $ad['target']['Build_year'] ?? null;
+                        $offerType = $ad['target']['OfferType'] ?? '';
+                        $propertyType = ucfirst($ad['target']['ProperType'] ?? 'Unknown');
+
+                        $transaction = match ($offerType) {
+                            'vanzare' => 'Sale',
+                            'inchiriere' => 'Rent',
+                            default => 'Unknown',
+                        };
+
+                        $county = 'Brasov';
+                        $city = $ad['location']['address']['city']['name'] ?? null;
+                        $street = $ad['location']['address']['street']['name'] ?? null;
+                        $address = $county . " "  . $city . " " .$street;
+
+                        $roomsNumber = null;
+                        $floor = null;
+                        foreach ($characteristics as $char) {
+                            if ($char['key'] === 'rooms_num') {
+                                $roomsNumber = $char['localizedValue'];
+                            }
+                            if ($char['key'] === 'floor_no') {
+                                $floor = $char['localizedValue'];
+                            }
+                        }
+
+                        $images = $ad['images'] ?? [];
+                        $imageLinks = [];
+                        foreach ($images as $img) {
+                            if (isset($img['large'])) {
+                                $imageLinks[] = $img['large'];
+                            }
+                        }
+
+                        if (StoriaScrapedProperty::where('storia_id', $storiaId)->exists()) {
+                            Log::channel('daily')->info("Skipped duplicate property with ID: {$storiaId}");
+                            return;
+                        }
+
+                        $attributes = [
+                            'roomsNumber' => $roomsNumber,
+                            'floor' => $floor,
+                            'surfaceArea' => $surfaceArea,
+                            'totalFloors' => $totalfloors,
+                            'year' => $constractionYear,
+                        ];
+
+                        StoriaScrapedProperty::create([
+                            'storia_id' => $storiaId,
+                            'storia_url' => $propertyUrl,
+                            'title' => $name,
+                            'transaction' => $transaction,
+                            'type' => $propertyType,
+                            'county' => $county,
+                            'city' => $city,
+                            'address' => $address,
+                            'price' => $price ?? 0,
+                            'description' => $description,
+                            'images' => json_encode($imageLinks),
+                            'attributes' => json_encode($attributes),
+                        ]);
+
+                        Log::channel('daily')->info("Successfully scraped property: {$storiaId}");
+
+                    } catch (\Throwable $e) {
+                        Log::channel('daily')->error("Failed to scrape a property: {$e->getMessage()}");
                     }
-
-                    $name = $this->extractName($propertyPage);
-                    $price = $this->extractPrice($propertyPage);
-                    $description = $this->extractDescription($propertyPage);
-                    $images = $this->extractImages($propertyPage);
-                    $attributes = $this->extractAttributes($propertyPage);
-                    $address = $this->extractAddress($propertyPage);
-                    $addressParts = $this->extractAndSplitAddress($propertyPage);
-                    if (isset($attributes['Tip vânzător:']) && strtolower($attributes['Tip vânzător:']) === 'agenție') {
-                        Log::channel('daily')->info("Skipped property (Tip vânzător: agenție): {$storiaId}");
-                        return;
-                    }
-
-                    $StoriaScrapedProperty = StoriaScrapedProperty::create([
-                        'storia_id' => $storiaId,
-                        'storia_url' => $propertyUrl,
-                        'title' => $name,
-                        'transaction' => $transaction,
-                        'type' => $type,
-                        'county' => $addressParts[1],
-                        'city' => $addressParts[2],
-                        'address' => $address,
-                        'price' => $price,
-                        'description' => $description,
-                        'images' => json_encode($images),
-                        'attributes' => json_encode($attributes),
-                    ]);
-
-                    Log::channel('daily')->info("Successfully scraped property: {$storiaId}");
                 });
-
+                sleep(1);
                 $currentPage++;
-
-                $nextPageBtn = $crawler->filter('li[aria-label="Go to next Page"]');
-
-                $hasNextPage = $nextPageBtn->count() > 0 && $nextPageBtn->attr('aria-disabled') === 'false';
-
-            } while ($hasNextPage);
+            } while ($currentPage < 10);
 
             Log::channel('daily')->info("Scraping completed.");
 
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             Log::channel('daily')->error("Scraping failed: {$e->getMessage()}");
         }
     }
 
-    // Helper methods for extraction
-    private function extractName($node) {return $node->filter('h1[data-cy="adPageAdTitle"]')->text();}
+    private function extractData($node)
+    {
+        $scriptNode = $node->filter('script#__NEXT_DATA__');
 
-    private function extractPrice($node) {
-        $priceText = $node->filter('strong[data-cy="adPageHeaderPrice"]')->text();
-        $priceText = str_replace([' ', '€', 'Lei', ','], ['', '', '', ''], $priceText);
-
-        return (int) $priceText;
-    }
-
-    private function extractAddress($node) {
-        $filtered = $node->filter('div.css-pla15i');
-
-        if ($filtered->count() === 0) {
-            return 'Brasov';
+        if ($scriptNode->count() === 0) {
+            throw new \Exception("JSON script not found");
         }
 
-        $divText = $filtered->text();
+        $jsonContent = $scriptNode->text();
+        $data = json_decode($jsonContent, true);
 
-        if (preg_match('/[A-ZĂÂȘȚÎ][^{}]*$/u', $divText, $matches)) {
-            return trim($matches[0]);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new \Exception("JSON decoding failed: " . json_last_error_msg());
         }
 
-        return trim($divText);
-    }
-
-    private function extractAndSplitAddress($node) {
-        // Filter the <a> tag with the attribute data-sentry-element="StyledLink"
-        $aNode = $node->filter('a[data-sentry-element="StyledLink"]');
-
-        if ($aNode->count() === 0) {
-            return []; // no element found, return empty array
-        }
-
-        // Get the text inside <a>, ignoring the SVG (it won't be part of the text)
-        $fullText = $aNode->text();
-
-        // Split by commas
-        $parts = explode(',', $fullText);
-
-        // Trim whitespace around each part
-        $parts = array_map('trim', $parts);
-
-        return $parts;
-    }
-
-
-    private function extractDescription($node) {
-        return $node->filter('div[data-cy="adPageAdDescription"]')->text();
-    }
-
-    private function extractImages($node) {
-        $images = [];
-
-        $pictures = $node->filter('picture');
-
-        foreach ($pictures as $picture) {
-            $pictureNode = new \Symfony\Component\DomCrawler\Crawler($picture);
-
-            // Get all source srcset attributes inside picture
-            $sourceSrcsets = $pictureNode->filter('source')->each(function ($source) {
-                return $source->attr('srcset');
-            });
-
-            // Get img src attribute inside picture
-            $imgSrcs = $pictureNode->filter('img')->each(function ($img) {
-                return $img->attr('src');
-            });
-
-            // Add all found URLs to images array
-            foreach ($sourceSrcsets as $srcset) {
-                if ($srcset) {
-                    $images[] = $srcset;
-                }
-            }
-
-            foreach ($imgSrcs as $src) {
-                if ($src) {
-                    $images[] = $src;
-                }
-            }
-        }
-
-        // Remove duplicates and reindex
-        return array_values(array_unique($images));
-    }
-
-    private function extractAttributes($node) {
-        $attributes = [];
-
-        // Selecting all attribute rows
-        $node->filter('div[data-sentry-element="ItemGridContainer"]')->each(function ($attrNode) use (&$attributes) {
-            $keyNode = $attrNode->filter('p.css-nlohq6')->first();
-            $valueNode = $attrNode->filter('p.css-nlohq6, p.css-10ydh87')->last();
-
-            if ($keyNode->count() > 0 && $valueNode->count() > 0) {
-                $key = trim(str_replace(['<!-- -->'], '', $keyNode->text()));
-                $value = trim(str_replace(['<!-- -->'], '', $valueNode->text()));
-                $attributes[$key] = $value;
-            }
-        });
-
-        return $attributes;
+        return $data;
     }
 }
-

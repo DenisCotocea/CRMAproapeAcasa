@@ -3,7 +3,9 @@
 
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <body class="font-sans antialiased">
+
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
+            @include('components.alerts')
             @include('partials.navigation')
 
             <!-- Page Heading -->

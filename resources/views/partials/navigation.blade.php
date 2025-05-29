@@ -16,12 +16,22 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
 
-                    <x-nav-link :href="route('properties.index')" :active="request()->routeIs('properties.index')">
-                        {{ __('Properties') }}
+                    <x-nav-link :href="route('properties.portfolioView')" :active="request()->routeIs('properties.portfolioView')">
+                        {{ __('Portfolio') }}
                     </x-nav-link>
 
-                    <x-nav-link :href="route('leads.index')" :active="request()->routeIs('leads.index')">
-                        {{ __('Leads') }}
+                    <x-nav-link :href="route('properties.index')" :active="request()->routeIs('properties.index')">
+                        {{ __('All Properties') }}
+                    </x-nav-link>
+
+                    @role('Admin')
+                        <x-nav-link :href="route('leads.index')" :active="request()->routeIs('leads.index')">
+                            {{ __('Leads') }}
+                        </x-nav-link>
+                    @endrole
+
+                    <x-nav-link :href="route('leads.portfolioView')" :active="request()->routeIs('leads.portfolioView')">
+                        {{ __('My Leads') }}
                     </x-nav-link>
 
                     <x-nav-link :href="route('tickets.index')" :active="request()->routeIs('tickets.index')">
@@ -32,7 +42,7 @@
                         {{ __('Scraper') }}
                     </x-nav-link>
 
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                    <x-nav-link :href="route('properties.delistedView')" :active="request()->routeIs('properties.delistedView')">
                         {{ __('Delisted') }}
                     </x-nav-link>
 
@@ -114,12 +124,22 @@
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
 
-            <x-responsive-nav-link :href="route('properties.index')" :active="request()->routeIs('properties.index')">
-                {{ __('Properties') }}
+            <x-responsive-nav-link :href="route('properties.portfolioView')" :active="request()->routeIs('properties.portfolioView')">
+                {{ __('Portfolio') }}
             </x-responsive-nav-link>
 
-            <x-responsive-nav-link :href="route('leads.index')" :active="request()->routeIs('leads.index')">
-                {{ __('Leads') }}
+            <x-responsive-nav-link :href="route('properties.index')" :active="request()->routeIs('properties.index')">
+                {{ __('All Properties') }}
+            </x-responsive-nav-link>
+
+            @role('Admin')
+                <x-responsive-nav-link :href="route('leads.index')" :active="request()->routeIs('leads.index')">
+                    {{ __('Leads') }}
+                </x-responsive-nav-link>
+            @endrole
+
+            <x-responsive-nav-link :href="route('leads.portfolioView')" :active="request()->routeIs('leads.portfolioView')">
+                {{ __('My Leads') }}
             </x-responsive-nav-link>
 
             <x-responsive-nav-link :href="route('tickets.index')" :active="request()->routeIs('tickets.index')">
@@ -130,7 +150,7 @@
                 {{ __('Scraper') }}
             </x-responsive-nav-link>
 
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+            <x-responsive-nav-link :href="route('properties.delistedView')" :active="request()->routeIs('properties.delistedView')">
                 {{ __('Delisted') }}
             </x-responsive-nav-link>
 

@@ -34,11 +34,9 @@ class ImportOlxProperties extends Command {
         $olx->scrapeProperties($this->HouseBuyUrl);
         $olx->scrapeProperties($this->landBuyUrl);
 
-
         Log::channel('daily')->info("Starting property import...");
 
-
-        $scrapedProperties = OlxScrapedProperty::all()->where('imported', 0);
+        $scrapedProperties = OlxScrapedProperty::where('imported', 0)->get();
         foreach ($scrapedProperties as $scraped) {
             try {
                 $attributes = json_decode($scraped->attributes, true);
@@ -62,16 +60,10 @@ class ImportOlxProperties extends Command {
 
                 foreach (json_decode($scraped->images) as $imageUrl) {
                     try {
-                        // Fetch the image content from the URL
                         $imageContent = Http::get($imageUrl)->body();
-
-                        // Generate a unique filename for the image
                         $filename = 'images/' . uniqid() . '.jpg';
-
-                        // Save the image to public storage
                         Storage::disk('public')->put($filename, $imageContent);
 
-                        // Create the image record in the database
                         Image::create([
                             'entity_id' => $property->id,
                             'entity_type' => Property::class,
@@ -82,7 +74,6 @@ class ImportOlxProperties extends Command {
                         Log::error("Failed to save image from URL {$imageUrl}: {$e->getMessage()}");
                     }
                 }
-
 
                 Log::channel('daily')->info("Successfully imported property: {$scraped->id}");
                 $scraped->imported = 1;
@@ -96,32 +87,26 @@ class ImportOlxProperties extends Command {
     }
 
     private function extractConstructionYear($constructionYearText) {
-        // If the text is empty, return null
         if (empty($constructionYearText)) {
             return null;
         }
 
-        // Use regex to extract the first 4-digit year
         if (preg_match('/\b(\d{4})\b/', $constructionYearText, $matches)) {
             return (int) $matches[1];
         }
 
-        // If no year found, return null
         return null;
     }
 
     private function extractUsableArea($usableAreaText) {
-        // If the text is empty, return null
         if (empty($usableAreaText)) {
             return null;
         }
 
-        // Use regex to extract numeric value (integer or decimal)
         if (preg_match('/[\d.]+/', $usableAreaText, $matches)) {
             return (float) $matches[0];
         }
 
-        // If no numeric value found, return null
         return null;
     }
 
@@ -130,10 +115,8 @@ class ImportOlxProperties extends Command {
             return null;
         }
 
-        // Normalize the text (trim and lowercase)
         $floorText = strtolower(trim($floorText));
 
-        // Handle special cases
         $floorMapping = [
             'parter' => 0,
             'demisol' => -1,
@@ -141,17 +124,14 @@ class ImportOlxProperties extends Command {
             '10 sau peste' => 10
         ];
 
-        // If it's directly in the mapping, return the value
         if (array_key_exists($floorText, $floorMapping)) {
             return $floorMapping[$floorText];
         }
 
-        // If it's numeric, return it as an integer
         if (is_numeric($floorText)) {
             return (int)$floorText;
         }
 
-        // If it doesn't match, return null
         return null;
     }
 }

@@ -11,7 +11,7 @@ class TicketController extends Controller
 {
     public function index()
     {
-        $tickets = Ticket::all();
+        $tickets = Ticket::paginate(10); // 10 tickets per page
         return view('tickets.index', compact('tickets'));
     }
 

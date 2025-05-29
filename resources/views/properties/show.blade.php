@@ -6,7 +6,7 @@
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
             <div class="dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6 text-white">
                 <div class="row">
                     <div class="col-md-4">
@@ -37,7 +37,7 @@
                             <li class="nav-item"><a class="nav-link" id="logs-tab" data-bs-toggle="tab" href="#logs">Logs</a></li>
                             <li class="nav-item"><a class="nav-link" id="comments-tab" data-bs-toggle="tab" href="#comments">Comments</a></li>
                             <li class="nav-item"><a class="nav-link" id="description-tab" data-bs-toggle="tab" href="#description">Description</a></li>
-                            <li class="nav-item"><a class="nav-link" id="description-tab" data-bs-toggle="tab" href="#leads">Leads</a></li>
+                            <li class="nav-item"><a class="nav-link" id="leads-tab" data-bs-toggle="tab" href="#leads">Leads</a></li>
                         </ul>
 
                         <div class="tab-content">
@@ -159,10 +159,13 @@
                                         <p class="property-detail"><i class="bi bi-lift"></i> <strong>Elevator:</strong> <x-badge :color="$property->elevator ? 'green' : 'red'">{{ $property->elevator ? 'Yes' : 'No' }}</x-badge></p>
                                     @endif
 
+                                    @if($property->from_scraper)
+                                        <p class="property-detail"><i class="bi bi-webcam"></i> <strong>Scraped from:</strong> <a target="_blank" href="{{$property->from_scraper}}"> {{$property->from_scraper}} </a></p>
+                                    @endif
+
                                     @if($property->scraper_link)
                                         <p class="property-detail"><i class="bi bi-webcam"></i> <strong>Link:</strong> <a target="_blank" href="{{$property->scraper_link}}"> {{$property->scraper_link}} </a></p>
                                     @endif
-
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="logs">
@@ -253,7 +256,7 @@
                                                 <th class="px-6 py-3">Assigned To</th>
                                                 <th class="px-6 py-3">Priority</th>
                                                 <th class="px-6 py-3">Status</th>
-                                                <th class="px-6 py-3">Document</th>
+                                                <th class="px-6 py-3">Actions</th>
                                             </x-slot>
 
                                             @foreach ($property->leads as $lead)
@@ -269,12 +272,20 @@
                                                             {{ ucfirst($lead->status) }}
                                                         </x-badge>
                                                     </td>
-                                                    @if($lead->doc_attachment)
-                                                        <td class="px-6 py4">
-                                                            <x-link-primary-button href="{{ asset('storage/' . $lead->doc_attachment) }}" target="_blank">See document</x-link-primary-button>
-                                                        </td>
-                                                    @endif
-                                                </tr>
+                                                    <td class="px-6 py-4">
+                                                        <div class="d-flex gap-2">
+                                                            @if($lead->doc_attachment)
+                                                                <x-link-primary-button href="{{ asset('storage/' . $lead->doc_attachment) }}" target="_blank">See document</x-link-primary-button>
+                                                            @endif
+
+                                                            @if(auth()->user()->hasRole('Admin') || $lead->user_id === auth()->id())
+                                                                    <x-link-primary-button href="{{ route('leads.show', $lead->id) }}">
+                                                                        {{ __('Show') }}
+                                                                    </x-link-primary-button>
+                                                            @endif
+                                                        </div>
+                                                    </td>
+                                                </tr
                                             @endforeach
                                         </x-table>
                                     @endif

@@ -6,7 +6,7 @@
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
             <div class=" dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="ms-2 mb-2 mt-2 me-2 text-white">
                     <h3>Properties</h3>
@@ -24,9 +24,9 @@
                                 <th class="px-6 py-3">Price</th>
                                 <th class="px-6 py-3">Type</th>
                                 <th class="px-6 py-3">Transaction</th>
-                                <th class="px-6 py-3">City</th>
-                                <th class="px-6 py-3">Promoted</th>
+                                <th class="px-6 py-3">Address</th>
                                 <th class="px-6 py-3">Status</th>
+                                <th class="px-6 py-3">From</th>
                                 <th class="px-6 py-3">Actions</th>
                             </x-slot>
 
@@ -50,21 +50,15 @@
                                     </td>
                                     <td class="px-6 py-4">{{ ucfirst($property->type) }}</td>
                                     <td class="px-6 py-4">{{ ucfirst($property->tranzaction) }}</td>
-                                    <td class="px-6 py-4">{{ $property->city }}</td>
-                                    <td class="px-6 py-4">
-                                        @if ($property->promoted)
-                                            <x-badge color="green">Yes</x-badge>
-                                        @else
-                                            <x-badge color="gray">No</x-badge>
-                                        @endif
-                                    </td>
+                                    <td class="px-6 py-4">{{ $property->address }}</td>
                                     <td class="px-6 py-4">
                                         <x-badge :color="$property->availability_status === 'available' ? 'green' : ($property->availability_status === 'reserved' ? 'yellow' : 'red')">
                                             {{ ucfirst($property->availability_status) }}
                                         </x-badge>
                                     </td>
+                                    <td class="px-6 py-4">{{ $property->from_scraper ?? 'CRM'}}</td>
                                     <td class="px-6 py-4">
-                                        <div class="d-flex justify-between mb-2 gap-2">
+                                        <div class="d-flex mb-2 gap-2">
                                             <x-link-primary-button href="{{ route('properties.show', $property->id) }}">
                                                 {{ __('Show') }}
                                             </x-link-primary-button>
@@ -73,16 +67,20 @@
                                                     {{ __('Edit') }}
                                                 </x-link-primary-button>
                                             @endif
+
+                                            @role('Admin')
+                                            @if(!$property->user_id)
+                                                <x-link-primary-button href="{{ route('properties.assign', $property->id) }}">
+                                                    {{ __('Assign') }}
+                                                </x-link-primary-button>
+                                            @endif
+                                            <form action="{{ route('properties.destroy', $property->id) }}" method="POST" class="inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <x-danger-button type="submit">{{ __('Delete') }}</x-danger-button>
+                                            </form>
+                                            @endrole
                                         </div>
-                                        @role('Admin')
-                                            <div class="text-center">
-                                                <form action="{{ route('properties.destroy', $property->id) }}" method="POST" class="inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <x-danger-button type="submit">{{ __('Delete') }}</x-danger-button>
-                                                </form>
-                                            </div>
-                                        @endrole
                                     </td>
                                 </tr>
                             @endforeach

@@ -6,7 +6,7 @@
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
             <div class="dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6 text-white">
                 <div class="row">
                     <div class="col-md-12">
@@ -200,7 +200,7 @@
                                                         </x-badge>
                                                     </td>
                                                     <td class="px-6 py-4">
-                                                        <div class="d-flex justify-between mb-2">
+                                                        <div class="d-flex gap-2 mb-2">
                                                             <x-link-primary-button href="{{ route('properties.show', $property->id) }}">
                                                                 {{ __('Show') }}
                                                             </x-link-primary-button>
@@ -210,15 +210,6 @@
                                                                 </x-link-primary-button>
                                                             @endif
                                                         </div>
-                                                        @role('Admin')
-                                                            <div class="text-center">
-                                                                <form action="{{ route('properties.destroy', $property->id) }}" method="POST" class="inline">
-                                                                    @csrf
-                                                                    @method('DELETE')
-                                                                    <x-danger-button type="submit">{{ __('Delete') }}</x-danger-button>
-                                                                </form>
-                                                            </div>
-                                                        @endrole
                                                     </td>
                                                 </tr>
                                             @endforeach
