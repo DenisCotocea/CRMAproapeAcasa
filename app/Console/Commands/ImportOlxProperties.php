@@ -27,12 +27,12 @@ class ImportOlxProperties extends Command {
 
     public function handle() {
 
-        $olx = new OlxScraperService();
+//        $olx = new OlxScraperService();
 
-        $olx->scrapeProperties($this->ApartamentBuyUrl);
-        $olx->scrapeProperties($this->ApartamentRentUrl);
-        $olx->scrapeProperties($this->HouseBuyUrl);
-        $olx->scrapeProperties($this->landBuyUrl);
+//        $olx->scrapeProperties($this->ApartamentBuyUrl);
+//        $olx->scrapeProperties($this->ApartamentRentUrl);
+//        $olx->scrapeProperties($this->HouseBuyUrl);
+//        $olx->scrapeProperties($this->landBuyUrl);
 
         Log::channel('daily')->info("Starting property import...");
 

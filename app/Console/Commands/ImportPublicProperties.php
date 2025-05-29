@@ -30,14 +30,14 @@ class ImportPublicProperties extends Command {
     public function handle()
     {
 
-        $public = new PublicScraperService();
-
-        $public->scrapeProperties($this->ApartamentBuyUrl);
-        $public->scrapeProperties($this->ApartamentRentUrl);
-        $public->scrapeProperties($this->GarsonieraBuyUrl);
-        $public->scrapeProperties($this->GarsonieraRentUrl);
-        $public->scrapeProperties($this->HouseBuyUrl);
-        $public->scrapeProperties($this->LandBuyUrl);
+//        $public = new PublicScraperService();
+//
+//        $public->scrapeProperties($this->ApartamentBuyUrl);
+//        $public->scrapeProperties($this->ApartamentRentUrl);
+//        $public->scrapeProperties($this->GarsonieraBuyUrl);
+//        $public->scrapeProperties($this->GarsonieraRentUrl);
+//        $public->scrapeProperties($this->HouseBuyUrl);
+//        $public->scrapeProperties($this->LandBuyUrl);
 
         Log::channel('daily')->info("Starting property import...");
 
