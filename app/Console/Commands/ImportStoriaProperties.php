@@ -25,12 +25,12 @@ class ImportStoriaProperties extends Command {
 
         $storia = new StoriaScraperService();
 
-//        $storia->scrapeProperties($this->ApartamentBuyUrl);
-//        $storia->scrapeProperties($this->ApartamentRentUrl);
-//        $storia->scrapeProperties($this->GarsonieraRentUrl);
-//        $storia->scrapeProperties($this->GarsonieraBuyUrl);
-//        $storia->scrapeProperties($this->HouseBuyUrl);
-//        $storia->scrapeProperties($this->LandBuyUrl);
+        $storia->scrapeProperties($this->ApartamentBuyUrl);
+        $storia->scrapeProperties($this->ApartamentRentUrl);
+        $storia->scrapeProperties($this->GarsonieraRentUrl);
+        $storia->scrapeProperties($this->GarsonieraBuyUrl);
+        $storia->scrapeProperties($this->HouseBuyUrl);
+        $storia->scrapeProperties($this->LandBuyUrl);
 
         Log::channel('daily')->info("Starting property import...");
         $scrapedProperties = StoriaScrapedProperty::where('imported', 0)->get();

@@ -139,7 +139,7 @@ class StoriaScraperService
                 });
                 sleep(1);
                 $currentPage++;
-            } while ($currentPage < 10);
+            } while ($currentPage < 110);
 
             Log::channel('daily')->info("Scraping completed.");
 
