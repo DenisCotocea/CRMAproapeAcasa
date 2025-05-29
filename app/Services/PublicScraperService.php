@@ -85,7 +85,7 @@ class PublicScraperService {
                     }
 
                     // Add delay between property page visits
-                    usleep(random_int(600000, 2000000)); // 0.6 to 2 sec
+                    usleep(random_int(2000000, 4000000)); // 0.6 to 2 sec
 
                     $propertyHtml = $this->fetchWithRetry($propertyUrl);
                     $propertyPage = new Crawler($propertyHtml);
@@ -114,7 +114,7 @@ class PublicScraperService {
                     Log::channel('daily')->info("Successfully scraped property: {$propertyUrl}");
                 });
 
-                sleep(random_int(1, 3));
+                sleep(5);
 
                 $currentPage++;
 
