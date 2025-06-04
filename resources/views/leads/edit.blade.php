@@ -25,14 +25,14 @@
                             @role('Admin')
                                 <div class="col-md-4">
                                     <x-input-label for="user_id" value="User" />
-                                    <x-select id="user_id" name="user_id" :options="$users->pluck('name', 'id')" :selected="old('user_id', $lead->user_id)" required :disabled="true"/>
+                                    <x-select id="user_id" name="user_id" :options="$users->pluck('name', 'id')" :selected="old('user_id', $lead->user_id)" required/>
                                     <x-input-error for="user_id" />
                                 </div>
                             @endrole
 
                             <div class="col-md-4">
                                 <x-input-label for="properties" value="Property" />
-                                <x-search-select id="properties" name="properties" :options="$properties->pluck('name', 'id')" :selected="old('property_id', $lead->property_id)" :disabled="true"/>
+                                <x-select id="properties" :tomSelect="true" name="properties"  :options="$properties->pluck('name', 'id')" :selected="old('property_id', $lead->property_id)"/>
                                 <x-input-error for="properties" />
                             </div>
 
@@ -108,6 +108,15 @@
 
                             <div class="col-md-4">
                                 <x-select name="status" label="Status" :options="['New' => 'New', 'In Progress' => 'In Progress', 'Closed' => 'Closed', 'Lost' => 'Lost']" :selected="old('status', $lead->status)" :disabled="true"/>
+                            </div>
+
+                            <div class="col-md-4">
+                                <x-select name="type" label="Type" :options="['Sale' => 'Sale', 'Rent' => 'Rent']" :selected="old('type', $lead->type)" :disabled="true"/>
+                            </div>
+
+
+                            <div class="col-md-4">
+                                <x-select name="role" label="Role" :options="['Buyer' => 'Buyer', 'Owner' => 'Owner']" :selected="old('role', $lead->role)" :disabled="true"/>
                             </div>
 
                             <div class="col-md-4">

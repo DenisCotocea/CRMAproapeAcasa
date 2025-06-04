@@ -112,6 +112,12 @@ class PropertyController extends Controller
                 $data['user_id'] = $user->id;
             }
 
+            do {
+                $uniqueCode = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+            } while (Property::where('unique_code', $uniqueCode)->exists());
+
+            $data['unique_code'] = $uniqueCode;
+
             $property = Property::create($data);
 
             if ($request->hasFile('images')) {
@@ -146,7 +152,7 @@ class PropertyController extends Controller
         $activities = $property->activities()->latest()->get();
 
         if ($property->locked_by_user_id && $property->locked_by_user_id !== auth()->id() && now()->diffInSeconds($property->locked_at) < 60) {
-            return back()->withErrors(['Această proprietate este deja accesată de altcineva.']);
+            return redirect()->back()->with('error', 'An agent is already viewing this property. Please try again later!');
         }
 
         $property->update([

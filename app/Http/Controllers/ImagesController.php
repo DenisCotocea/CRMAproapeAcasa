@@ -29,7 +29,17 @@ class ImagesController extends Controller
             }
         }
 
-        return back();
+        return back()->with('success', 'The images were added successfully.');
+    }
+
+    public function deleteAll(Property $property)
+    {
+        foreach ($property->images as $image) {
+            Storage::delete($image->path);
+            $image->delete();
+        }
+
+        return back()->with('success', 'The images were deleted successfully.');
     }
 
     public function destroy(Image $image)
@@ -37,6 +47,6 @@ class ImagesController extends Controller
         Storage::disk('public')->delete($image->path);
         $image->delete();
 
-        return back();
+        return back()->with('success', 'The image was deleted successfully.');
     }
 }

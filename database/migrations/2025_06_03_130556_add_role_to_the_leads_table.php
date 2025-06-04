@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('olx_scraped_properties', function (Blueprint $table) {
-            $table->string('type')->nullable();
-            $table->string('transaction')->nullable();
+        Schema::table('leads', function (Blueprint $table) {
+            $table->enum('role', ['Owner', 'Buyer'])->default('Buyer')->after('type');
         });
     }
 
@@ -22,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('olx_scraped_properties', function (Blueprint $table) {
-            //
+        Schema::table('leads', function (Blueprint $table) {
+            $table->dropColumn('role');
         });
     }
 };

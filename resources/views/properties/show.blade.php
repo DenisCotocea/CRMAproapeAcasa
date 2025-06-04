@@ -9,6 +9,13 @@
         <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
             <div class="dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6 text-white">
                 <div class="row">
+                    <div class="d-flex g-2 justify-end">
+                        @if(!$property->user_id)
+                            <x-link-primary-button href="{{ route('properties.assign', $property->id) }}">
+                                {{ __('Assign') }}
+                            </x-link-primary-button>
+                        @endif
+                    </div>
                     <div class="col-md-4">
                         <div class="relative w-full mb-6" style="height: 400px">
                             <div class="swiper swiper-initialized h-100">
@@ -100,7 +107,7 @@
                                     @endif
 
                                     @if(!is_null($property->furnished))
-                                        <p class="property-detail"><i class="bi bi-sofa"></i> <strong>Furnished:</strong> <x-badge :color="$property->furnished ? 'green' : 'red'">{{ $property->furnished ? 'Yes' : 'No' }}</x-badge></p>
+                                        <p class="property-detail"><i class="bi bi-archive"></i> <strong>Furnished:</strong> <x-badge :color="$property->furnished ? 'green' : 'red'">{{ $property->furnished ? 'Yes' : 'No' }}</x-badge></p>
                                     @endif
 
                                     @if($property->room_numbers)
@@ -108,7 +115,7 @@
                                     @endif
 
                                     @if($property->floor)
-                                        <p class="property-detail"><i class="bi bi-stairs"></i> <strong>Floor:</strong> {{ $property->floor }}</p>
+                                        <p class="property-detail"><i class="bi bi-buildings-fill"></i> <strong>Floor:</strong> {{ $property->floor }}</p>
                                     @endif
 
                                     @if($property->total_floors)
@@ -152,11 +159,11 @@
                                     @endif
 
                                     @if(!is_null($property->garage))
-                                        <p class="property-detail"><i class="bi bi-garage"></i> <strong>Garage:</strong> <x-badge :color="$property->garage ? 'green' : 'red'">{{ $property->garage ? 'Yes' : 'No' }}</x-badge></p>
+                                        <p class="property-detail"><i class="bi bi-car-front-fill"></i> <strong>Garage:</strong> <x-badge :color="$property->garage ? 'green' : 'red'">{{ $property->garage ? 'Yes' : 'No' }}</x-badge></p>
                                     @endif
 
                                     @if(!is_null($property->elevator))
-                                        <p class="property-detail"><i class="bi bi-lift"></i> <strong>Elevator:</strong> <x-badge :color="$property->elevator ? 'green' : 'red'">{{ $property->elevator ? 'Yes' : 'No' }}</x-badge></p>
+                                        <p class="property-detail"><i class="bi bi-rocket"></i> <strong>Elevator:</strong> <x-badge :color="$property->elevator ? 'green' : 'red'">{{ $property->elevator ? 'Yes' : 'No' }}</x-badge></p>
                                     @endif
 
                                     @if($property->from_scraper)
@@ -165,6 +172,10 @@
 
                                     @if($property->scraper_link)
                                         <p class="property-detail"><i class="bi bi-webcam"></i> <strong>Link:</strong> <a target="_blank" href="{{$property->scraper_link}}"> {{$property->scraper_link}} </a></p>
+                                    @endif
+
+                                    @if($property->unique_code)
+                                        <p class="property-detail"><i class="bi bi-upc-scan"></i> <strong>Unique code:</strong>  {{$property->unique_code}} </p>
                                     @endif
                                 </div>
                             </div>
@@ -248,6 +259,11 @@
 
                             <div class="tab-pane fade" id="leads">
                                 <div class="property-leads-container">
+                                    <div class="text-end">
+                                        <x-link-primary-button href="{{ route('leads.create', ['property_id' => $property->id]) }}">
+                                            Add Lead
+                                        </x-link-primary-button>
+                                    </div>
                                     @if($property->leads->isEmpty())
                                         <p>No leads valabile for this property.</p>
                                     @else

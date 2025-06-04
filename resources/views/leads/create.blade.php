@@ -25,14 +25,14 @@
                             @role('Admin')
                                 <div class="col-md-4">
                                     <x-input-label for="user_id" value="User" />
-                                    <x-select id="user_id" name="user_id" :options="$users->pluck('name', 'id')" required />
+                                    <x-select id="user_id" name="user_id" :options="$users->pluck('name', 'id')" required/>
                                     <x-input-error for="user_id" />
                                 </div>
                             @endrole
 
                             <div class="col-md-4">
                                 <x-input-label for="properties" value="Property" />
-                                <x-search-select id="properties" name="properties" :options="$properties->pluck('name', 'id')"/>
+                                <x-select id="properties" name="properties" :options="$properties->pluck('name', 'id')" :tomSelect="true"/>
                                 <x-input-error for="properties" />
                             </div>
 
@@ -112,6 +112,14 @@
 
                             <div class="col-md-4">
                                 <x-select name="priority" label="Priority" :options="['High' => 'High', 'Medium' => 'Medium', 'Low' => 'Low']" />
+                            </div>
+
+                            <div class="col-md-4">
+                                <x-select name="type" label="Type" :options="['Sale' => 'Sale', 'Rent' => 'Rent']"  required/>
+                            </div>
+
+                            <div class="col-md-4">
+                                <x-select name="role" label="Role" :options="['Owner' => 'Owner', 'Buyer' => 'Buyer']"  required/>
                             </div>
 
                             <div class="col-md-12">

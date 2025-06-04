@@ -1,9 +1,13 @@
 <form action="{{ route('images.store') }}" method="POST" enctype="multipart/form-data">
     @csrf
-    <div class="mb-4">
-        <input type="file" name="images[]" multiple class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
-        <input type="hidden" name="entity_id" value="{{ $entityId }}">
-        <input type="hidden" name="entity_type" value="{{ $entityType }}">
+    <div class="d-flex justify-between mt-2 mb-2">
+        <div>
+            <input type="file" name="images[]" multiple class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
+            <input type="hidden" name="entity_id" value="{{ $entityId }}">
+            <input type="hidden" name="entity_type" value="{{ $entityType }}">
+        </div>
+
+        <x-danger-button type="submit">{{ __('Add photos') }}</x-danger-button>
     </div>
 </form>
 

@@ -8,8 +8,8 @@
     <div class="py-12">
         <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
             <div class="dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="overflow-hidden shadow-xl sm:rounded-lg">
-                    <form class="p-4" method="POST" action="{{ route('properties.update', $property->id) }}" enctype="multipart/form-data">
+                <div class="overflow-hidden shadow-xl sm:rounded-lg p-4">
+                    <form method="POST" action="{{ route('properties.update', $property->id) }}" enctype="multipart/form-data">
                         @csrf
                         @method('PUT') <!-- Method to send PUT request for update -->
 
@@ -33,7 +33,7 @@
                                         id="user_id"
                                         name="user_id"
                                         :options="$users->pluck('name', 'id')"
-                                        :selected="old('user_id', $property->user_id)"
+{{--                                        :selected="old('user_id', $property->user_id)"--}}
                                         required
                                         :disabled="true"
                                     />
@@ -208,15 +208,27 @@
                                 <x-checkbox name="parking" label="Parking" :checked="old('parking', $property->parking)" />
                             </div>
 
-                            <div class="col-md-12">
-                                <x-image-uploader :entityId="$property->id" :entityType="App\Models\Property::class" />
-                            </div>
-
                             <div class="mt-4 text-end">
                                 <x-primary-button>Update Property</x-primary-button>
                             </div>
                         </div>
                     </form>
+
+                    <div class="col-md-12">
+                        <x-image-uploader :entityId="$property->id" :entityType="App\Models\Property::class" />
+                    </div>
+
+                    @if($property->images->count() > 1)
+                        <div class="col-md-12">
+                            <div class="text-end">
+                                <form action="{{ route('images.deleteAll', $property) }}" method="POST" class="mt-2">
+                                    @csrf
+                                    <x-danger-button type="submit">{{ __('Delete All Images') }}</x-danger-button>
+                                </form>
+                            </div>
+                        </div>
+                    @endif
+
                 </div>
             </div>
         </div>

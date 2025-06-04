@@ -68,6 +68,14 @@
                             </div>
 
                             <div class="col-md-4">
+                                <x-select name="filter[type]" label="Type" :options="['Sale' => 'Sale', 'Rent' => 'Rent']" />
+                            </div>
+
+                            <div class="col-md-4">
+                                <x-select name="filter[role]" label="Role" :options="['Buyer' => 'Buyer', 'Owner' => 'Owner']" />
+                            </div>
+
+                            <div class="col-md-4">
                                 <x-select name="filter[priority]" label="Priority" :options="['High' => 'High', 'Medium' => 'Medium', 'Low' => 'Low']" />
                             </div>
 

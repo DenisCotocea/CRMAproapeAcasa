@@ -20,7 +20,7 @@ class LeadController extends Controller
 
         $leads = QueryBuilder::for(Lead::with(['user', 'properties']))
             ->allowedFilters([
-                'name', 'email', 'phone', 'status', 'priority', 'county', 'city',
+                'name', 'email', 'phone', 'status', 'type', 'role' ,'priority', 'county', 'city',
                 'source', 'company_name', 'company_email', 'cui',
                 'company_address', 'cnp', 'date_of_birth',
                 'last_contact', 'notes',
@@ -40,7 +40,7 @@ class LeadController extends Controller
 
         $leads = QueryBuilder::for(Lead::with(['user', 'properties']))
             ->allowedFilters([
-                'name', 'email', 'phone', 'status', 'priority', 'county', 'city',
+                'name', 'email', 'phone', 'status', 'type', 'role' ,'priority', 'county', 'city',
                 'source', 'company_name', 'company_email', 'cui',
                 'company_address', 'cnp', 'date_of_birth',
                 'last_contact', 'notes',
@@ -81,6 +81,8 @@ class LeadController extends Controller
             'source' => 'nullable|string|max:255',
             'priority' => 'required|in:High,Medium,Low',
             'status' => 'required|in:New,In Progress,Closed,Lost',
+            'type' => 'required|in:Sale,Rent',
+            'role' => 'required|in:Owner,Buyer',
             'last_contact' => 'nullable|date',
             'notes' => 'nullable|string',
             'doc_attachment' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx|max:2048'
@@ -137,6 +139,8 @@ class LeadController extends Controller
             'source' => 'nullable|string|max:255',
             'priority' => 'required|in:High,Medium,Low',
             'status' => 'required|in:New,In Progress,Closed,Lost',
+            'type' => 'required|in:Sale,Rent',
+            'role' => 'required|in:Owner,Buyer',
             'last_contact' => 'nullable|date',
             'notes' => 'nullable|string',
             'doc_attachment' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx|max:2048'

@@ -168,6 +168,7 @@
                                 <th class="px-6 py-3">Transaction</th>
                                 <th class="px-6 py-3">Address</th>
                                 <th class="px-6 py-3">Status</th>
+                                <th class="px-6 py-3">Comments</th>
                                 <th class="px-6 py-3">From</th>
                                 <th class="px-6 py-3">Actions</th>
                             </x-slot>
@@ -196,6 +197,11 @@
                                     <td class="px-6 py-4">
                                         <x-badge :color="$property->availability_status === 'available' ? 'green' : ($property->availability_status === 'reserved' ? 'yellow' : 'red')">
                                             {{ ucfirst($property->availability_status) }}
+                                        </x-badge>
+                                    </td>
+                                    <td class="px-6 py-4 text-center">
+                                        <x-badge :color="$property->comments->count() ? 'red' : 'white'">
+                                            {{ $property->comments->count() ? 'Yes' : 'No' }}
                                         </x-badge>
                                     </td>
                                     <td class="px-6 py-4">{{ $property->from_scraper ?? 'CRM'}}</td>

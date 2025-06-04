@@ -138,7 +138,7 @@
                             </div>
 
                             <div class="col-md-4">
-                                <x-select name="availability_status" label="Availability Status" :options="['available' => 'Available', 'reserved' => 'Reserved', 'sold' => 'Sold']" />
+                                <x-select name="availability_status" label="Availability Status" :options="['available' => 'Available', 'reserved' => 'Reserved', 'sold' => 'Sold']" required/>
                             </div>
 
                             <div class="col-md-4">

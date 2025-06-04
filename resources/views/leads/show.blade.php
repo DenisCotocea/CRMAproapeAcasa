@@ -34,7 +34,11 @@
                                     @endif
 
                                     @if($lead->phone)
-                                        <p class="lead-detail"><i class="bi bi-telephone"></i> <strong>Phone:</strong> {{ $lead->phone }}</p>
+                                        <p class="lead-detail">
+                                            <i class="bi bi-telephone"></i>
+                                            <strong>Phone:</strong>
+                                            <a href="tel:{{ $lead->phone }}">{{ $lead->phone }}</a>
+                                        </p>
                                     @endif
 
                                     @if($lead->last_contact)
@@ -77,6 +81,14 @@
 
                                     @if($lead->status)
                                         <p class="lead-detail"><i class="bi bi-check-circle"></i> <strong>Status:</strong> {{ $lead->status }}</p>
+                                    @endif
+
+                                    @if($lead->type)
+                                        <p class="lead-detail"><i class="bi bi-tag"></i> <strong>Type:</strong> {{ $lead->type }}</p>
+                                    @endif
+
+                                    @if($lead->role)
+                                        <p class="lead-detail"><i class="bi bi-person-badge"></i> <strong>Role:</strong> {{ $lead->role }}</p>
                                     @endif
 
                                     <p class="lead-detail"><i class="bi bi-clock"></i> <strong>Created At:</strong> {{ $lead->created_at }}</p>

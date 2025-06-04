@@ -52,6 +52,7 @@ class Property extends Model
         'interior_condition',
         'from_scraper',
         'scraper_link',
+        'unique_code',
     ];
 
     protected $casts = [

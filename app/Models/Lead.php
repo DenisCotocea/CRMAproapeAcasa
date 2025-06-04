@@ -18,9 +18,9 @@ class Lead extends Model
     use LogsActivity;
 
     protected $fillable = [
-        'name', 'user_id', 'email', 'phone', 'has_company', 'company_name', 'company_email', 'cui',
+        'name', 'user_id', 'email', 'phone', 'has_company','company_name', 'company_email', 'cui',
         'company_address', 'cnp', 'date_of_birth', 'county', 'city', 'source',
-        'priority', 'status', 'assigned_agent_id', 'last_contact', 'notes', 'doc_attachment',
+        'priority', 'status', 'type', 'role','assigned_agent_id', 'last_contact', 'notes', 'doc_attachment',
     ];
 
     public function properties()

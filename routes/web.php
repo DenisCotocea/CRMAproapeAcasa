@@ -45,6 +45,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Gallery Routes
     Route::post('/images', [ImagesController::class, 'store'])->name('images.store');
+    Route::post('/destroyAllImages/{property}', [ImagesController::class, 'deleteAll'])->name('images.deleteAll');
     Route::delete('/images/{image}', [ImagesController::class, 'destroy'])->name('images.destroy');
 
     // Comments Routes
