@@ -52,7 +52,6 @@ return [
 
     'channels' => [
 
-
         'stack' => [
             'driver' => 'stack',
             'channels' => explode(',', env('LOG_STACK', 'single')),
@@ -128,6 +127,12 @@ return [
             'path' => storage_path('logs/laravel.log'),
         ],
 
+        'olx_scraper' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/olx_scraper.log'),
+            'level' => 'debug',
+            'days' => 3,
+        ],
     ],
 
 ];
