@@ -5,6 +5,7 @@ namespace App\Services\Olx;
 use App\Jobs\Olx\ScrapeOlxPageJob;
 use Illuminate\Support\Facades\Http;
 use Symfony\Component\DomCrawler\Crawler;
+use Illuminate\Support\Facades\Log;
 
 class OlxScraperService
 {
@@ -18,29 +19,32 @@ class OlxScraperService
     public function scrapeAllCategories(): void
     {
         foreach ($this->urls as $category => $baseUrl) {
-            $lastPage = $this->getLastPageNumber($baseUrl);
-
+//            $lastPage = $this->getLastPageNumber($baseUrl);
+            $lastPage = 25;
             for ($page = 1; $page <= $lastPage; $page++) {
                 ScrapeOlxPageJob::dispatch($baseUrl, $page, $category)->onQueue('scraping');
             }
         }
     }
 
-    protected function getLastPageNumber(string $url): int
-    {
-        try {
-            $response = Http::get($url);
-            $crawler = new Crawler($response->body());
+    # FUNCTION NOT NEEDED AT THE MOMENT
 
-            $pageLinks = $crawler->filter('.pagination li a')->each(function ($node) {
-                return (int) filter_var($node->text(), FILTER_SANITIZE_NUMBER_INT);
-            });
-
-            $maxPage = collect($pageLinks)->filter()->max();
-            return $maxPage ?? 1;
-        } catch (\Throwable $e) {
-            logger()->error("Error getting total pages for URL: $url", ['error' => $e->getMessage()]);
-            return 1;
-        }
-    }
+//    protected function getLastPageNumber(string $url): int
+//    {
+//        try {
+//            $response = Http::get($url);
+//            $crawler = new Crawler($response->body());
+//
+//
+//            $pageLinks = $crawler->filter('a[data-testid="pagination-forward"]')->each(function ($node) {
+//                return (int) filter_var($node->text(), FILTER_SANITIZE_NUMBER_INT);
+//            });
+//            $maxPage = collect($pageLinks)->filter()->max();
+//
+//            return 25;
+//        } catch (\Throwable $e) {
+//            Log::channel('olx_scraper')->error("Error getting total pages for URL: $url", ['error' => $e->getMessage()]);
+//            return 1;
+//        }
+//    }
 }

@@ -2,6 +2,8 @@
 
 namespace App\Jobs\Olx;
 
+use App\Models\Image;
+use App\Models\Property;
 use Illuminate\Bus\Queueable;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
@@ -17,7 +19,8 @@ class DownloadAndSaveImageJob implements ShouldQueue
 
     public function __construct(
         protected string $propertyUrl,
-        protected string $imageUrl
+        protected string $imageUrl,
+        protected string $propertyId
     ) {}
 
     public function handle(): void
@@ -26,7 +29,7 @@ class DownloadAndSaveImageJob implements ShouldQueue
             $response = Http::timeout(10)->get($this->imageUrl);
 
             if (!$response->successful()) {
-                Log::warning("Image download failed for {$this->propertyUrl} - Status: {$response->status()}");
+                Log::channel('olx_scraper')->warning("Image download failed for {$this->propertyUrl} - Status: {$response->status()}");
                 return;
             }
 
@@ -35,10 +38,16 @@ class DownloadAndSaveImageJob implements ShouldQueue
 
             Storage::disk('public')->put($filename, $response->body());
 
-            Log::info("Downloaded image for {$this->propertyUrl} -> $filename");
+            Image::create([
+                'entity_id' => $this->propertyId,
+                'entity_type' => Property::class,
+                'path' => $filename,
+            ]);
+
+            Log::channel('olx_scraper')->info("Downloaded image for {$this->propertyUrl} -> $filename");
 
         } catch (\Throwable $e) {
-            Log::error("DownloadAndSaveImageJob error: " . $e->getMessage());
+            Log::channel('olx_scraper')->error("DownloadAndSaveImageJob error: " . $e->getMessage());
         }
     }
 }

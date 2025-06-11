@@ -53,6 +53,7 @@ class Property extends Model
         'from_scraper',
         'scraper_link',
         'unique_code',
+        'scraper_code',
     ];
 
     protected $casts = [

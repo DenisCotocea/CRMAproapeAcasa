@@ -133,7 +133,6 @@ class OlxScraperService {
 
             return (int) $priceText;
         } catch (\Exception $e) {
-            // Log error and return 0 if price extraction fails
             Log::error('Price extraction failed: ' . $e->getMessage());
             return 0;
         }

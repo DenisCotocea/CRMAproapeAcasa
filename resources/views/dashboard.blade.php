@@ -59,7 +59,7 @@
                             </div>
                             <div>
                                 <h3 class="font-semibold text-xl">Users</h3>
-                                <p class="text-2xl">{{ $leads }}</p>
+                                <p class="text-2xl">{{ $users }}</p>
                             </div>
                         </div>
                     </div>
