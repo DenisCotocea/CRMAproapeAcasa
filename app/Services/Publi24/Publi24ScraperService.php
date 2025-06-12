@@ -32,30 +32,26 @@ class Publi24ScraperService
     protected function getLastPageNumber(string $url): int
     {
         try {
-            $response = Http::withHeaders([
-                'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
-                'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
-                'Accept-Language' => 'ro-RO,ro;q=0.9,en-US;q=0.8,en;q=0.7',
-                'Accept-Encoding' => 'gzip, deflate, br',
-                'Connection' => 'keep-alive',
-                'Upgrade-Insecure-Requests' => '1',
-                'Referer' => 'https://www.google.com/',
-                'sec-ch-ua' => '"Chromium";v="125", "Not.A/Brand";v="8"',
-                'sec-ch-ua-mobile' => '?0',
-                'sec-ch-ua-platform' => '"Windows"',
-                'Sec-Fetch-Site' => 'none',
-                'Sec-Fetch-Mode' => 'navigate',
-                'Sec-Fetch-User' => '?1',
-                'Sec-Fetch-Dest' => 'document',
-            ])->timeout(15)->get($url);
+            $scriptPath = base_path('scripts/puppeteer-publi24.cjs');
 
-            $crawler = new Crawler($response->body());
+            $escapedUrl = escapeshellarg($url);
+
+            $command = "node {$scriptPath} {$escapedUrl}";
+
+            exec($command, $output, $return_var);
+
+            if ($return_var !== 0 || empty($output)) {
+                throw new \Exception("Failed to fetch HTML via Puppeteer");
+            }
+
+            $html = implode("\n", $output);
+
+            $crawler = new Crawler($html);
 
             $lastPage = 1;
 
             $crawler->filter('ul.pagination li a')->each(function ($node) use (&$lastPage) {
                 $text = trim($node->text());
-
                 if (is_numeric($text)) {
                     $number = (int) $text;
                     if ($number > $lastPage) {

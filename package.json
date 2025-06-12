@@ -23,7 +23,26 @@
     "dependencies": {
         "@fancyapps/ui": "^5.0.36",
         "bootstrap-icons": "^1.12.1",
+        "puppeteer": "^24.10.1",
         "sweetalert2": "^11.22.0",
         "swiper": "^11.2.6"
-    }
+    },
+    "name": "aproapeacasa",
+    "version": "1.0.0",
+    "description": "<p align=\"center\"><a href=\"https://laravel.com\" target=\"_blank\"><img src=\"https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg\" width=\"400\" alt=\"Laravel Logo\"></a></p>",
+    "main": "postcss.config.js",
+    "directories": {
+        "test": "tests"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/DenisCotocea/CRMAproapeAcasa.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/DenisCotocea/CRMAproapeAcasa/issues"
+    },
+    "homepage": "https://github.com/DenisCotocea/CRMAproapeAcasa#readme"
 }

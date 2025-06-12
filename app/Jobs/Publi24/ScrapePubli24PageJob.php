@@ -103,45 +103,24 @@ class ScrapePubli24PageJob implements ShouldQueue
         $attempt = 0;
         do {
             try {
-                sleep(rand(1, 3));
+                $escapedUrl = escapeshellarg($url);
+                $output = shell_exec("node scripts/puppeteer-publi24.cjs $escapedUrl");
 
-                $response = Http::withHeaders([
-                    'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
-                    'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
-                    'Accept-Language' => 'ro-RO,ro;q=0.9,en-US;q=0.8,en;q=0.7',
-                    'Accept-Encoding' => 'gzip, deflate',
-                    'Connection' => 'keep-alive',
-                    'Upgrade-Insecure-Requests' => '1',
-                    'Referer' => 'https://www.google.com/',
-                    'sec-ch-ua' => '"Chromium";v="125", "Not.A/Brand";v="8"',
-                    'sec-ch-ua-mobile' => '?0',
-                    'sec-ch-ua-platform' => '"Windows"',
-                    'Sec-Fetch-Site' => 'none',
-                    'Sec-Fetch-Mode' => 'navigate',
-                    'Sec-Fetch-User' => '?1',
-                    'Sec-Fetch-Dest' => 'document',
-                ])->timeout(15)->get($url);
-
-                if ($response->status() === 403) {
-                    Log::channel('publi24_scraper')->warning("Publi24 403 Forbidden: {$url} - Backing off longer");
-                    sleep(rand(10, 30));
+                if (!$output) {
+                    Log::channel('publi24_scraper')->error("Puppeteer returned empty output for {$url}");
                     return null;
                 }
 
-                if ($response->successful()) {
-                    return $response;
-                }
-
-                Log::channel('publi24_scraper')->warning("Failed to fetch {$url} with status {$response->status()}");
-
+                return new \Illuminate\Http\Client\Response(new \GuzzleHttp\Psr7\Response(200, [], $output));
             } catch (\Throwable $e) {
-                Log::channel('publi24_scraper')->error("HTTP error fetching {$url}: {$e->getMessage()}");
+                Log::channel('publi24_scraper')->error("Puppeteer error fetching {$url}: {$e->getMessage()}");
             }
 
             $attempt++;
+            sleep(rand(1, 3));
         } while ($attempt < $maxRetries);
 
-        Log::channel('publi24_scraper')->error("Max retries reached for {$url}");
+        Log::channel('publi24_scraper')->error("Max retries reached (Puppeteer) for {$url}");
         return null;
     }
 
