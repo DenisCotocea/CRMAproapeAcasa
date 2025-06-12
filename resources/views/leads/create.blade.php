@@ -23,18 +23,26 @@
                             </div>
 
                             @role('Admin')
-                                <div class="col-md-4">
-                                    <x-input-label for="user_id" value="User" />
-                                    <x-select id="user_id" name="user_id" :options="$users->pluck('name', 'id')" required/>
-                                    <x-input-error for="user_id" />
-                                </div>
+                                @if(request('user_id'))
+                                    <input type="hidden" name="user_id" value="{{ request('user_id') }}">
+                                @else
+                                    <div class="col-md-4">
+                                        <x-input-label for="user_id" value="User" />
+                                        <x-select id="user_id" name="user_id" :options="$users->pluck('name', 'id')" required />
+                                        <x-input-error for="user_id" />
+                                    </div>
+                                @endif
                             @endrole
 
-                            <div class="col-md-4">
-                                <x-input-label for="properties" value="Property" />
-                                <x-select id="properties" name="properties" :options="$properties->pluck('name', 'id')" :tomSelect="true"/>
-                                <x-input-error for="properties" />
-                            </div>
+                            @if(request('property_id'))
+                                <input type="hidden" name="properties[]" value="{{ request('property_id') }}">
+                            @else
+                                <div class="col-md-4">
+                                    <x-input-label for="properties" value="Property" />
+                                    <x-select id="properties" name="properties[]" :options="$properties->pluck('name', 'id')" :tomSelect="true" multiple />
+                                    <x-input-error for="properties" />
+                                </div>
+                            @endif
 
                             <div class="col-md-4">
                                 <x-input-label for="email" value="Email" />

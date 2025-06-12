@@ -52,7 +52,7 @@ class LeadController extends Controller
             ->paginate(10)
             ->appends($request->query());
 
-        return view('leads.index', compact('leads', 'users'));
+        return view('leads.portfolio', compact('leads', 'users'));
     }
 
     public function create()
@@ -104,7 +104,7 @@ class LeadController extends Controller
 
         $lead->properties()->sync($request->properties);
 
-        return redirect()->route('leads.index')->with('success', 'Lead created successfully.');
+        return redirect()->route('leads.portfolioView')->with('success', 'Lead created successfully.');
     }
 
     public function show(Lead $lead)
@@ -156,7 +156,7 @@ class LeadController extends Controller
 
         $lead->properties()->sync($request->properties);
 
-        return redirect()->route('leads.index')->with('success', 'Lead updated successfully.');
+        return redirect()->route('leads.portfolioView')->with('success', 'Lead updated successfully.');
     }
 
     public function destroy(Lead $lead)
@@ -167,6 +167,6 @@ class LeadController extends Controller
 
         $lead->delete();
 
-        return redirect()->route('leads.index')->with('success', 'Lead deleted successfully.');
+        return redirect()->route('leads.portfolioView')->with('success', 'Lead deleted successfully.');
     }
 }

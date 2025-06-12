@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Leads List') }}
+            {{ __('Portfolio Leads') }}
         </h2>
     </x-slot>
 
@@ -13,7 +13,7 @@
                         {{ __('Add Lead') }}
                     </x-link-primary-button>
                 </div>
-                <form method="GET" action="{{ route('leads.index') }}" id="filterForm">
+                <form method="GET" action="{{ route('leads.portfolioView') }}" id="filterForm">
                     <div class="filter-container p-2">
                         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight mb-2">
                             {{ __('Filter Options') }}
@@ -82,7 +82,7 @@
                     </div>
 
                     <div class="text-end p-2">
-                        <x-link-primary-button href="{{ route('leads.index') }}">
+                        <x-link-primary-button href="{{ route('leads.portfolioView') }}">
                             {{ __('Reset filters') }}
                         </x-link-primary-button>
                         <x-danger-button type="submit">{{ __('Filter') }}</x-danger-button>
@@ -120,7 +120,7 @@
                                         </x-badge>
                                     </td>
                                     <td class="px-6 py-4">
-                                       {{ $lead->county . " " . $lead->city}}
+                                        {{ $lead->county . " " . $lead->city}}
                                     </td>
                                     <td class="px-6 py-4">
                                         <x-badge :color="$lead->status === 'New' ? 'green' : ($lead->status === 'In Progress' ? 'yellow' : ($lead->status === 'Closed' ? 'blue' : 'red'))">

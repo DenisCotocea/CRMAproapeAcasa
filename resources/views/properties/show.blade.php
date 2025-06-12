@@ -260,7 +260,8 @@
                             <div class="tab-pane fade" id="leads">
                                 <div class="property-leads-container">
                                     <div class="text-end">
-                                        <x-link-primary-button href="{{ route('leads.create', ['property_id' => $property->id]) }}">
+                                        <x-link-primary-button
+                                            :href="route('leads.create', ['property_id' => $property->id, 'user_id' => auth()->id()])">
                                             Add Lead
                                         </x-link-primary-button>
                                     </div>

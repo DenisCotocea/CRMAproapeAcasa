@@ -104,7 +104,7 @@
                             </div>
 
                             <div class="col-md-4">
-                                <x-select name="type" label="Type" :options="['apartment' => 'Apartment', 'house' => 'House', 'land' => 'Land']" required/>
+                                <x-select name="type" label="Type" :options="['apartament' => 'Apartament', 'garsoniera' => 'Garsoniera' ,'house' => 'House', 'land' => 'Land']" required/>
                             </div>
 
                             <div class="col-md-4">

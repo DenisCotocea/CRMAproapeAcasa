@@ -32,7 +32,7 @@ class PropertyController extends Controller
             ->paginate(10)
             ->appends($request->query());
 
-        return view('properties.index', compact('properties'));
+        return view('properties.portfolio', compact('properties'));
     }
 
 
@@ -46,7 +46,7 @@ class PropertyController extends Controller
             ->appends($request->query());
 
 
-        return view('properties.index', compact('properties'));
+        return view('properties.scraper', compact('properties'));
     }
 
     public function delistedView(Request $request)
@@ -57,7 +57,7 @@ class PropertyController extends Controller
             ->paginate(10)
             ->appends($request->query());
 
-        return view('properties.index', compact('properties'));
+        return view('properties.delisted', compact('properties'));
     }
 
     public function create()
@@ -145,6 +145,14 @@ class PropertyController extends Controller
         $property->save();
 
         return redirect()->back()->with('success', 'Property assigned successfully!');
+    }
+
+    public function delist(Property $property)
+    {
+        $property->active = 0;
+        $property->save();
+
+        return redirect()->back()->with('success', 'Property delisted successfully!');
     }
 
     public function show(Property $property)

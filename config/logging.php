@@ -133,6 +133,27 @@ return [
             'level' => 'debug',
             'days' => 3,
         ],
+
+        'publi24_scraper' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/publi24_scraper.log'),
+            'level' => 'debug',
+            'days' => 3,
+        ],
+
+        'storia_scraper' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/storia_scraper.log'),
+            'level' => 'debug',
+            'days' => 3,
+        ],
+
+        'delisted_scraper' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/delisted_scraper.log'),
+            'level' => 'debug',
+            'days' => 3,
+        ],
     ],
 
 ];

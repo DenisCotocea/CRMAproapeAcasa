@@ -33,7 +33,7 @@
                                         id="user_id"
                                         name="user_id"
                                         :options="$users->pluck('name', 'id')"
-{{--                                        :selected="old('user_id', $property->user_id)"--}}
+                                        :selected="old('user_id', $property->user_id)"
                                         required
                                         :disabled="true"
                                     />
@@ -127,7 +127,7 @@
 
                             <!-- Type -->
                             <div class="col-md-4">
-                                <x-select name="type" label="Type" :options="['apartment' => 'Apartment', 'house' => 'House', 'land' => 'Land']" :selected="old('type', $property->type)" required :disabled="true"/>
+                                <x-select name="type" label="Type" :options="['apartament' => 'Apartament', 'garsoniera' => 'Garsoniera' ,'house' => 'House', 'land' => 'Land']" :selected="old('type', $property->type)" required :disabled="true"/>
                             </div>
 
                             <!-- Category -->
@@ -206,6 +206,13 @@
                             <!-- Parking -->
                             <div class="col-md-2">
                                 <x-checkbox name="parking" label="Parking" :checked="old('parking', $property->parking)" />
+                            </div>
+
+                            <div class="col-md-12">
+                                <div class="mb-4">
+                                    <label class="block text-sm font-medium text-gray-700">Upload Images</label>
+                                    <input type="file" name="images[]" multiple class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
+                                </div>
                             </div>
 
                             <div class="mt-4 text-end">

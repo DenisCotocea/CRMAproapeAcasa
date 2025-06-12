@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Scraper List') }}
+            {{ __('Portfolio Properties') }}
         </h2>
     </x-slot>
 
@@ -14,7 +14,7 @@
                     </x-link-primary-button>
                 </div>
 
-                <form method="GET" action="{{ route('properties.scraperView') }}" id="filterForm">
+                <form method="GET" action="{{ route('properties.portfolioView') }}" id="filterForm">
                     <div class="filter-container p-2">
                         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight mb-2">
                             {{ __('Filter Options') }}
@@ -146,7 +146,7 @@
                     </div>
 
                     <div class="text-end p-2">
-                        <x-link-primary-button href="{{ route('properties.scraperView') }}">
+                        <x-link-primary-button href="{{ route('properties.portfolioView') }}">
                             {{ __('Reset filters') }}
                         </x-link-primary-button>
                         <x-danger-button type="submit">{{ __('Filter') }}</x-danger-button>
@@ -221,10 +221,6 @@
                                                     {{ __('Assign') }}
                                                 </x-link-primary-button>
                                             @endif
-
-                                            <x-link-primary-button href="{{ route('properties.delist', $property->id) }}">
-                                                {{ __('Delist') }}
-                                            </x-link-primary-button>
 
                                             @role('Admin')
                                             <form action="{{ route('properties.destroy', $property->id) }}" method="POST" class="inline">

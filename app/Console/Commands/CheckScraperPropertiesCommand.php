@@ -12,10 +12,10 @@ class CheckScraperPropertiesCommand extends Command {
     public function handle() {
 
         $verify = new CheckScraperPropertiesService();
-        Log::channel('daily')->info("Starting Verifying properties...");
+        Log::channel('delisted_scraper')->info("Starting Verifying properties...");
 
         $verify->checkPropertiesActiveStatus();
 
-        Log::channel('daily')->info("Completed Verifying properties...");
+        Log::channel('delisted_scraper')->info("Completed Verifying properties...");
     }
 }

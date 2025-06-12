@@ -8,7 +8,10 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-Schedule::command('import:olx-properties')->dailyAt('01:00');
-Schedule::command('import:public-properties')->dailyAt('02:00');
-Schedule::command('import:storia-properties')->dailyAt('03:00');
+// Run these every 2 hours
+Schedule::command('scrape:olx')->everyTwoHours();
+Schedule::command('scrape:publi24')->everyTwoHours();
+Schedule::command('scrape:storia')->everyTwoHours();
+
+// Run this specifically at 05:00
 Schedule::command('verify:properties')->dailyAt('05:00');

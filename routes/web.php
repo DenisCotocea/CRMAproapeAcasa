@@ -34,6 +34,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/portfolio', [PropertyController::class, 'portfolioView'])->name('properties.portfolioView');
     Route::get('/properties/{property}/assign', [PropertyController::class, 'assignToUser'])
         ->name('properties.assign');
+    Route::get('/properties/{property}/delist', [PropertyController::class, 'delist'])
+        ->name('properties.delist');
     Route::post('/properties/{id}/unlock', [PropertyController::class, 'unlock'])->name('properties.unlock');
 
     // Lead Routes

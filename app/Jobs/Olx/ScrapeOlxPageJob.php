@@ -2,7 +2,6 @@
 
 namespace App\Jobs\Olx;
 
-use App\Models\OlxScrapedProperty;
 use App\Models\Property;
 use Illuminate\Bus\Queueable;
 use Illuminate\Support\Facades\Http;
@@ -196,7 +195,6 @@ class ScrapeOlxPageJob implements ShouldQueue
             $scriptNodes = $propertyPage->filter('script[type="application/ld+json"]');
 
             if ($scriptNodes->count() === 0) {
-                file_put_contents('debug.html', $propertyPage->html());
                 Log::channel('olx_scraper')->warning("No JSON-LD script found on page");
                 return null;
             }

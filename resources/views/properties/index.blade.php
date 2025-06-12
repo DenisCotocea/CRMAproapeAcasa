@@ -103,39 +103,39 @@
                             </div>
 
                             <div class="col-md-3">
-                                <x-select name="filter[from_scraper]" label="Scraper" :options="['OLX' => 'OLX', 'Storia' => 'Storia', 'Publi24' => 'Publi24']" />
+                                <x-select name="filter[from_scraper]" label="Scraper"  :selected="request('filter.from_scraper')" :options="['OLX' => 'OLX', 'Storia' => 'Storia', 'Publi24' => 'Publi24']" />
                             </div>
 
                             <div class="col-md-3">
-                                <x-select name="filter[type]" label="Type" :options="['Apartament/Garsoniera' => 'Apartament/Garsoniera' , 'Apartament' => 'Apartament' , 'Garsoniera' => 'Garsoniera' , 'House' => 'House', 'Land' => 'Land']" />
+                                <x-select name="filter[type]" label="Type" :selected="request('filter.type')" :options="['Apartament/Garsoniera' => 'Apartament/Garsoniera' , 'Apartament' => 'Apartament' , 'Garsoniera' => 'Garsoniera' , 'House' => 'House', 'Land' => 'Land']" />
                             </div>
 
                             <div class="col-md-3">
-                                <x-select name="filter[category]" label="Category" :options="['residential' => 'Residential', 'commercial' => 'Commercial']" />
+                                <x-select name="filter[category]" label="Category" :selected="request('filter.category')" :options="['residential' => 'Residential', 'commercial' => 'Commercial']" />
                             </div>
 
                             <div class="col-md-3">
-                                <x-select name="filter[tranzaction]" label="Tranzaction" :options="['sale' => 'Sale', 'rent' => 'Rent']" />
+                                <x-select name="filter[tranzaction]" label="Tranzaction" :selected="request('filter.tranzaction')" :options="['sale' => 'Sale', 'rent' => 'Rent']" />
                             </div>
 
                             <div class="col-md-3">
-                                <x-select name="filter[partitioning]" label="Partitioning" :options="['detached' => 'Detached', 'semi-detached' => 'Semi-Detached', 'open-space' => 'Open Space']" />
+                                <x-select name="filter[partitioning]" :selected="request('filter.partitioning')" label="Partitioning" :options="['detached' => 'Detached', 'semi-detached' => 'Semi-Detached', 'open-space' => 'Open Space']" />
                             </div>
 
                             <div class="col-md-3">
-                                <x-select name="filter[comfort]" label="Comfort" :options="['1' => '1', '2' => '2', 'luxury' => 'Luxury']" />
+                                <x-select name="filter[comfort]" label="Comfort" :selected="request('filter.comfort')" :options="['1' => '1', '2' => '2', 'luxury' => 'Luxury']" />
                             </div>
 
                             <div class="col-md-3">
-                                <x-select name="filter[heating]" label="Heating" :options="['central' => 'Central', 'individual' => 'Individual', 'none' => 'None']" />
+                                <x-select name="filter[heating]" label="Heating" :selected="request('filter.heating')" :options="['central' => 'Central', 'individual' => 'Individual', 'none' => 'None']" />
                             </div>
 
                             <div class="col-md-3">
-                                <x-select name="filter[availability_status]" label="Availability Status" :options="['available' => 'Available', 'reserved' => 'Reserved', 'sold' => 'Sold']" />
+                                <x-select name="filter[availability_status]" label="Availability Status" :selected="request('filter.availability_status')" :options="['available' => 'Available', 'reserved' => 'Reserved', 'sold' => 'Sold']" />
                             </div>
 
                             <div class="col-md-3">
-                                <x-select name="filter[interior_condition]" label="Interior Condition" :options="['new' => 'New', 'renovated' => 'Renovated', 'needs-renovation' => 'Needs Renovation']" />
+                                <x-select name="filter[interior_condition]" :selected="request('filter.interior_condition')" label="Interior Condition" :options="['new' => 'New', 'renovated' => 'Renovated', 'needs-renovation' => 'Needs Renovation']" />
                             </div>
 
                             <div class="col-md-3">
