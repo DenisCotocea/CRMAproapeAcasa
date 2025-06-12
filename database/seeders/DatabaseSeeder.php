@@ -15,20 +15,16 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $usedCodes = Property::whereNotNull('unique_code')->pluck('unique_code')->toArray();
-        $usedCodes = array_flip($usedCodes); // faster lookup
+            $properties = Property::all();
 
-        Property::whereNull('unique_code')->chunk(100, function ($properties) use (&$usedCodes) {
             foreach ($properties as $property) {
-                do {
-                    $code = str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
-                } while (isset($usedCodes[$code]));
+
+                $code = str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
 
                 $property->unique_code = $code;
                 $property->save();
-
-                $usedCodes[$code] = true;
             }
-        });
+
+            dd('it worked');
     }
 }
