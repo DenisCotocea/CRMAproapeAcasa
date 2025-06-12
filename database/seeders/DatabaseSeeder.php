@@ -15,16 +15,26 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-            $properties = Property::all();
+        // Get existing unique codes to avoid collisions
+        $usedCodes = Property::whereNotNull('unique_code')->pluck('unique_code')->toArray();
+        $usedCodes = array_flip($usedCodes); // Faster lookups
 
-            foreach ($properties as $property) {
+        // Get ALL properties without a unique code
+        $properties = Property::whereNull('unique_code')->get();
 
-                $code = str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
+        foreach ($properties as $property) {
+            do {
+                $code = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+            } while (isset($usedCodes[$code]));
 
-                $property->unique_code = $code;
-                $property->save();
-            }
+            // Assign and save the unique code
+            $property->unique_code = $code;
+            $property->saveQuietly();
 
-            dd('it worked');
+            // Mark this code as used
+            $usedCodes[$code] = true;
+        }
+
+        dd('It worked ✅');
     }
 }
