@@ -1,5 +1,7 @@
-// puppeteer-publi24.cjs
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-extra');
+const StealthPlugin = require('puppeteer-extra-plugin-stealth');
+
+puppeteer.use(StealthPlugin());
 
 (async () => {
     const url = process.argv[2];
@@ -30,12 +32,10 @@ const puppeteer = require('puppeteer');
             return new Promise(resolve => setTimeout(resolve, time));
         }
 
-        // Extra wait to allow JS to finish rendering
-        await delay;
+        await delay(3000);
 
         const html = await page.content();
 
-        // Optional: Log the current page url after navigation
         console.log(`Fetched URL: ${page.url()}`);
 
         console.log(html);
