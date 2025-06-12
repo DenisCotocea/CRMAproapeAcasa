@@ -36,9 +36,17 @@ class Publi24ScraperService
                 'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
                 'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
                 'Accept-Language' => 'ro-RO,ro;q=0.9,en-US;q=0.8,en;q=0.7',
-                'Accept-Encoding' => 'gzip, deflate',
+                'Accept-Encoding' => 'gzip, deflate, br',
                 'Connection' => 'keep-alive',
                 'Upgrade-Insecure-Requests' => '1',
+                'Referer' => 'https://www.google.com/',
+                'sec-ch-ua' => '"Chromium";v="125", "Not.A/Brand";v="8"',
+                'sec-ch-ua-mobile' => '?0',
+                'sec-ch-ua-platform' => '"Windows"',
+                'Sec-Fetch-Site' => 'none',
+                'Sec-Fetch-Mode' => 'navigate',
+                'Sec-Fetch-User' => '?1',
+                'Sec-Fetch-Dest' => 'document',
             ])->timeout(15)->get($url);
 
             $crawler = new Crawler($response->body());

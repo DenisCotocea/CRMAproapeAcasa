@@ -112,6 +112,14 @@ class ScrapePubli24PageJob implements ShouldQueue
                     'Accept-Encoding' => 'gzip, deflate',
                     'Connection' => 'keep-alive',
                     'Upgrade-Insecure-Requests' => '1',
+                    'Referer' => 'https://www.google.com/',
+                    'sec-ch-ua' => '"Chromium";v="125", "Not.A/Brand";v="8"',
+                    'sec-ch-ua-mobile' => '?0',
+                    'sec-ch-ua-platform' => '"Windows"',
+                    'Sec-Fetch-Site' => 'none',
+                    'Sec-Fetch-Mode' => 'navigate',
+                    'Sec-Fetch-User' => '?1',
+                    'Sec-Fetch-Dest' => 'document',
                 ])->timeout(15)->get($url);
 
                 if ($response->status() === 403) {
