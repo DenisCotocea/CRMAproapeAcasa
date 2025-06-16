@@ -17,8 +17,9 @@ class PropertyController extends Controller
     {
         $users = User::all();
 
-        $properties = $this->basePropertyQuery()
+        $properties = $this->basePropertyQuery($request)
             ->with('user')
+            ->orderBy('created_at', 'desc')
             ->paginate(10)
             ->appends($request->query());
 
@@ -27,8 +28,9 @@ class PropertyController extends Controller
 
     public function portfolioView(Request $request)
     {
-        $properties = $this->basePropertyQuery()
+        $properties = $this->basePropertyQuery($request)
             ->where('user_id', Auth::id())
+            ->orderBy('created_at', 'desc')
             ->paginate(10)
             ->appends($request->query());
 
@@ -38,10 +40,11 @@ class PropertyController extends Controller
 
     public function scraperView(Request $request)
     {
-        $properties = $this->basePropertyQuery()
+        $properties = $this->basePropertyQuery($request)
             ->whereNotNull('from_scraper')
             ->whereNull('user_id')
             ->where('active', 1)
+            ->orderBy('created_at', 'desc')
             ->paginate(10)
             ->appends($request->query());
 
@@ -51,9 +54,10 @@ class PropertyController extends Controller
 
     public function delistedView(Request $request)
     {
-        $properties = $this->basePropertyQuery()
+        $properties = $this->basePropertyQuery($request)
             ->whereNotNull('from_scraper')
             ->where('active', 0)
+            ->orderBy('created_at', 'desc')
             ->paginate(10)
             ->appends($request->query());
 
@@ -255,9 +259,9 @@ class PropertyController extends Controller
         return response()->noContent();
     }
 
-    private function basePropertyQuery()
+    private function basePropertyQuery(Request $request)
     {
-        return QueryBuilder::for(Property::class)
+        return QueryBuilder::for(Property::class, $request)
             ->allowedFilters([
                 'name',
                 'type',
