@@ -59,7 +59,7 @@ class CheckScraperPropertiesService
                 Log::channel('delisted_scraper')->error("Failed to check property ID {$property->id}: {$e->getMessage()}");
             }
 
-            sleep(2);
+            sleep(4);
         }
     }
 
