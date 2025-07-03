@@ -6,6 +6,7 @@ use App\Models\Lead;
 use App\Models\Property;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Services\Imobiliare\Apis\ImobiliareApiService;
 
 class HomeController extends Controller
 {
@@ -34,7 +35,7 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function dashboard()
+    public function dashboard(ImobiliareApiService $api)
     {
         $users = User::count();
         $properties = Property::count();

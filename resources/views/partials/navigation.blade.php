@@ -103,6 +103,10 @@
                         </form>
                     </x-slot>
                 </x-dropdown>
+
+                @if(Auth::user()->image)
+                    <img  src="{{ asset('storage/' . Auth::user()->image->path) }}" alt="{{ Auth::user()->name }}" class="ms-2 rounded-full object-cover"    style="height: 32px; width: 32px;">
+                @endif
             </div>
 
             <!-- Hamburger -->

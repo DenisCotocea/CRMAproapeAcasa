@@ -27,7 +27,7 @@ class CheckScraperPropertiesService
 
     public function checkPropertiesActiveStatus()
     {
-        $properties = Property::all();
+        $properties = Property::whereNotNull('scraper_link')->get();
 
         foreach ($properties as $property) {
             try {

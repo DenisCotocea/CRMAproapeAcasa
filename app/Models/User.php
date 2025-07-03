@@ -21,6 +21,9 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'phone',
+        'profile_image',
+        'imobiliare_id',
         'password',
     ];
 
@@ -60,5 +63,10 @@ class User extends Authenticatable
     public function properties()
     {
         return $this->hasMany(Property::class);
+    }
+
+    public function image()
+    {
+        return $this->morphOne(Image::class, 'entity');
     }
 }

@@ -11,13 +11,15 @@ use App\Http\Controllers\ExportController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\HomeController;
+use App\Services\Olx\OlxService;
+use App\Http\Controllers\RomimoController;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
 Route::middleware(['auth'])->group(function () {
-    // Dashborad
+    // Dashboard
     Route::get('/dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
 
     // User Routes
@@ -67,6 +69,24 @@ Route::middleware(['auth'])->group(function () {
 
     //Search Routes
     Route::get('/search', [SearchController::class, 'index'])->name('search.index');
+
+
+    //OlxAPI
+    Route::get('/olx/redirect', function (OlxService $olx) {
+        return redirect($olx->getAuthUrl());
+    });
+    Route::get('/olx/callback', function (Request $request, OlxService $olx) {
+        $code = $request->query('code');
+        $data = $olx->getToken($code);
+
+        return response()->json($data);
+    });
+
+    //ImobiliareApi
+    Route::get('/imobiliare/map', [\App\Http\Controllers\ImobiliareController::class, 'showMap'])->name('showMap');
+
+    //Romimo
+    Route::post('/romimo/create', [RomimoController::class, 'createPayLoad'])->name('romimo.create');
 });
 
 require __DIR__.'/auth.php';

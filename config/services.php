@@ -35,4 +35,20 @@ return [
         ],
     ],
 
+    'olx' => [
+        'client_id' => env('OLX_CLIENT_ID'),
+        'client_secret' => env('OLX_CLIENT_SECRET'),
+        'redirect_uri' => env('OLX_REDIRECT_URI'),
+        'api_url' => env('OLX_API_URL'),
+    ],
+
+    'imobiliare' => [
+        'api_url'  => env('IMOBILIARE_API_URL'),
+        'api_user' => env('IMOBILIARE_API_USER'),
+        'api_key'  => env('IMOBILIARE_API_KEY'),
+    ],
+
+    'romimo' => [
+        'api_key' => env('ROMIMO_API_KEY'),
+    ],
 ];

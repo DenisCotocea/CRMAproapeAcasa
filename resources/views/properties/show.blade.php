@@ -9,11 +9,27 @@
         <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
             <div class="dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6 text-white">
                 <div class="row">
-                    <div class="d-flex g-2 justify-end">
+                    <div class="d-flex g-2 gap-2 justify-end">
                         @if(!$property->user_id)
                             <x-link-primary-button href="{{ route('properties.assign', $property->id) }}">
                                 {{ __('Assign') }}
                             </x-link-primary-button>
+                        @endif
+
+                        @if(!$property->imported_imobiliare && $property->user_id)
+                             <x-link-primary-button href="#" id="openImobiliareMapBtn">
+                                  {{ __('Import Imobiliare') }}
+                             </x-link-primary-button>
+
+                             @include('partials.imobiliare-map')
+                        @endif
+
+                        @if(!$property->imported_romimo && $property->user_id)
+                            <x-link-primary-button href="#" id="openRomimoMapBtn">
+                                 {{ __('Import Romimo') }}
+                            </x-link-primary-button>
+
+                            @include('partials.romimo-map')
                         @endif
                     </div>
                     <div class="col-md-4">

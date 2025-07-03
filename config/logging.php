@@ -154,6 +154,20 @@ return [
             'level' => 'debug',
             'days' => 3,
         ],
+
+        'olx_apis' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/olx_apis.log'),
+            'level' => 'debug',
+            'days' => 3,
+        ],
+
+        'imobiliare_apis' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/imobiliare_apis.log'),
+            'level' => 'debug',
+            'days' => 3,
+        ],
     ],
 
 ];

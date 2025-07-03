@@ -19,7 +19,10 @@
         "spatie/laravel-permission": "^6.17",
         "spatie/laravel-query-builder": "^6.3",
         "symfony/dom-crawler": "^7.2",
-        "symfony/http-client": "^7.2"
+        "symfony/http-client": "^7.2",
+        "ext-soap": "*",
+        "ext-simplexml": "*",
+        "ext-http": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
