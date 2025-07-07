@@ -175,7 +175,7 @@ class ImobiliareApiService
             $xml->appendChild($oferta);
 
             foreach ($payload as $key => $value) {
-                if (in_array($key, ['titlu', 'descriere', 'vecinatati'])) {
+                if (in_array($key, ['titlu', 'descriere'])) {
                     $element = $xml->createElement($key);
                     $lang = $xml->createElement('lang', base64_encode($value));
                     $lang->setAttribute('id', '1048');
@@ -188,14 +188,15 @@ class ImobiliareApiService
 
             $xmlPayload = $xml->saveXML();
 
-            $response = $this->soap->__soapCall('import_oferte', [
-                'import_oferte' => [
-                    'sid' => $sid,
-                    'operatie' => 'ADD',
-                    'id2' => $payload['id2'],
-                    'xml' => $xmlPayload,
+            $response = $this->soap->__soapCall('publica_oferta', [
+                'publica_oferta' => [
+                    'id_str'        => '0:' . 321362187,
+                    'sid' 			=> $sid,
+                    'operatie'		=> 'ADD',
+                    'ofertaxml' 	=> $xmlPayload,
                 ],
             ]);
+
 
             $result = [
                 'status' => $response->status(),
