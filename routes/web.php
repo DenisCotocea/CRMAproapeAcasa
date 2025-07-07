@@ -13,6 +13,7 @@ use App\Http\Controllers\SearchController;
 use App\Http\Controllers\HomeController;
 use App\Services\Olx\OlxService;
 use App\Http\Controllers\RomimoController;
+use App\Http\Controllers\ImobiliareController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -83,7 +84,7 @@ Route::middleware(['auth'])->group(function () {
     });
 
     //ImobiliareApi
-    Route::get('/imobiliare/map', [\App\Http\Controllers\ImobiliareController::class, 'showMap'])->name('showMap');
+    Route::post('/imobiliare/create', [ImobiliareController::class, 'createPayLoad'])->name('imobiliare.create');
 
     //Romimo
     Route::post('/romimo/create', [RomimoController::class, 'createPayLoad'])->name('romimo.create');

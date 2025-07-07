@@ -168,6 +168,13 @@ return [
             'level' => 'debug',
             'days' => 3,
         ],
+
+        'romimo_apis' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/romimo_apis.log'),
+            'level' => 'debug',
+            'days' => 3,
+        ],
     ],
 
 ];

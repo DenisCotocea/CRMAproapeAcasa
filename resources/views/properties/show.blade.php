@@ -16,7 +16,7 @@
                             </x-link-primary-button>
                         @endif
 
-                        @if(!$property->imported_imobiliare && $property->user_id)
+                        @if(!$property->imported_imobiliare && auth()->user()->hasRole('Admin') || $property->user_id === auth()->id())
                              <x-link-primary-button href="#" id="openImobiliareMapBtn">
                                   {{ __('Import Imobiliare') }}
                              </x-link-primary-button>
@@ -24,7 +24,7 @@
                              @include('partials.imobiliare-map')
                         @endif
 
-                        @if(!$property->imported_romimo && $property->user_id)
+                        @if(!$property->imported_romimo && auth()->user()->hasRole('Admin') || $property->user_id === auth()->id())
                             <x-link-primary-button href="#" id="openRomimoMapBtn">
                                  {{ __('Import Romimo') }}
                             </x-link-primary-button>

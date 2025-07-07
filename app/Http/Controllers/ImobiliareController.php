@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Property;
 use App\Services\Imobiliare\Apis\ImobiliareApiService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use SoapClient;
 use Exception;
 
@@ -16,8 +19,103 @@ class ImobiliareController extends Controller
         $this->imobiliareApiService = $imobiliareApiService;
     }
 
-    public function showMap()
+    public function createPayLoad(Request $request): JsonResponse
     {
-        return $this->imobiliareApiService->showMap();
+        try {
+            $validated = $request->validate([
+                'latitude' => 'required|numeric',
+                'longitude' => 'required|numeric',
+                'property_id' => 'required',
+            ]);
+
+            $property = Property::find($validated['property_id']);
+
+            if (!$property) {
+                throw new Exception("Property with ID {$validated['property_id']} not found.");
+            }
+
+            $latitude = $validated['latitude'];
+            $longitude = $validated['longitude'];
+
+            $payload = [
+                'id2' => (int) $property->unique_code,
+                'titlu' =>  $property->name,
+                'descriere' => $property->description,
+                'tara' => 1048,
+                'judet' => 2,
+                'localitate' => null,
+                'zona' => 777777,
+                'devanzare' => null,
+                'deinchiriat' => null,
+                'siteagentie' => 1,
+                'portal' => 1,
+                'anuntbonus' => 0,
+                'tipspatiu' => null,
+                'suprafatautila' => (int) $property->usable_area,
+                'latitudine' => $latitude,
+                'longitudine' => $longitude,
+                'disp_prop' => null,
+                'suprafatateren' => null,
+                'inaltimespatiu' => null,
+                'tipimobil' => null,
+                'imagini' => [],
+
+                // VANZARE Quality Fields
+                'pretvanzare' => $property->price,
+                'pretvanzaremp' => null,
+                'monedavanzare' => 172,
+                'monedavanzaremp' => 172,
+
+                // INCHIRIERE Quality Fields
+                'pretinchiriere' => $property->price,
+                'monedainchiriere' => 172,
+                'pretinchiriereunitar' => null,
+                'monedainchiriereunitar' => 172,
+
+                // Optional Fields
+                'adresa' => null,
+                'agent' => null,
+                'dataexp' => null,
+                'anconstructie' => null,
+                'dotari' => null,
+                'utilitati' => null,
+                'servicii' => null,
+                'etaj' => null,
+                'suprafatacurte' => null,
+                'imoradar24' => 1,
+            ];
+
+            Log::channel('imobiliare_apis')->debug('Payload prepared for Imobiliare.ro API.', [
+                'property_id' => $property->id,
+                'payload' => $payload,
+            ]);
+
+            $response = $this->imobiliareApiService->createOrUpdateArticle($payload);
+
+            Log::channel('imobiliare_apis')->debug('Response from Imobiliare.ro API.', [
+                'property_id' => $property->id,
+                'response' => $response,
+            ]);
+
+            if ($response['status'] !== 200) {
+                return response()->json([
+                    'error' => $response['body']['error'] ?? 'Unknown error from Imobliare.ro',
+                ], 500);
+            }
+
+            return response()->json([
+                'message' => 'Property posted on Imobiliare!',
+            ]);
+
+        } catch (Exception $e) {
+            Log::channel('imobiliare_apis')->error('Error sending payload to Imobiliare.ro API.', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return response()->json([
+                'error' => 'There was an error: ' . $e->getMessage(),
+            ], 500);
+        }
     }
 }

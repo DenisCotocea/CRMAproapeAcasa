@@ -22,7 +22,8 @@
         "symfony/http-client": "^7.2",
         "ext-soap": "*",
         "ext-simplexml": "*",
-        "ext-http": "*"
+        "ext-http": "*",
+        "ext-dom": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

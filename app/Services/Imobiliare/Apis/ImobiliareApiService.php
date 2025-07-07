@@ -3,9 +3,11 @@
 namespace App\Services\Imobiliare\Apis;
 
 use App\Models\User;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use SoapClient;
 use Exception;
+use DOMDocument;
 
 class ImobiliareApiService
 {
@@ -98,12 +100,6 @@ class ImobiliareApiService
         }
     }
 
-    public function showMap()
-    {
-        $sid = $this->getSessionId();
-        return view('partials.imobiliare-map', ['sessionId' => $sid]);
-    }
-
     public function verifyAgent(User $user)
     {
         $sid = $this->getSessionId();
@@ -163,6 +159,65 @@ class ImobiliareApiService
             } catch (Exception $e) {
                 Log::channel('imobiliare_apis')->error("Failed to fetch agent ID {$agent['id']}: " . $e->getMessage());
             }
+        }
+    }
+
+
+    public function createOrUpdateArticle(array $payload): array
+    {
+        $sid = $this->getSessionId();
+
+        try {
+            $xml = new \DOMDocument('1.0', 'UTF-8');
+            $xml->formatOutput = true;
+
+            $oferta = $xml->createElement('oferta');
+            $xml->appendChild($oferta);
+
+            foreach ($payload as $key => $value) {
+                if (in_array($key, ['titlu', 'descriere', 'vecinatati'])) {
+                    $element = $xml->createElement($key);
+                    $lang = $xml->createElement('lang', base64_encode($value));
+                    $lang->setAttribute('id', '1048');
+                    $element->appendChild($lang);
+                    $oferta->appendChild($element);
+                } else {
+                    $oferta->appendChild($xml->createElement($key, $value));
+                }
+            }
+
+            $xmlPayload = $xml->saveXML();
+
+            $response = $this->soap->__soapCall('import_oferte', [
+                'import_oferte' => [
+                    'sid' => $sid,
+                    'operatie' => 'ADD',
+                    'id2' => $payload['id2'],
+                    'xml' => $xmlPayload,
+                ],
+            ]);
+
+            $result = [
+                'status' => $response->status(),
+                'body' => $response->json(),
+            ];
+
+            Log::channel('imobiliare_apis')->debug('Received response from Imobiliare.ro API.', [
+                'response' => $result,
+            ]);
+
+            return $result;
+
+        } catch (Exception $e) {
+            Log::channel('imobiliare_apis')->error('Error sending payload to Imobiliare.ro API.', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return [
+                'status' => 500,
+                'body' => ['error' => 'There was an error: ' . $e->getMessage()],
+            ];
         }
     }
 }

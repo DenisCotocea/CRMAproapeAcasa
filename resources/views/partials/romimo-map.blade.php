@@ -42,13 +42,20 @@
                     },
                     body: JSON.stringify(result.value)
                 })
-                    .then(response => response.json())
+                    .then(response => {
+                        if (!response.ok) {
+                            return response.json().then(data => {
+                                throw new Error(data.error || 'Unknown error occurred.');
+                            });
+                        }
+                        return response.json();
+                    })
                     .then(data => {
-                        Swal.fire('Succes!', 'Anunțul a fost trimis.', 'success');
-                        console.log(data);
+                        Swal.fire('Success!', 'Property posted on Romimo!', 'success');
                     })
                     .catch(error => {
-                        Swal.fire('Eroare', 'Ceva nu a mers bine.', 'error');
+                        console.error(error);
+                        Swal.fire('Error', error.message, 'error');
                     });
             }
         });
