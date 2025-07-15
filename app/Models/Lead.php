@@ -33,6 +33,11 @@ class Lead extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function contracts()
+    {
+        return $this->belongsToMany(Contract::class);
+    }
+
     public function getActivitylogOptions(): LogOptions
     {
         $columns = Schema::getColumnListing($this->getTable());

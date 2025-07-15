@@ -13,6 +13,7 @@ use App\Http\Controllers\SearchController;
 use App\Http\Controllers\HomeController;
 use App\Services\Olx\OlxService;
 use App\Http\Controllers\RomimoController;
+use App\Http\Controllers\ContractController;
 use App\Http\Controllers\ImobiliareController;
 
 Route::get('/', function () {
@@ -62,6 +63,15 @@ Route::middleware(['auth'])->group(function () {
     Route::get('export/users', [ExportController::class, 'exportUsers'])->name('export.users');
     Route::get('export/leads', [ExportController::class, 'exportLeads'])->name('export.leads');
     Route::get('export/properties', [ExportController::class, 'exportProperties'])->name('export.properties');
+
+    //Contracts
+    Route::prefix('contracts')->name('contracts.')->group(function () {
+        Route::get('/', [ContractController::class, 'index'])->name('index');
+        Route::get('create/{type}', [ContractController::class, 'create'])->name('create');
+        Route::post('contractStore', [ContractController::class, 'store'])->name('store');
+        Route::get('{contract}', [ContractController::class, 'show'])->name('show');
+        Route::get('{contract}/pdf', [ContractController::class, 'exportPdf'])->name('pdf');
+    });
 
     // Settings Routes
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');

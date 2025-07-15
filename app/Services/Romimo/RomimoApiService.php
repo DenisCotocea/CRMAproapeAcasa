@@ -24,9 +24,7 @@ class RomimoApiService
             return Cache::remember('romimo_token', 23 * 60, function () {
                 $response = Http::withHeaders([
                     'x-api-version' => '2',
-                ])->post("{$this->baseUrl}/api/Token", [
-                    'ApiKey' => $this->apiKey,
-                ]);
+                ])->post("{$this->baseUrl}/api/Token?ApiKey={$this->apiKey}");
 
                 if ($response->successful()) {
                     Log::channel('romimo_apis')->debug('Romimo API Token fetched successfully.');
