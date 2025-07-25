@@ -37,15 +37,15 @@ class RomimoController extends Controller
             $longitude = $validated['longitude'];
 
             $propertyMappings = [
-                'room_numbers' => ['key' => 'nr_camere', 'name' => 'Număr camere'],
-                'floor' => ['key' => 'etaj', 'name' => 'Etaj'],
-                'surface' => ['key' => 'suprafata', 'name' => 'Suprafață'],
-                'construction_year' => ['key' => 'an_constructie', 'name' => 'An construcție'],
-                'balcony' => ['key' => 'balcon', 'name' => 'Balcon', 'boolean' => true],
-                'garage' => ['key' => 'garaj', 'name' => 'Garaj', 'boolean' => true],
-                'elevator' => ['key' => 'lift', 'name' => 'Lift', 'boolean' => true],
-                'parking' => ['key' => 'parcare', 'name' => 'Parcare', 'boolean' => true],
-                'usable_area' => ['key' => 'suprafata_utila', 'name' => 'Suprafață utilă'],
+                'room_numbers' => ['propertyId' => 1],
+                'surface' => ['propertyId' => 2],
+                'floor' => ['propertyId' => 3],
+                'construction_year' => ['propertyId' => 4],
+                'balcony' => ['propertyId' => 5, 'boolean' => true],
+                'garage' => ['propertyId' => 6, 'boolean' => true],
+                'elevator' => ['propertyId' => 7, 'boolean' => true],
+                'parking' => ['propertyId' => 8, 'boolean' => true],
+                'usable_area' => ['propertyId' => 9],
             ];
 
             $propertyData = [];
@@ -59,10 +59,27 @@ class RomimoController extends Controller
                     }
 
                     $propertyData[] = [
-                        'key' => $map['key'],
+                        'propertyId' => $map['propertyId'],
                         'value' => $value,
                     ];
                 }
+            }
+
+            $category = null;
+
+            $type = strtolower($property->type);
+            $tranzaction = strtolower($property->tranzaction);
+
+            if ($type === 'apartament') {
+                $category = $this->getApartmentCategoryId($property);
+            } elseif ($type === 'garsoniera') {
+                $category = $tranzaction === 'sale' ? 311 : 315;
+            } elseif (in_array($type, ['casa', 'house', 'vilă', 'vila'])) {
+                $category = $tranzaction === 'sale' ? 313 : 317;
+            } elseif (in_array($type, ['teren', 'land'])) {
+                $category = $tranzaction === 'sale' ? 327 : 328;
+            } else {
+                throw new \Exception("Unknown type/tranzaction combination: {$property->type} / {$property->tranzaction}");
             }
 
             $payload = [
@@ -73,7 +90,7 @@ class RomimoController extends Controller
                     "active" => true,
                     "promoted" => false,
                     "externalid" => $property->unique_code,
-                    "category" => 312,
+                    "category" => $category,
                     "price" => (int) $property->price,
                     "currency" => "EUR",
                     "title" => $property->name,
@@ -133,5 +150,84 @@ class RomimoController extends Controller
                 'error' => 'There was an error: ' . $e->getMessage(),
             ], 500);
         }
+    }
+
+    public function getCategories(){
+        $this->romimoApiService->getCategories();
+    }
+
+    public function getProperties(){
+        $this->romimoApiService->getProperties();
+    }
+
+    public function getApartmentCategoryId(Property $property): int
+    {
+        $dealType = strtolower($property->tranzaction) === 'sale' ? 'de vanzare' : 'de inchiriat';
+        $rooms = $property->room_numbers;
+
+        $categoryMap = [
+            'de inchiriat' => [
+                1 => 312,
+                2 => 313,
+                3 => 314,
+                4 => 315,
+                5 => 316,
+                6 => 317,
+            ],
+            'de vanzare' => [
+                1 => 337,
+                2 => 338,
+                3 => 339,
+                4 => 340,
+                5 => 341,
+                6 => 342,
+            ],
+        ];
+
+        if (!isset($categoryMap[$dealType][$rooms])) {
+            throw new \Exception("No apartment category for {$rooms} rooms and tranzaction '{$dealType}'");
+        }
+
+        return $categoryMap[$dealType][$rooms];
+    }
+
+    public function getGrasonieraCategoryId(Property $property): array
+    {
+        $dealType = strtolower($property->tranzaction) === 'sale' ? 'de vanzare' : 'de inchiriat';
+
+        $categoryMap = [
+            'de inchiriat' => [
+                1 => 318,
+            ],
+            'de vanzare' => [
+                1 => 343,
+            ],
+        ];
+
+        if (!isset($categoryMap[$dealType])) {
+            throw new \Exception("No garsoniera category for tranzaction '{$dealType}'");
+        }
+
+        return $categoryMap[$dealType];
+    }
+
+    public function getHouseCategoryId(Property $property): array
+    {
+        $dealType = strtolower($property->tranzaction) === 'sale' ? 'de vanzare' : 'de inchiriat';
+
+        $categoryMap = [
+            'de inchiriat' => [
+                1 => 44,
+            ],
+            'de vanzare' => [
+                1 => 347,
+            ],
+        ];
+
+        if (!isset($categoryMap[$dealType])) {
+            throw new \Exception("No garsoniera category for tranzaction '{$dealType}'");
+        }
+
+        return $categoryMap[$dealType];
     }
 }

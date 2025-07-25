@@ -22,7 +22,6 @@ class Contract extends Model
         'client_signed_at',
     ];
 
-
     protected $casts = [
         'contract_type' => ContractType::class,
         'signed' => 'boolean',

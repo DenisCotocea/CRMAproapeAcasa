@@ -28,6 +28,7 @@ class ContractController extends Controller
 
     public function store(Request $request)
     {
+
         $validated = $request->validate([
             'contract_type' => 'required|string',
             'fields' => 'required|array',
@@ -51,18 +52,14 @@ class ContractController extends Controller
                 'value' => $value,
             ]);
         }
-
         return redirect()->route('contracts.show', $contract);
     }
 
     public function show(Contract $contract)
     {
         $contract->load('values.field');
-
         $fields = $contract->values->mapWithKeys(fn($v) => [$v->field->name => $v->value])->toArray();
-
         $this->exportPdf($contract);
-
         return view("contracts.templates.{$contract->contract_type->value}", compact('contract', 'fields'));
     }
 

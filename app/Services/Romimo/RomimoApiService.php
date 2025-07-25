@@ -92,4 +92,68 @@ class RomimoApiService
             ];
         }
     }
+    public function getCategories()
+    {
+        try {
+            $token = $this->getToken();
+
+            if (!$token) {
+                return [
+                    'status' => 500,
+                    'body' => ['error' => 'Romimo API Token is missing.'],
+                ];
+            }
+
+
+            $response = Http::withHeaders([
+                'x-api-version' => '2',
+                'Authorization' => "Bearer {$token}",
+                'Content-Type' => 'application/json',
+            ])->get("{$this->baseUrl}/api/Resources/Categories");
+
+            dd($response->json());
+
+            return [
+                'status' => $response->status(),
+                'body' => $response->json(),
+            ];
+        } catch (Exception $e) {
+            return [
+                'status' => 500,
+                'body' => ['error' => 'There was an error: ' . $e->getMessage()],
+            ];
+        }
+    }
+
+    public function getProperties()
+    {
+        try {
+            $token = $this->getToken();
+
+            if (!$token) {
+                return [
+                    'status' => 500,
+                    'body' => ['error' => 'Romimo API Token is missing.'],
+                ];
+            }
+
+            $response = Http::withHeaders([
+                'x-api-version' => '2',
+                'Authorization' => "Bearer {$token}",
+                'Content-Type' => 'application/json',
+            ])->get("{$this->baseUrl}/api/v2/properties");
+
+            dd($response->json());
+
+            return [
+                'status' => $response->status(),
+                'body' => $response->json(),
+            ];
+        } catch (Exception $e) {
+            return [
+                'status' => 500,
+                'body' => ['error' => 'There was an error: ' . $e->getMessage()],
+            ];
+        }
+    }
 }
