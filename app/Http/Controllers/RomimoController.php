@@ -37,15 +37,16 @@ class RomimoController extends Controller
             $longitude = $validated['longitude'];
 
             $propertyMappings = [
-                'room_numbers' => ['propertyId' => 1],
-                'surface' => ['propertyId' => 2],
-                'floor' => ['propertyId' => 3],
-                'construction_year' => ['propertyId' => 4],
-                'balcony' => ['propertyId' => 5, 'boolean' => true],
-                'garage' => ['propertyId' => 6, 'boolean' => true],
-                'elevator' => ['propertyId' => 7, 'boolean' => true],
-                'parking' => ['propertyId' => 8, 'boolean' => true],
-                'usable_area' => ['propertyId' => 9],
+                'room_numbers' => ['key' => 'roomno'],
+                'floor' => ['key' => 'storey'],
+                'construction_year' => ['key' => 'yearofbuilding'],
+                'garage' => ['key' => 'garageno', 'boolean' => true],
+                'parking' => ['key' => 'parking', 'boolean' => true],
+                'usable_area' => ['key' => 'livingspace'],
+                'comfort' => ['key' => 'comfort'],
+                'land_area' => ['key' => 'propertyspace'],
+                'heating' => ['key' => 'heating'],
+                'furniture' => ['key' => 'furniture'],
             ];
 
             $propertyData = [];
@@ -59,7 +60,7 @@ class RomimoController extends Controller
                     }
 
                     $propertyData[] = [
-                        'propertyId' => $map['propertyId'],
+                        'key' => $map['key'],
                         'value' => $value,
                     ];
                 }
@@ -73,11 +74,11 @@ class RomimoController extends Controller
             if ($type === 'apartament') {
                 $category = $this->getApartmentCategoryId($property);
             } elseif ($type === 'garsoniera') {
-                $category = $tranzaction === 'sale' ? 311 : 315;
+                $category = $this->getGrasonieraCategoryId($property);
             } elseif (in_array($type, ['casa', 'house', 'vilă', 'vila'])) {
-                $category = $tranzaction === 'sale' ? 313 : 317;
+                $category = $this->getHouseCategoryId($property);
             } elseif (in_array($type, ['teren', 'land'])) {
-                $category = $tranzaction === 'sale' ? 327 : 328;
+                $category = $tranzaction === 'sale' ? 354 : 329;
             } else {
                 throw new \Exception("Unknown type/tranzaction combination: {$property->type} / {$property->tranzaction}");
             }
@@ -88,7 +89,7 @@ class RomimoController extends Controller
                 ],
                 "ad" => [
                     "active" => true,
-                    "promoted" => false,
+                    "promoted" => (bool)$property->promoted,
                     "externalid" => $property->unique_code,
                     "category" => $category,
                     "price" => (int) $property->price,
@@ -191,7 +192,7 @@ class RomimoController extends Controller
         return $categoryMap[$dealType][$rooms];
     }
 
-    public function getGrasonieraCategoryId(Property $property): array
+    public function getGrasonieraCategoryId(Property $property)
     {
         $dealType = strtolower($property->tranzaction) === 'sale' ? 'de vanzare' : 'de inchiriat';
 
@@ -208,10 +209,10 @@ class RomimoController extends Controller
             throw new \Exception("No garsoniera category for tranzaction '{$dealType}'");
         }
 
-        return $categoryMap[$dealType];
+        return $categoryMap[$dealType][1];
     }
 
-    public function getHouseCategoryId(Property $property): array
+    public function getHouseCategoryId(Property $property)
     {
         $dealType = strtolower($property->tranzaction) === 'sale' ? 'de vanzare' : 'de inchiriat';
 
@@ -228,6 +229,6 @@ class RomimoController extends Controller
             throw new \Exception("No garsoniera category for tranzaction '{$dealType}'");
         }
 
-        return $categoryMap[$dealType];
+        return $categoryMap[$dealType][1];
     }
 }

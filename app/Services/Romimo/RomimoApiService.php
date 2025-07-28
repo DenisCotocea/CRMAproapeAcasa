@@ -141,7 +141,7 @@ class RomimoApiService
                 'x-api-version' => '2',
                 'Authorization' => "Bearer {$token}",
                 'Content-Type' => 'application/json',
-            ])->get("{$this->baseUrl}/api/v2/properties");
+            ])->get("{$this->baseUrl}/api/Resources/Properties");
 
             dd($response->json());
 
