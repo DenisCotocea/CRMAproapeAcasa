@@ -125,8 +125,9 @@ class ImobiliareApiService
 
     public function syncAllAgents()
     {
-        $agents = $this->getAgentsList();
         $sid = $this->getSessionId();
+
+        $agents = $this->getAgentsList();
 
         foreach ($agents as $agent) {
             try {
@@ -159,6 +160,50 @@ class ImobiliareApiService
             } catch (Exception $e) {
                 Log::channel('imobiliare_apis')->error("Failed to fetch agent ID {$agent['id']}: " . $e->getMessage());
             }
+        }
+
+        $localUsers = User::whereNull('imobiliare_id')->get();
+
+        foreach ($localUsers as $user) {
+           $this->addAgent($user);
+        }
+    }
+
+    public function addAgent(User $user): void
+    {
+        $sid = $this->getSessionId();
+
+        $password = md5('1q2w3imobiliare');
+
+        $agentXml = <<<XML
+            <agent>
+              <email>{$user->email}</email>
+              <functie>Agent</functie>
+              <id>{$user->id}</id>
+              <nume>{$user->name}</nume>
+              <telefon>{$user->phone}</telefon>
+              <username>{$user->email}</username>
+              <password>{$password}</password>
+              <drepturi_adminonline>oferte</drepturi_adminonline>
+            </agent>
+        XML;
+
+        try {
+            $this->soap->__soapCall('publica_agent', [
+                'publica_agent' => [
+                    'sid' => $sid,
+                    'id' => $user->id,
+                    'operatie' => 'ADD',
+                    'agentxml' => $agentXml,
+                ]
+            ]);
+
+            Log::channel('imobiliare_apis')->info("Created agent on Imobiliare.ro", [
+                'email' => $user->email,
+            ]);
+        } catch (Exception $e) {
+            Log::channel('imobiliare_apis')->error("Failed to save agent: " . $e->getMessage());
+            throw new Exception('Failed to save agent: ' . $e->getMessage());
         }
     }
 

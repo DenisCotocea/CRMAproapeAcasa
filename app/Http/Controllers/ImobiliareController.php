@@ -22,6 +22,9 @@ class ImobiliareController extends Controller
     public function createPayLoad(Request $request): JsonResponse
     {
         try {
+
+            dd($this->imobiliareApiService->verifyAgent(1));
+
             $validated = $request->validate([
                 'latitude' => 'required|numeric',
                 'longitude' => 'required|numeric',
