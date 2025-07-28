@@ -131,6 +131,13 @@ class RomimoController extends Controller
                 'response' => $response,
             ]);
 
+            if($response['status'] === 200) {
+                $property->imported_romimo = 1;
+                $property->romimo_url = $response['body']['romimoUrl'] ?? null;
+                $property->publi24_url = $response['body']['publi24Url'] ?? null;
+                $property->save();
+            }
+
             if ($response['status'] !== 200) {
                 return response()->json([
                     'error' => $response['body']['error'] ?? 'Unknown error from Romimo.',
@@ -151,6 +158,23 @@ class RomimoController extends Controller
                 'error' => 'There was an error: ' . $e->getMessage(),
             ], 500);
         }
+    }
+
+    public function deactivateFromRomimo(Property $property)
+    {
+        $response = $this->romimoApiService->deactivateRomimo($property);
+
+        if ($response['status'] === 204) {
+            $property->update([
+                'imported_romimo' => 0,
+                'romimo_url' => null,
+                'publi24_url' => null,
+            ]);
+
+            return redirect()->back()->with('success', 'Property deactivated from Romimo.');
+        }
+
+        return redirect()->back()->with('error', 'Failed to deactivate the property: ' . ($response['body']['detail'] ?? 'Unknown error.'));
     }
 
     public function getCategories(){

@@ -16,7 +16,7 @@
                             </x-link-primary-button>
                         @endif
 
-                        @if(!$property->imported_imobiliare && auth()->user()->hasRole('Admin') || $property->user_id === auth()->id())
+                        @if(!$property->imported_imobiliare && (auth()->user()->hasRole('Admin') || $property->user_id === auth()->id()))
                              <x-link-primary-button href="#" id="openImobiliareMapBtn">
                                   {{ __('Import Imobiliare') }}
                              </x-link-primary-button>
@@ -24,12 +24,20 @@
                              @include('partials.imobiliare-map')
                         @endif
 
-                        @if(!$property->imported_romimo && auth()->user()->hasRole('Admin') || $property->user_id === auth()->id())
+                        @if(!$property->imported_romimo && (auth()->user()->hasRole('Admin') || $property->user_id === auth()->id()))
                             <x-link-primary-button href="#" id="openRomimoMapBtn">
                                  {{ __('Import Romimo') }}
                             </x-link-primary-button>
 
                             @include('partials.romimo-map')
+                        @endif
+
+                        @if($property->imported_romimo && $property->user_id === auth()->id())
+                            <form action="{{ route('romimo.deactivate', $property) }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <x-primary-button>  {{ __('Deactivate Romimo') }}</x-primary-button>
+                            </form>
                         @endif
                     </div>
                     <div class="col-md-4">
@@ -192,6 +200,29 @@
 
                                     @if($property->unique_code)
                                         <p class="property-detail"><i class="bi bi-upc-scan"></i> <strong>Unique code:</strong>  {{$property->unique_code}} </p>
+                                    @endif
+
+                                    <p class="property-detail">
+                                        <i class="bi bi-arrow-bar-right"></i>
+                                        <strong>Imported Romimo:</strong> {{ $property->imported_romimo ? 'Yes' : 'No' }}
+                                    </p>
+
+                                    <p class="property-detail">
+                                        <i class="bi bi-arrow-bar-right"></i>
+                                        <strong>Imported Olx:</strong> {{ $property->imported_olx ? 'Yes' : 'No' }}
+                                    </p>
+
+                                    <p class="property-detail">
+                                        <i class="bi bi-arrow-bar-right"></i>
+                                        <strong>Imported Imobiliare:</strong> {{ $property->imported_imobiliare ? 'Yes' : 'No' }}
+                                    </p>
+
+                                    @if($property->romimo_url)
+                                        <p class="property-detail"><i class="bi bi-webcam"></i> <strong>Romimo Link:</strong> <a target="_blank" href="{{$property->romimo_url}}"> {{$property->romimo_url}} </a></p>
+                                    @endif
+
+                                    @if($property->publi24_url)
+                                        <p class="property-detail"><i class="bi bi-webcam"></i> <strong>Publi24 Link:</strong> <a target="_blank" href="{{$property->publi24_url}}"> {{$property->publi24_url}} </a></p>
                                     @endif
                                 </div>
                             </div>

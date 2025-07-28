@@ -98,6 +98,7 @@ Route::middleware(['auth'])->group(function () {
 
     //Romimo
     Route::post('/romimo/create', [RomimoController::class, 'createPayLoad'])->name('romimo.create');
+    Route::delete('/romimo/deactivate/{property}', [RomimoController::class, 'deactivateFromRomimo'])->name('romimo.deactivate');
 
     Route::get('/romimo/categories', [RomimoController::class, 'getCategories']);
     Route::get('/romimo/properties', [RomimoController::class, 'getProperties']);

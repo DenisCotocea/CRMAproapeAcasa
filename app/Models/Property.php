@@ -54,6 +54,11 @@ class Property extends Model
         'scraper_link',
         'unique_code',
         'scraper_code',
+        'imported_romimo',
+        'imported_imobiliare',
+        'imported_olx',
+        'romimo_url',
+        'publi24_url',
     ];
 
     protected $casts = [

@@ -2,6 +2,7 @@
 
 namespace App\Services\Romimo;
 
+use App\Models\Property;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
@@ -92,6 +93,41 @@ class RomimoApiService
             ];
         }
     }
+
+    public function deactivateRomimo(Property $property): array
+    {
+        try {
+            $token = $this->getToken();
+
+            if (!$token) {
+                return [
+                    'status' => 500,
+                    'body' => ['detail' => 'Romimo API token is missing.'],
+                ];
+            }
+
+            $email = $property->user->email;
+            $externalId = $property->unique_code;
+
+            $url = "{$this->baseUrl}/api/Article?Email={$email}&ExternalId={$externalId}";
+
+            $response = Http::withHeaders([
+                'Authorization' => "Bearer {$token}",
+                'x-api-version' => '2',
+            ])->delete($url);
+
+            return [
+                'status' => $response->status(),
+                'body' => $response->status() !== 204 ? $response->json() : [],
+            ];
+        } catch (\Exception $e) {
+            return [
+                'status' => 500,
+                'body' => ['detail' => $e->getMessage()],
+            ];
+        }
+    }
+
     public function getCategories()
     {
         try {
