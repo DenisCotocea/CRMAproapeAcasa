@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Property;
 use App\Services\Imobiliare\Apis\ImobiliareApiService;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -22,9 +23,6 @@ class ImobiliareController extends Controller
     public function createPayLoad(Request $request): JsonResponse
     {
         try {
-
-            dd($this->imobiliareApiService->verifyAgent(1));
-
             $validated = $request->validate([
                 'latitude' => 'required|numeric',
                 'longitude' => 'required|numeric',

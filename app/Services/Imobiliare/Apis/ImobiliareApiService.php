@@ -104,10 +104,6 @@ class ImobiliareApiService
     {
         $sid = $this->getSessionId();
 
-        if ($user->imobiliare_id) {
-            return;
-        }
-
         try {
             $response = $this->soap->__soapCall('import_agent', [
                 'import_agent' => [
@@ -126,6 +122,12 @@ class ImobiliareApiService
     public function syncAllAgents()
     {
         $sid = $this->getSessionId();
+
+        $localUsers = User::whereNull('imobiliare_id')->get();
+
+        foreach ($localUsers as $user) {
+            $this->addAgent($user);
+        }
 
         $agents = $this->getAgentsList();
 
@@ -161,12 +163,6 @@ class ImobiliareApiService
                 Log::channel('imobiliare_apis')->error("Failed to fetch agent ID {$agent['id']}: " . $e->getMessage());
             }
         }
-
-        $localUsers = User::whereNull('imobiliare_id')->get();
-
-        foreach ($localUsers as $user) {
-           $this->addAgent($user);
-        }
     }
 
     public function addAgent(User $user): void
@@ -174,6 +170,18 @@ class ImobiliareApiService
         $sid = $this->getSessionId();
 
         $password = md5('1q2w3imobiliare');
+
+        $photoBase64 = '';
+        if ($user->image && $user->image->path && file_exists(public_path($user->image->path))) {
+            $photoPath = public_path($user->image->path);
+            $photoMime = mime_content_type($photoPath);
+
+            if (in_array($photoMime, ['image/jpeg', 'image/jpg'])) {
+                $photoBase64 = base64_encode(file_get_contents($photoPath));
+            } else {
+                Log::channel('imobiliare_apis')->warning("Skipping profile image for user {$user->id} - invalid format ({$photoMime}). Only JPEG is supported.");
+            }
+        }
 
         $agentXml = <<<XML
             <agent>
