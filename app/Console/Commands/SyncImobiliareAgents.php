@@ -36,7 +36,6 @@ class SyncImobiliareAgents extends Command
     public function handle()
     {
         Log::channel('imobiliare_apis')->warning("Starting Agent sync...");
-
         try {
             $this->imobiliareApiService->syncAllAgents();
             Log::channel('imobiliare_apis')->info('Agent sync completed successfully.');

@@ -192,6 +192,7 @@ class ImobiliareApiService
               <telefon>{$user->phone}</telefon>
               <username>{$user->email}</username>
               <password>{$password}</password>
+              <poza>{$photoBase64}</poza>
               <drepturi_adminonline>oferte</drepturi_adminonline>
             </agent>
         XML;
@@ -215,6 +216,56 @@ class ImobiliareApiService
         }
     }
 
+    public function updateAgent(User $user): void
+    {
+        $sid = $this->getSessionId();
+
+        $photoBase64 = '';
+        if ($user->image && $user->image->path && file_exists(public_path($user->image->path))) {
+            $photoPath = public_path($user->image->path);
+            $photoMime = mime_content_type($photoPath);
+
+            if (in_array($photoMime, ['image/jpeg', 'image/jpg'])) {
+                if (filesize($photoPath) <= 65000) {
+                    $photoBase64 = base64_encode(file_get_contents($photoPath));
+                } else {
+                    Log::channel('imobiliare_apis')->warning("Agent photo too large for user {$user->id}. Skipping.");
+                }
+            } else {
+                Log::channel('imobiliare_apis')->warning("Invalid image format for user {$user->id}. Only JPEG allowed.");
+            }
+        }
+
+        $agentXml = <<<XML
+            <agent>
+              <functie>Agent</functie>
+              <id>{$user->imobiliare_id}</id>
+              <nume>{$user->name}</nume>
+              <telefon>{$user->phone}</telefon>
+              <drepturi_adminonline>oferte</drepturi_adminonline>
+              <poza>{$photoBase64}</poza>
+            </agent>
+        XML;
+
+        try {
+            $this->soap->__soapCall('publica_agent', [
+                'publica_agent' => [
+                    'sid' => $sid,
+                    'id' => $user->imobiliare_id,
+                    'operatie' => 'MOD',
+                    'agentxml' => $agentXml,
+                ]
+            ]);
+
+            Log::channel('imobiliare_apis')->info("Updated agent on Imobiliare.ro (without changing login data)", [
+                'user_id' => $user->id,
+            ]);
+        } catch (Exception $e) {
+            Log::channel('imobiliare_apis')->error("Failed to update agent {$user->id}: " . $e->getMessage());
+            throw new Exception("Failed to update agent: " . $e->getMessage());
+        }
+    }
+
 
     public function createOrUpdateArticle(array $payload): array
     {
@@ -225,6 +276,8 @@ class ImobiliareApiService
             $xml->formatOutput = true;
 
             $oferta = $xml->createElement('oferta');
+            $oferta->setAttribute('tip', $payload['tip'] ?? 'apartament');
+            $oferta->setAttribute('versiune', '3');
             $xml->appendChild($oferta);
 
             foreach ($payload as $key => $value) {
@@ -234,6 +287,21 @@ class ImobiliareApiService
                     $lang->setAttribute('id', '1048');
                     $element->appendChild($lang);
                     $oferta->appendChild($element);
+                } elseif ($key === 'imagini' && is_array($value)) {
+                    $imaginiNode = $xml->createElement('imagini');
+                    foreach ($value as $img) {
+                        $imagineNode = $xml->createElement('imagine', base64_encode($img['blob']));
+                        $imagineNode->setAttribute('latime', $img['width']);
+                        $imagineNode->setAttribute('inaltime', $img['height']);
+                        $imagineNode->setAttribute('pozitie', $img['position']);
+                        $imagineNode->setAttribute('modificata', $img['timestamp']);
+                        $imaginiNode->appendChild($imagineNode);
+                    }
+                    $oferta->appendChild($imaginiNode);
+                } elseif ($value === null) {
+                    continue;
+                } elseif (is_array($value)) {
+                    $oferta->appendChild($xml->createElement($key, implode(' ', $value)));
                 } else {
                     $oferta->appendChild($xml->createElement($key, $value));
                 }
@@ -243,12 +311,16 @@ class ImobiliareApiService
 
             $response = $this->soap->__soapCall('publica_oferta', [
                 'publica_oferta' => [
-                    'id_str'        => '0:' . 321362187,
+                    'id_str'        => '0:' . $payload['id2'],
                     'sid' 			=> $sid,
                     'operatie'		=> 'ADD',
                     'ofertaxml' 	=> $xmlPayload,
                 ],
             ]);
+
+            $codJudet = $this->getCodJudet('Brașov');
+
+            dd($response, $xmlPayload);
 
 
             $result = [
@@ -273,5 +345,17 @@ class ImobiliareApiService
                 'body' => ['error' => 'There was an error: ' . $e->getMessage()],
             ];
         }
+    }
+
+    public function getCodJudet(string $numeJudet): ?int
+    {
+        $sid = $this->getSessionId();
+        $resp = $this->soap->__soapCall('obtine_parametrii', [['sid' => $sid]]);
+        dd($resp);
+
+        $xml = simplexml_load_string($resp->extra);
+        dd($xml,$resp);
+
+        return null;
     }
 }

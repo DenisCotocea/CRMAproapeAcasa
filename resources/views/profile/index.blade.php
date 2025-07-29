@@ -20,6 +20,7 @@
                                 <th class="px-6 py-3">Name</th>
                                 <th class="px-6 py-3">Email</th>
                                 <th class="px-6 py-3">Role</th>
+                                <th class="px-6 py-3">Update Imobiliare Profile</th>
                                 <th class="px-6 py-3">Change Role</th>
                             </x-slot>
 
@@ -32,6 +33,12 @@
                                         <x-badge :color="$user->getRoleNames()[0] === 'Admin' ? 'red' : ($user->getRoleNames()[0] === 'Agent' ? 'yellow' : ($user->getRoleNames()[0] === 'Lead' ? 'blue' : 'white'))">
                                             {{ ucfirst($user->getRoleNames()[0]) }}
                                         </x-badge>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <form action="{{ route('imobiliare.agent.update', $user->id) }}" method="POST">
+                                            @csrf
+                                            <x-primary-button>  {{ __('Update Agent Profile(Imobiliare)') }}</x-primary-button>
+                                        </form>
                                     </td>
                                     <td class="px-6 py-4">
                                         <form action="{{ route('users.update-role', $user->id) }}" method="POST">

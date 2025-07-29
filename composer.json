@@ -23,7 +23,8 @@
         "ext-soap": "*",
         "ext-simplexml": "*",
         "ext-http": "*",
-        "ext-dom": "*"
+        "ext-dom": "*",
+        "ext-fileinfo": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

@@ -76,6 +76,7 @@ Route::middleware(['auth'])->group(function () {
     // Settings Routes
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
     Route::get('/clear-cache', [SettingsController::class, 'clearCache'])->name('clear.cache');
+    Route::get('/runAgentSync', [SettingsController::class, 'runAgentSync'])->name('settings.agentsync');
     Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index'])->name('logs.index');
 
     //Search Routes
@@ -95,6 +96,7 @@ Route::middleware(['auth'])->group(function () {
 
     //ImobiliareApi
     Route::post('/imobiliare/create', [ImobiliareController::class, 'createPayLoad'])->name('imobiliare.create');
+    Route::post('/imobiliare/agent/update/{id}', [ImobiliareController::class, 'updateAgent'])->name('imobiliare.agent.update');;
 
     //Romimo
     Route::post('/romimo/create', [RomimoController::class, 'createPayLoad'])->name('romimo.create');

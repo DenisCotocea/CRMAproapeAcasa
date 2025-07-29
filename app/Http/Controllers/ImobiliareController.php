@@ -38,28 +38,49 @@ class ImobiliareController extends Controller
             $latitude = $validated['latitude'];
             $longitude = $validated['longitude'];
 
+            $images = [];
+
+            foreach ($property->images as $index => $image) {
+                $path = public_path($image->path);
+
+                if (!file_exists($path)) {
+                    continue;
+                }
+
+                $blob = file_get_contents($path);
+                [$width, $height] = getimagesize($path);
+                $images[] = [
+                    'blob' => $blob,
+                    'width' => $width,
+                    'height' => $height,
+                    'position' => $index + 1,
+                    'timestamp' => time(),
+                    'tip' => 'imagine',
+                ];
+            }
+
             $payload = [
                 'id2' => (int) $property->unique_code,
                 'titlu' =>  $property->name,
                 'descriere' => $property->description,
                 'tara' => 1048,
                 'judet' => 2,
-                'localitate' => 200,
+                'localitate' => 3319,
                 'zona' => 7777777,
-                'devanzare' => $property->tranzaction === 'Sale' ? 1 : 0,
-                'deinchiriat' => $property->tranzaction === 'Rent' ? 1 : 0,
+                'devanzare' => strtolower(trim($property->tranzaction)) === 'sale' ? 1 : 0,
+                'deinchiriat' => strtolower(trim($property->tranzaction)) === 'rent' ? 1 : 0,
                 'siteagentie' => 1,
                 'portal' => 1,
                 'anuntbonus' => 0,
-                'tipspatiu' => 421,
+                'categorie' => 0,
                 'suprafatautila' => (int) $property->usable_area,
                 'latitudine' => $latitude,
                 'longitudine' => $longitude,
-                'disp_prop' => 'aW1lZGlhdA==',
+                'caroiaj' => $this->generateCaroiaj($longitude, $latitude),
                 'suprafatateren' => (int) $property->land_area,
                 'inaltimespatiu' => 7,
-                'tipimobil' => 427,
-//                'imagini' => [],
+                'tipimobil' => 0,
+                'imagini' => $images,
 
                 // VANZARE Quality Fields
                 'pretvanzare' => $property->price,
@@ -74,9 +95,6 @@ class ImobiliareController extends Controller
                 'agent' => $property->user->imobiliare_id,
                 'anconstructie' => $property->construction_year,
                 'nrcamere' => $property->room_numbers,
-                'dotari' => null,
-                'utilitati' => null,
-                'servicii' => null,
                 'etaj' => $property->floor,
                 'suprafatacurte' => $property->land_area,
                 'imoradar24' => 1,
@@ -88,6 +106,8 @@ class ImobiliareController extends Controller
             ]);
 
             $response = $this->imobiliareApiService->createOrUpdateArticle($payload);
+
+            dd($response, $payload);
 
             Log::channel('imobiliare_apis')->debug('Response from Imobiliare.ro API.', [
                 'property_id' => $property->id,
@@ -114,5 +134,44 @@ class ImobiliareController extends Controller
                 'error' => 'There was an error: ' . $e->getMessage(),
             ], 500);
         }
+    }
+
+    public function updateAgent(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+
+        if (!$user->imobiliare_id) {
+            return redirect()->back()->with('error', 'User is not linked to Imobiliare.ro');
+        }
+
+        try {
+            $this->imobiliareApiService->updateAgent($user);
+            return redirect()->back()->with('success', 'Agent updated on Imobiliare.ro');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Failed to update agent');
+        }
+    }
+
+    public function generateCaroiaj(float $lon, float $lat): string
+    {
+        $projected = $this->lonlatToXY($lon, $lat);
+
+        $iStartLon = 2252106;
+        $iStartLat = 5404285;
+
+        $sLon = floor(($projected['lon'] - $iStartLon) / 1000);
+        $sLat = floor(($projected['lat'] - $iStartLat) / 1000);
+
+        $caroiaj = substr(($iStartLon + $sLon * 1000), 0, 4) . substr(($iStartLat + $sLat * 1000), 0, 4);
+        return $caroiaj;
+    }
+
+    private function lonlatToXY(float $lon, float $lat): array
+    {
+        $x = ($lon * 20037508.34) / 180;
+        $y = log(tan((90 + $lat) * pi() / 360)) / (pi() / 180);
+        $y = $y * 20037508.34 / 180;
+
+        return ['lon' => $x, 'lat' => $y];
     }
 }

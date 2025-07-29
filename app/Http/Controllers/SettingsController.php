@@ -24,4 +24,9 @@ class SettingsController extends Controller
 
         return redirect()->route('settings.index')->with('success', 'Cache cleared successfully!');
     }
+
+    public function runAgentSync(){
+        Artisan::call('app:sync-imobiliare-agents');
+        return redirect()->route('settings.index')->with('success', 'Agents imported successfully!');
+    }
 }
