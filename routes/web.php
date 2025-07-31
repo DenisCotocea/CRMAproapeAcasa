@@ -96,9 +96,11 @@ Route::middleware(['auth'])->group(function () {
         Route::post('ads/{id}/deactivate', [OlxController::class, 'deactivateAd']);
         Route::post('ads/{id}/promote', [OlxController::class, 'applyPromotion']);
         Route::get('callback', [OlxController::class, 'handleCallback']);
-
         Route::get('categories', [OlxController::class, 'getAllCategories']);
         Route::get('categories/{id}/attributes', [OlxController::class, 'getCategoryAttributes']);
+
+        //Webhook
+        Route::post('/webhook', [\App\Http\Controllers\OlxWebhookController::class, 'handle']);
     });
 
 

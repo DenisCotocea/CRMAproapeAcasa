@@ -42,6 +42,7 @@ return [
         'api_key' => env('OLX_API_KEY'),
         'basic_64' => env('OLX_BASIC_64'),
         'api_url' => env('OLX_API_URL'),
+        'webhook_secret' => env('OLX_WEBHOOK_SECRET'),
     ],
 
     'imobiliare' => [
