@@ -21,6 +21,9 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+//Olx Notification WebHook
+Route::post('olx/webhook', [\App\Http\Controllers\OlxWebhookController::class, 'handle']);
+
 Route::middleware(['auth'])->group(function () {
     // Dashboard
     Route::get('/dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
@@ -98,9 +101,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('callback', [OlxController::class, 'handleCallback']);
         Route::get('categories', [OlxController::class, 'getAllCategories']);
         Route::get('categories/{id}/attributes', [OlxController::class, 'getCategoryAttributes']);
-
-        //Webhook
-        Route::post('/webhook', [\App\Http\Controllers\OlxWebhookController::class, 'handle']);
     });
 
 
