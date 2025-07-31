@@ -22,7 +22,7 @@ Route::get('/', function () {
 });
 
 //Olx Notification WebHook
-Route::post('olx/webhook', [\App\Http\Controllers\OlxWebhookController::class, 'handle']);
+Route::any('olx/webhook', [\App\Http\Controllers\OlxWebhookController::class, 'handle'])->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class]);;
 
 Route::middleware(['auth'])->group(function () {
     // Dashboard
