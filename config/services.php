@@ -36,9 +36,11 @@ return [
     ],
 
     'olx' => [
+        'urn' => env('OLX_URN'),
         'client_id' => env('OLX_CLIENT_ID'),
         'client_secret' => env('OLX_CLIENT_SECRET'),
-        'redirect_uri' => env('OLX_REDIRECT_URI'),
+        'api_key' => env('OLX_API_KEY'),
+        'basic_64' => env('OLX_BASIC_64'),
         'api_url' => env('OLX_API_URL'),
     ],
 

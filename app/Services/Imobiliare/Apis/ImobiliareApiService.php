@@ -318,10 +318,7 @@ class ImobiliareApiService
                 ],
             ]);
 
-            $codJudet = $this->getCodJudet('Brașov');
-
             dd($response, $xmlPayload);
-
 
             $result = [
                 'status' => $response->status(),
@@ -345,17 +342,5 @@ class ImobiliareApiService
                 'body' => ['error' => 'There was an error: ' . $e->getMessage()],
             ];
         }
-    }
-
-    public function getCodJudet(string $numeJudet): ?int
-    {
-        $sid = $this->getSessionId();
-        $resp = $this->soap->__soapCall('obtine_parametrii', [['sid' => $sid]]);
-        dd($resp);
-
-        $xml = simplexml_load_string($resp->extra);
-        dd($xml,$resp);
-
-        return null;
     }
 }

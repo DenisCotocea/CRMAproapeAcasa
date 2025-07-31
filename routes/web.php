@@ -15,6 +15,7 @@ use App\Services\Olx\OlxService;
 use App\Http\Controllers\RomimoController;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\ImobiliareController;
+use App\Http\Controllers\OlxController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -84,15 +85,22 @@ Route::middleware(['auth'])->group(function () {
 
 
     //OlxAPI
-    Route::get('/olx/redirect', function (OlxService $olx) {
-        return redirect($olx->getAuthUrl());
-    });
-    Route::get('/olx/callback', function (Request $request, OlxService $olx) {
-        $code = $request->query('code');
-        $data = $olx->getToken($code);
+    Route::prefix('olx')->group(function () {
+        Route::get('auth-url', [OlxController::class, 'getAuthUrl']);
+        Route::post('exchange-token', [OlxController::class, 'exchangeCode']);
 
-        return response()->json($data);
+        Route::post('ads', [OlxController::class, 'postAd'])->name('olx.postAd');
+        Route::put('ads/{id}', [OlxController::class, 'updateAd']);
+        Route::delete('ads/{id}', [OlxController::class, 'deleteAd']);
+        Route::post('ads/{id}/activate', [OlxController::class, 'activateAd']);
+        Route::post('ads/{id}/deactivate', [OlxController::class, 'deactivateAd']);
+        Route::post('ads/{id}/promote', [OlxController::class, 'applyPromotion']);
+        Route::get('callback', [OlxController::class, 'handleCallback']);
+
+        Route::get('categories', [OlxController::class, 'getAllCategories']);
+        Route::get('categories/{id}/attributes', [OlxController::class, 'getCategoryAttributes']);
     });
+
 
     //ImobiliareApi
     Route::post('/imobiliare/create', [ImobiliareController::class, 'createPayLoad'])->name('imobiliare.create');

@@ -65,7 +65,7 @@ class ImobiliareController extends Controller
                 'descriere' => $property->description,
                 'tara' => 1048,
                 'judet' => 2,
-                'localitate' => 3319,
+                'localitate' => 200,
                 'zona' => 7777777,
                 'devanzare' => strtolower(trim($property->tranzaction)) === 'sale' ? 1 : 0,
                 'deinchiriat' => strtolower(trim($property->tranzaction)) === 'rent' ? 1 : 0,
@@ -107,7 +107,7 @@ class ImobiliareController extends Controller
 
             $response = $this->imobiliareApiService->createOrUpdateArticle($payload);
 
-            dd($response, $payload);
+            dd($response);
 
             Log::channel('imobiliare_apis')->debug('Response from Imobiliare.ro API.', [
                 'property_id' => $property->id,

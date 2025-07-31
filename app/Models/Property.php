@@ -115,4 +115,9 @@ class Property extends Model
     {
         return $this->morphMany(Comment::class, 'commentable');
     }
+
+    public function calculatePricePerSquareMeter()
+    {
+        return $this->price / $this->surface;
+    }
 }

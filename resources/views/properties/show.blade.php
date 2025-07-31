@@ -16,6 +16,14 @@
                             </x-link-primary-button>
                         @endif
 
+                        @if(!$property->imported_olx && (auth()->user()->hasRole('Admin') || $property->user_id === auth()->id()))
+                            <x-link-primary-button href="#" id="openOlxMapBtn">
+                                {{ __('Import Olx') }}
+                            </x-link-primary-button>
+
+                            @include('partials.olx-map')
+                        @endif
+
                         @if(!$property->imported_imobiliare && (auth()->user()->hasRole('Admin') || $property->user_id === auth()->id()))
                              <x-link-primary-button href="#" id="openImobiliareMapBtn">
                                   {{ __('Import Imobiliare') }}
