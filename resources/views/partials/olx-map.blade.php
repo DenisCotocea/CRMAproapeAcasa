@@ -51,6 +51,10 @@
                         return response.json();
                     })
                     .then(data => {
+                        if (data.redirect) {
+                            window.location.href = data.redirect;
+                            return;
+                        }
                         Swal.fire('Success!', 'Property posted on Imobiliare!', 'success');
                     })
                     .catch(error => {

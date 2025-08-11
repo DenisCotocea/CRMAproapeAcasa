@@ -81,6 +81,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
     Route::get('/clear-cache', [SettingsController::class, 'clearCache'])->name('clear.cache');
     Route::get('/runAgentSync', [SettingsController::class, 'runAgentSync'])->name('settings.agentsync');
+    Route::get('/refreshOlxToken', [SettingsController::class, 'refreshOlxToken'])->name('settings.refreshOlxToken');
     Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index'])->name('logs.index');
 
     //Search Routes
@@ -89,18 +90,13 @@ Route::middleware(['auth'])->group(function () {
 
     //OlxAPI
     Route::prefix('olx')->group(function () {
-        Route::get('auth-url', [OlxController::class, 'getAuthUrl']);
-        Route::post('exchange-token', [OlxController::class, 'exchangeCode']);
-
+        //Routes for ADS
         Route::post('ads', [OlxController::class, 'postAd'])->name('olx.postAd');
-        Route::put('ads/{id}', [OlxController::class, 'updateAd']);
-        Route::delete('ads/{id}', [OlxController::class, 'deleteAd']);
-        Route::post('ads/{id}/activate', [OlxController::class, 'activateAd']);
-        Route::post('ads/{id}/deactivate', [OlxController::class, 'deactivateAd']);
-        Route::post('ads/{id}/promote', [OlxController::class, 'applyPromotion']);
-        Route::get('callback', [OlxController::class, 'handleCallback']);
-        Route::get('categories', [OlxController::class, 'getAllCategories']);
-        Route::get('categories/{id}/attributes', [OlxController::class, 'getCategoryAttributes']);
+        Route::delete('ads/{id}', [OlxController::class, 'deleteAd'])->name('olx.deleteAd');;
+
+        //Routes for Authentification
+        Route::get('callback', [OlxController::class, 'handleCallback'])->name('olx.callback');
+        Route::get('connect', [OlxController::class, 'redirectToOlx'])->name('olx.connect');
     });
 
 

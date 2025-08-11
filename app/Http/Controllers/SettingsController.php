@@ -29,4 +29,14 @@ class SettingsController extends Controller
         Artisan::call('app:sync-imobiliare-agents');
         return redirect()->route('settings.index')->with('success', 'Agents imported successfully!');
     }
+
+    public function refreshOlxToken()
+    {
+        $clientId = env('OLX_CLIENT_ID');
+        $state = 'securetoken';
+
+        $url = "https://storia.ro/ro/crm/authorization?response_type=code&client_id={$clientId}&state={$state}";
+
+        return redirect()->away($url);
+    }
 }

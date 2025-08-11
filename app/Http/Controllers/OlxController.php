@@ -7,6 +7,7 @@ use http\Client\Curl\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Services\Olx\OlxService;
+use Exception;
 use Illuminate\Support\Facades\Log;
 
 class OlxController extends Controller
@@ -18,9 +19,27 @@ class OlxController extends Controller
         $this->olx = $olx;
     }
 
-    public function postAd(Request $request): JsonResponse
+    public function redirectToOlx()
+    {
+        $clientId = env('OLX_CLIENT_ID');
+        $state = 'securetoken';
+
+        $url = "https://storia.ro/ro/crm/authorization?response_type=code&client_id={$clientId}&state={$state}";
+
+        return response()->json(['redirect' => $url], 200);
+    }
+
+    public function postAd(Request $request)
     {
         try {
+            if($this->olx->getAccessToken() === null) {
+                if($this->olx->getRefreshToken() === null){
+                    return redirect()->route('olx.connect');
+                }else{
+                    $this->olx->refreshToken();
+                }
+            }
+
             $validated = $request->validate([
                 'latitude' => 'required|numeric',
                 'longitude' => 'required|numeric',
@@ -133,6 +152,9 @@ class OlxController extends Controller
                 ], 500);
             }
 
+            $property->imported_olx = 1;
+            $property->save();
+
             return response()->json([
                 'message' => 'Property posted on Storia!',
             ]);
@@ -149,43 +171,49 @@ class OlxController extends Controller
         }
     }
 
-    public function getAuthUrl()
+    public function deleteAd(Request $request)
     {
-        return response()->json([
-            'url' => $this->olx->getAuthUrl()
-        ]);
-    }
+        try {
+            if ($this->olx->getAccessToken() === null) {
+                if ($this->olx->getRefreshToken() === null) {
+                    return redirect()->route('olx.connect');
+                }
+                $this->olx->refreshToken();
+            }
 
-    public function exchangeCode(Request $request)
-    {
-        $code = $request->input('code');
-        return response()->json($this->olx->getToken($code));
-    }
+            $validated = $request->validate(['property_id' => 'required|integer']);
+            $property  = Property::find($validated['property_id']);
 
-    public function updateAd($id, Request $request)
-    {
-        $payload = $this->olx->generateAdPayload($request->all());
-        return response()->json($this->olx->updateAd($id, $payload));
-    }
+            if (!$property) {
+                throw new \Exception("Property ID {$validated['property_id']} not found.");
+            }
 
-    public function deleteAd($id)
-    {
-        return response()->json($this->olx->deleteAd($id));
-    }
+            $advertUuid = $property->unique_code;
 
-    public function activateAd($id)
-    {
-        return response()->json($this->olx->activateAd($id));
-    }
+            Log::channel('olx_apis')->debug('Deleting advert on Storia/OLX', [
+                'property_id' => $property->id,
+                'advert_uuid' => $advertUuid,
+            ]);
 
-    public function deactivateAd($id)
-    {
-        return response()->json($this->olx->deactivateAd($id));
-    }
+            $response = $this->olx->deleteAd($advertUuid);
 
-    public function applyPromotion($id, Request $request)
-    {
-        return response()->json($this->olx->applyPromotion($id, $request->all()));
+            if (!in_array($response->status(), [200, 204], true)) {
+                return response()->json([
+                    'error' => $response->json('error.title') ?? $response->body() ?? 'Unknown error from Storia/OLX',
+                    'status' => $response->status(),
+                ], 500);
+            }
+
+            $property->imported_olx = 0;
+            $property->save();
+
+            return response()->json(['message' => 'Property deleted from Storia/OLX.']);
+        } catch (\Throwable $e) {
+            Log::channel('olx_apis')->error('Delete advert failed', [
+                'error' => $e->getMessage(),
+            ]);
+            return response()->json(['error' => 'There was an error: '.$e->getMessage()], 500);
+        }
     }
 
     public function handleCallback(Request $request)
@@ -193,15 +221,12 @@ class OlxController extends Controller
         $code = $request->query('code');
 
         if (!$code) {
-            return response()->json(['error' => 'Missing code'], 400);
+            return redirect()->route('properties.portfolioView')->with('error', 'Missing code.');
         }
 
         $tokenData = $this->olx->getToken($code);
 
-        return response()->json([
-            'message' => 'Successfully authenticated',
-            'token' => $tokenData,
-        ]);
+        return redirect()->route('properties.portfolioView')->with('success', 'API Token refresh successful.');
     }
 
     public function getApartmentCategoryId(Property $property): string
