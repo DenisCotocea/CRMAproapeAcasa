@@ -137,6 +137,8 @@ class OlxController extends Controller
                 'payload' => $adData,
             ]);
 
+            dd($adData);
+
             $response = $this->olx->postAd($adData);
 
             Log::channel('olx_apis')->debug('Response from Storia.ro API.', [
