@@ -80,7 +80,7 @@ class OlxController extends Controller
             ];
 
             if ($property->user?->image?->path) {
-                $contact['photo'] = url($property->user->image->path);
+                $contact['photo'] = Storage::disk('public')->url($property->user->image->path);
             }
 
             $images = $property->images
