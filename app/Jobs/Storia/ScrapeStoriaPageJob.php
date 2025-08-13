@@ -42,7 +42,7 @@ class ScrapeStoriaPageJob implements ShouldQueue
         $html = $response->body();
         $crawler = new Crawler($html);
 
-        $ads = $crawler->filter('article[data-cy="listing-item"]');
+        $ads = $crawler->filter('article[data-sentry-element="Container"]');
 
         if ($ads->count() === 0) {
             Log::channel('storia_scraper')->info("No ads found on page {$this->page} for {$url}");
