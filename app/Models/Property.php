@@ -58,6 +58,7 @@ class Property extends Model
         'imported_imobiliare',
         'imported_olx',
         'olx_uuid',
+        'storia_url',
         'romimo_url',
         'publi24_url',
     ];

@@ -233,6 +233,14 @@
                                         <strong>Imported Imobiliare:</strong> {{ $property->imported_imobiliare ? 'Yes' : 'No' }}
                                     </p>
 
+                                    @if($property->olx_uuid)
+                                        <p class="property-detail"><i class="bi bi-webcam"></i> <strong>Olx UUID</strong>{{$property->olx_uuid}} </p>
+                                    @endif
+
+                                    @if($property->storia_url)
+                                        <p class="property-detail"><i class="bi bi-webcam"></i> <strong>Storia Link:</strong> <a target="_blank" href="{{$property->storia_url}}"> {{$property->storia_url}} </a></p>
+                                    @endif
+
                                     @if($property->romimo_url)
                                         <p class="property-detail"><i class="bi bi-webcam"></i> <strong>Romimo Link:</strong> <a target="_blank" href="{{$property->romimo_url}}"> {{$property->romimo_url}} </a></p>
                                     @endif

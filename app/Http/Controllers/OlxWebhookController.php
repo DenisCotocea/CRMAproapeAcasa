@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Exception;
+use App\Models\Property;
 use Illuminate\Support\Facades\Log;
 
 class OlxWebhookController extends Controller
@@ -23,6 +24,17 @@ class OlxWebhookController extends Controller
                 'user_agent' => $request->userAgent(),
                 'timestamp' => now()->toISOString()
             ]);
+
+            $url = $payload['data']['url'] ?? null;
+
+            if ($url) {
+                $property = Property::where('uuid', $payload['object_id'])->first();
+
+                if ($property) {
+                    $property->storia_url = $url;
+                    $property->save();
+                }
+            }
 
             $this->processNotification($payload);
 

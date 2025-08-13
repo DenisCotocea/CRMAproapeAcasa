@@ -219,7 +219,7 @@ class OlxController extends Controller
             $property->imported_olx = 0;
             $property->save();
 
-            return response()->json(['message' => 'Property deleted from Storia/OLX.']);
+            return response()->json(['message' => 'Property desactivated from Storia/OLX.']);
         } catch (\Throwable $e) {
             Log::channel('olx_apis')->error('Delete advert failed', [
                 'error' => $e->getMessage(),
