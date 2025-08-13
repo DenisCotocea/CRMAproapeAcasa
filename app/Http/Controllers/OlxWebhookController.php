@@ -28,7 +28,7 @@ class OlxWebhookController extends Controller
             $url = $payload['data']['url'] ?? null;
 
             if ($url) {
-                $property = Property::where('uuid', $payload['object_id'])->first();
+                $property = Property::where('olx_uuid', $payload['object_id'])->first();
 
                 if ($property) {
                     $property->storia_url = $url;
