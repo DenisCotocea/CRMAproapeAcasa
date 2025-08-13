@@ -8,6 +8,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Services\Olx\OlxService;
 use Exception;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 
 class OlxController extends Controller
@@ -84,7 +85,7 @@ class OlxController extends Controller
 
             $images = $property->images
                 ->filter(fn ($img) => $img && filled($img->path))
-                ->map(fn ($img) => ['url' => url($img->path)])
+                ->map(fn ($img) => Storage::disk('public')->url($img->path))
                 ->values()
                 ->toArray();
 
