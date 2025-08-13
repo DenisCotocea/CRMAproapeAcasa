@@ -117,11 +117,11 @@ class OlxController extends Controller
                     ],
                     [
                         'urn' => 'urn:concept:floor',
-                        'value' => (string) $this->mapFloorToUrn($property->floor),
+                        'value' => $this->mapFloorToUrn($property->floor),
                     ],
                     [
                         'urn' => 'urn:concept:number-of-rooms',
-                        'value' => 'urn:concept:' . (string) $property->room_numbers,
+                        'value' => 'urn:concept:' . $property->room_numbers,
                     ],
                 ],
                 'site_urn' => 'urn:site:storiaro',
