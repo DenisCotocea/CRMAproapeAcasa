@@ -157,12 +157,13 @@ class OlxController extends Controller
                 'body'        => $response->body(),
             ]);
 
-            if ($response->status() !== 200) {
+            if (!in_array($response->status(), [200, 201])) {
                 return response()->json([
                     'error' => $response['body']['error'] ?? 'Unknown error from Storia.ro',
                 ], 500);
             }
 
+            $property->olx_uuid = $response->json()['data']['uuid'] ?? null;
             $property->imported_olx = 1;
             $property->save();
 

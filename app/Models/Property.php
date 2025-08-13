@@ -57,6 +57,7 @@ class Property extends Model
         'imported_romimo',
         'imported_imobiliare',
         'imported_olx',
+        'olx_uuid',
         'romimo_url',
         'publi24_url',
     ];
