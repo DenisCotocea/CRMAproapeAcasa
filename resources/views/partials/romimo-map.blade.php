@@ -3,7 +3,12 @@
         const propertyId = {{ $property->id }};
         Swal.fire({
             title: 'Selectează locația pe hartă',
-            html: `<div id="swalMap" style="height: 300px; margin-bottom: 15px;"></div>`,
+            html: `
+                <div id="swalMap" style="height: 300px; margin-bottom: 15px;"></div>
+                <div>
+                    <p>ATENȚIE! Completați câmpurile proprietății înainte de import. Verificați ca tipul să fie specific (ex.: Apartament, nu Apartament/Garsonieră) și asigurați-vă că toate datele obligatorii sunt completate (inclusiv numărul de telefon din cont/poza de profil). De asemenea, datele proprietății trebuie completate integral.</p>
+                </div>
+                `,
             width: 600,
             didOpen: () => {
                 const map = L.map('swalMap').setView([45.657975, 25.601198], 13);

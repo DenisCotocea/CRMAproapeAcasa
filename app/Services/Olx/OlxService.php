@@ -91,7 +91,7 @@ class OlxService
         return $response;
     }
 
-    public function deleteAd(string $adId)
+    public function deactivateAd(string $adId)
     {
         $accessToken = $this->getAccessToken();
 
@@ -100,7 +100,7 @@ class OlxService
             'X-API-KEY' => $this->apiKey,
             'Accept' => 'application/json',
             'Content-Type' => 'application/json',
-        ]) ->delete("https://api.olxgroup.com/advert/v1/{$adId}");
+        ]) ->post("https://api.olxgroup.com/advert/v1/{$adId}/deactivate");
 
         return $response;
     }

@@ -22,7 +22,7 @@ Route::get('/', function () {
 });
 
 //Olx Notification WebHook
-Route::any('olx/webhook', [\App\Http\Controllers\OlxWebhookController::class, 'handle'])->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class]);;
+Route::any('olx/webhook', [\App\Http\Controllers\OlxWebhookController::class, 'handle'])->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class]);
 
 Route::middleware(['auth'])->group(function () {
     // Dashboard
@@ -92,7 +92,7 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('olx')->group(function () {
         //Routes for ADS
         Route::post('ads', [OlxController::class, 'postAd'])->name('olx.postAd');
-        Route::delete('ads/{id}', [OlxController::class, 'deleteAd'])->name('olx.deleteAd');;
+        Route::post('ads/{id}', [OlxController::class, 'deactivateAd'])->name('olx.deactivateAd');
 
         //Routes for Authentification
         Route::get('callback', [OlxController::class, 'handleCallback'])->name('olx.callback');

@@ -91,39 +91,37 @@ class OlxController extends Controller
                     'lon' => $longitude,
                     'exact' => true,
                 ],
-                'images' => [
-                    $property->images->map(fn ($image) => [
-                        'url' => asset($image->path),
-                    ])->toArray(),
-                ],
+                'images' => $property->images->map(fn ($image) => [
+                    'url' => asset($image->path),
+                ])->toArray(),
                 'attributes' => [
                     [
                         'urn' => 'urn:concept:net-area-m2',
-                        'value' => $property->usable_area,
+                        'value' => (string) $property->usable_area,
                     ],
                     [
                         'urn' => 'urn:concept:construction-year',
-                        'value' => $property->construction_year,
+                        'value' => (string) $property->construction_year,
                     ],
                     [
                         'urn' => 'urn:concept:building-floors',
-                        'value' => $property->total_floors,
+                        'value' => (string) $property->total_floors,
                     ],
                     [
                         'urn' => 'urn:concept:area-m2',
-                        'value' => $property->surface,
+                        'value' => (string) $property->surface,
                     ],
                     [
                         'urn' => 'urn:concept:price-per-sq-meter',
-                        'value' => $property->calculatePricePerSquareMeter(),
+                        'value' => (string) $property->calculatePricePerSquareMeter(),
                     ],
                     [
                         'urn' => 'urn:concept:floor',
-                        'value' => $this->mapFloorToUrn($property->floor),
+                        'value' => (string) $this->mapFloorToUrn($property->floor),
                     ],
                     [
                         'urn' => 'urn:concept:number-of-rooms',
-                        'value' => 'urn:concept:' . $property->room_numbers,
+                        'value' => 'urn:concept:' . (string) $property->room_numbers,
                     ],
                 ],
                 'site_urn' => 'urn:site:storiaro',
@@ -171,7 +169,7 @@ class OlxController extends Controller
         }
     }
 
-    public function deleteAd(Request $request)
+    public function deactivateAd(Request $request)
     {
         try {
             if ($this->olx->getAccessToken() === null) {
@@ -195,7 +193,7 @@ class OlxController extends Controller
                 'advert_uuid' => $advertUuid,
             ]);
 
-            $response = $this->olx->deleteAd($advertUuid);
+            $response = $this->olx->deactivateAd($advertUuid);
 
             if (!in_array($response->status(), [200, 204], true)) {
                 return response()->json([
