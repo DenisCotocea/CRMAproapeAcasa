@@ -151,7 +151,10 @@ class OlxController extends Controller
 
             Log::channel('olx_apis')->debug('Response from Storia.ro API.', [
                 'property_id' => $property->id,
-                'response' => $response,
+                'status'      => $response->status(),
+                'headers'     => $response->headers(),
+                'json'        => $response->json(),
+                'body'        => $response->body(),
             ]);
 
             if ($response->status() !== 200) {
