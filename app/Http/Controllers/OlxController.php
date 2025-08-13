@@ -200,7 +200,7 @@ class OlxController extends Controller
                 throw new \Exception("Property ID {$validated['property_id']} not found.");
             }
 
-            $advertUuid = $property->unique_code;
+            $advertUuid = $property->olx_uuid;
 
             Log::channel('olx_apis')->debug('Deleting advert on Storia/OLX', [
                 'property_id' => $property->id,

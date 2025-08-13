@@ -60,7 +60,7 @@
                             window.location.href = data.redirect;
                             return;
                         }
-                        Swal.fire('Success!', 'Property posted on Imobiliare!', 'success');
+                        Swal.fire('Success!', 'Property posted on Storia!', 'success');
                     })
                     .catch(error => {
                         console.error(error);
