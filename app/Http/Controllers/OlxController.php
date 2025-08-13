@@ -46,7 +46,7 @@ class OlxController extends Controller
                 'property_id' => 'required',
             ]);
 
-            $property = Property::find($validated['property_id']);
+            $property = Property::with(['images'])->findOrFail($validated['property_id']);
 
             if (!$property) {
                 throw new Exception("Property with ID {$validated['property_id']} not found.");
@@ -72,16 +72,27 @@ class OlxController extends Controller
                 throw new \Exception("Unknown type/tranzaction combination: {$property->type} / {$property->tranzaction}");
             }
 
+            $contact = [
+                'name'  => $property->user->name,
+                'phone' => $property->user->phone,
+                'email' => $property->user->email,
+            ];
+
+            if ($property->user?->image?->path) {
+                $contact['photo'] = url($property->user->image->path);
+            }
+
+            $images = $property->images
+                ->filter(fn ($img) => $img && filled($img->path))
+                ->map(fn ($img) => ['url' => url($img->path)])
+                ->values()
+                ->toArray();
+
             $adData = [
                 'title' =>  $property->name,
                 'description' => $property->description,
                 'category_urn' => $category,
-                'contact' => [
-                    'name' => $property->user->name,
-                    'phone' => $property->user->phone,
-                    'email' => $property->user->email,
-                    'photo' => config('app.url') . '/' . $property->user->image->path,
-                ],
+                'contact'      => $contact,
                 'price' => [
                     'value' => (int) $property->price,
                     'currency' => 'EUR',
@@ -91,9 +102,7 @@ class OlxController extends Controller
                     'lon' => $longitude,
                     'exact' => true,
                 ],
-                'images' => $property->images->map(fn ($image) => [
-                    'url' => asset($image->path),
-                ])->toArray(),
+                'images' => $images,
                 'attributes' => [
                     [
                         'urn' => 'urn:concept:net-area-m2',
@@ -136,8 +145,6 @@ class OlxController extends Controller
                 'property_id' => $property->id,
                 'payload' => $adData,
             ]);
-
-            dd($adData);
 
             $response = $this->olx->postAd($adData);
 
